@@ -1,0 +1,156 @@
+/**
+ * @file  game.hpp
+ * @brief Include file for Game class.
+ */
+
+#ifndef GAME_HPP
+#define GAME_HPP
+
+
+#include "window.hpp"
+#include "renderer.hpp"
+#include "font.hpp"
+#include "texture.hpp"
+#include "text.hpp"
+#include "shapes.hpp"
+#include "textbox.hpp"
+#include "menu.hpp"
+#include "states.hpp"
+
+#include <SDL2/SDL.h>
+#include <SDL2/SDL_image.h>
+#include <SDL2/SDL_ttf.h>
+
+
+class GameState;
+
+/**
+ * @brief The main class implementing the game logic and rendering
+ */
+class Game
+{
+public:
+    /**
+     * @brief Initialize SDL libraries and class members.
+     * @throws `ExceptionSDL` thrown if an SDL library could not be initialized.
+     */
+    void init();
+
+    /**
+     * @brief Handle SDL events.
+     * @details
+     * Calls `handle_events` on class members. Sets `GameOverState` on `SDL_QUIT`;
+     * toggles pause on Escape key press.
+     */
+    void handle_events();
+
+    /**
+     * @brief Do game logic.
+     * @details
+     * Pauses the game if `window` lost keyboard focus. If the game is not paused,
+     * calls `do_logic` on `currState`.
+     */
+    void do_logic();
+
+    /// Exit `currState` and enter `nextState` if `nextState` is set.
+    void change_state();
+
+    /// Do rendering if the window is not minimized.
+    void render();
+
+    /// Free SDL libraries and class members.
+    void close();
+
+    /// `true` if `currState` is `GameOverState`.
+    bool is_over() const;
+
+    /// If `nextState` is not `GameOverState`, set it to `state`.
+    void set_next_state(GameState *state);
+
+    /**
+     * @brief Load `texture` from the image stored in `path`.
+     * @param[out] texture `Texture` object to initialize.
+     * @param[in] path Image path.
+     */
+    void load_texture_from_file(Texture &texture, const std::string &path);
+
+    /**
+     * @brief Initialize `text`.
+     * @param[out] text `Text` object to initialize.
+     * @param[in] line Displayed text.
+     * @param[in] color Text color; default is black.
+     * @param[in] maxText Text to use for font fitting; by default, `text` is used.
+     */
+    void create_text(
+        Text &text, const std::string &line,
+        const Color &color={0, 0, 0}, const std::string &maxText=""
+    );
+
+    void create_box(Box &box, const Color &fillColor, const Color &frameColor);
+    void create_text_box(
+        TextBox &box, const std::string &line,
+        const Color &fillColor, const Color &frameColor,
+        const Color &textColor={0, 0, 0}, const std::string &maxText=""
+    );
+
+    /**
+     * @brief Initialize `menu`.
+     * @param[out] menu `Menu` object to initialize.
+     * @param[in] prompt Menu prompt text.
+     * @param[in] options Menu option texts in order.
+     * @param[in] promptFillColor Fill color for menu prompt box.
+     * @param[in] promptFrameColor Frame color for menu prompt box.
+     * @param[in] optionFillColor Fill color for unselected option boxes.
+     * @param[in] optionFrameColor Frame color for unselected option boxes.
+     * @param[in] selectedOptionFillColor Fill color for the selected option box.
+     * @param[in] selectedOptionFrameColor Frame color for the selected option box.
+     * @param[in] promptTextColor Prompt text color.
+     * @param[in] optionTextColor Option text color.
+     */
+    void create_menu(
+        Menu &menu,
+        const std::string &prompt, const std::vector<std::string> &options,
+        const Color &promptFillColor={128, 128, 128},
+        const Color &promptFrameColor={0, 0, 0},
+        const Color &optionFillColor={192, 192, 192},
+        const Color &optionFrameColor={64, 64, 64},
+        const Color &selectedOptionFillColor={224, 224, 224},
+        const Color &selectedOptionFrameColor={255, 255, 255},
+        const Color &promptTextColor={0, 0, 0}, const Color &optionTextColor={0, 0, 0}
+    );
+
+    /**
+     * @brief Display the current scene.
+     * @note Used by `Window` when the window is resized.
+     * @see Window::handle_event
+     */
+    void show();
+
+    /// Set renderer view port.
+    void set_renderer_view_port(int x, int y, int w, int h);
+
+    /// Reset renderer view port to the whole window.
+    void reset_renderer_view_port();
+
+    /// Get renderer output width.
+    int get_renderer_width() const;
+
+    /// Get renderer output height.
+    int get_renderer_height() const;
+
+    /// `true` if the game is paused.
+    bool is_paused() const;
+
+private:
+    void pause();
+    void unpause();
+
+    Window window;
+    Font font;
+    Renderer renderer;
+    GameState *currState, *nextState;
+    bool paused;
+};
+
+
+#endif
