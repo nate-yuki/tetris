@@ -46,6 +46,7 @@ public:
     virtual ~GameState(){};
 };
 
+/// A screen with the title and a prompt to press Enter to go to the next state.
 class TitleScreenState: public GameState
 {
 public:
@@ -54,6 +55,7 @@ public:
     void enter(Game *game);
     void exit();
 
+    /// Transitions to `TetrisState` on Enter press.
     void handle_event(Game &game, const SDL_Event &e);
 
     void do_logic();
@@ -65,6 +67,31 @@ public:
 private:
     static TitleScreenState sTitleScreenState;
     TitleScreenState();
+
+    Game *game;
+    Texture bgTexture;
+    Text titleText, promptText;
+};
+
+/// A screen with the title and a prompt to press Enter to go to the next state.
+class TetrisState: public GameState
+{
+public:
+    static TetrisState *get();
+
+    void enter(Game *game);
+    void exit();
+    void handle_event(Game &game, const SDL_Event &e);
+
+    void do_logic();
+    void render();
+
+    void pause_timers();
+    void unpause_timers();
+    
+private:
+    static TetrisState sTetrisState;
+    TetrisState();
 
     Game *game;
     Texture bgTexture;
