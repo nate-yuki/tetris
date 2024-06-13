@@ -20,5 +20,8 @@ constexpr int WINDOW_WIDTH = 640, WINDOW_HEIGHT = 480;
 /// Maximum font point size.
 constexpr int MAX_PT_SIZE = 150;
 
+/// Maximum block size.
+constexpr int MAX_BLOCK_SIZE = 100;
+
 
 #endif
