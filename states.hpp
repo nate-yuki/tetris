@@ -12,6 +12,7 @@
 #include "text.hpp"
 #include "timer.hpp"
 #include "menu.hpp"
+#include "tetrimino.hpp"
 
 #include <SDL2/SDL.h>
 
@@ -73,7 +74,7 @@ private:
     Text titleText, promptText;
 };
 
-/// A screen with the title and a prompt to press Enter to go to the next state.
+/// The main state with the Tetris itself.
 class TetrisState: public GameState
 {
 public:
@@ -95,6 +96,7 @@ private:
 
     Game *game;
     Texture bgTexture;
+    Texture blockTextureSheet;
 };
 
 /// A utility state used only to indicate the game over.

@@ -15,9 +15,10 @@ class Block
 public:
     /**
      * @brief Initialize class members.
-     * @param texture The block texture.
+     * @param blockTextureSheet A block textures sheet.
+     * @param clip A clip from `blockTextureSheet` to use as the block's texture.
      */
-    void init(Texture *texture, const SDL_Rect &clip);
+    Block(Texture *blockTextureSheet, const SDL_Rect *clip);
 
     /**
      * @brief Draw the block with given location and dimensions.
@@ -29,7 +30,7 @@ public:
 
 private:
     Texture *texture;
-    SDL_Rect clip;
+    const SDL_Rect *clip;
 };
 
 class TetrisField

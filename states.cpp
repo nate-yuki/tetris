@@ -88,6 +88,10 @@ void TetrisState::enter (Game *game)
     this->game = game;
     
     game->load_texture_from_file(bgTexture, "textures/bg.png");
+    game->load_texture_from_file(blockTextureSheet, "textures/blocks.png");
+
+    Tetrimino::load_schemes("schemes.txt");
+    Tetrimino::init_clips();
 }
 
 void TetrisState::exit ()
@@ -95,6 +99,7 @@ void TetrisState::exit ()
     log("Exiting Tetris", __FILE__, __LINE__);
 
     bgTexture.free();
+    blockTextureSheet.free();
 }
 
 void TetrisState::handle_event (Game &game, const SDL_Event &e)

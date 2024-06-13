@@ -1,0 +1,15 @@
+{
+    "files.associations": {
+        "xiosbase": "cpp",
+        "xstring": "cpp",
+        "xutility": "cpp",
+        "vector": "cpp",
+        "fstream": "cpp",
+        "memory": "cpp",
+        "tuple": "cpp",
+        "type_traits": "cpp",
+        "utility": "cpp",
+        "xmemory": "cpp",
+        "xtr1common": "cpp"
+    }
+}

@@ -23,5 +23,8 @@ constexpr int MAX_PT_SIZE = 150;
 /// Maximum block size.
 constexpr int MAX_BLOCK_SIZE = 100;
 
+/// Maximum scheme length.
+constexpr int MAX_SCHEME_LEN = 4;
+
 
 #endif
