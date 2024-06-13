@@ -76,6 +76,24 @@ public:
         SDL_RendererFlip flip=SDL_FLIP_NONE
     );
 
+    /**
+     * @brief Render a `clip` from the texture to `renderQuad` with possible
+     *     stretching.
+     * @param x Upper left corner x coordinate.
+     * @param y Upper left corner y coordinate.
+     * @param renderQuad Portion of the current scene to render to;
+     *     NULL to render to the entire scene.
+     * @param angle Angle in degrees to rotate the texture.
+     * @param center Point to rotate around;
+     *     `NULL` to rotate around the texture center.
+     * @param flip SDL_RendererFlip value setting flipping actions.
+     */
+    void render(
+        const SDL_Rect &renderQuad, const SDL_Rect *clip=NULL,
+        double angle=0.0, const SDL_Point *center=NULL,
+        SDL_RendererFlip flip=SDL_FLIP_NONE
+    );
+
     /// Get texture width.
     int get_width() const;
 

@@ -117,6 +117,14 @@ void Texture::render (
     renderer->render_texture(texture, clip, &renderQuad, angle, center, flip);
 }
 
+void Texture::render (
+    const SDL_Rect &renderQuad, const SDL_Rect *clip,
+    double angle, const SDL_Point *center, SDL_RendererFlip flip
+)
+{
+    renderer->render_texture(texture, clip, &renderQuad, angle, center, flip);
+}
+
 int Texture::get_width () const
 {
     return w;
