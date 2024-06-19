@@ -24,9 +24,9 @@ public:
      * @brief Draw the block with given location and dimensions.
      * @param x Upper left corner x coordinate.
      * @param y Upper left corner y coordinate.
-     * @param s Block size.
+     * @param size Block size.
      */
-    void render(int x, int y, int s);
+    void render(int x, int y, int size);
 
 private:
     Texture *texture;
@@ -36,9 +36,17 @@ private:
 class TetrisField
 {
 public:
+    void init(int cellsHor, int cellsVer, Texture *bgTexture);
+    void free();
+    void render(int x, int y, int maxW, int maxH);
+    bool has_block(int posX, int posY) const;
+    int get_height() const;
+    void add_block(int posX, int posY, Block *block);
 
 private:
-    std::list<std::vector<Block *>> field;
+    Texture *bgTexture;
+    std::vector<std::vector<Block *>> field;
+    int cellsHor, cellsVer;
 };
 
 
