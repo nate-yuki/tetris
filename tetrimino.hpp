@@ -39,17 +39,23 @@ public:
     static void init_clips();
 
     void init(
-        TetriminoType type, Texture &blockTextureSheet, int posX, int posY,
-        TetriminoRotation rot=TETRIMINO_ROTATION_0
+        int posX, int posY, int moveDelay, Texture &blockTextureSheet,
+        TetriminoType type, TetriminoRotation rot=TETRIMINO_ROTATION_0
     );
 
-    void render(int x, int y, int s);
+    void render(int x, int y, int size);
+
+    bool move(TetrisField &field, int dt);
 
 private:
+    bool check_collision(TetrisField &field);
+    void stop(TetrisField &field);
+
     TetriminoType type;
     TetriminoRotation rot;
     int totalBlocks;
     int posX, posY;
+    int moveDelay, elapsed;
     std::vector<Block *> blocks;
     std::vector<Scheme> *rotations;
 };

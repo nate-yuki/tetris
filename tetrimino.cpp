@@ -1,6 +1,7 @@
 #include "tetrimino.hpp"
 #include "constants.hpp"
 #include "exceptions.hpp"
+#include "logger.hpp"
 
 #include <fstream>
 #include <algorithm>
@@ -56,7 +57,7 @@ void Tetrimino::init_clips ()
 }
 
 void Tetrimino::init (
-    TetriminoType type, Texture &blockTextureSheet, int posX, int posY,
+    int posX, int posY, int moveDelay, Texture &blockTextureSheet, TetriminoType type,
     TetriminoRotation rot
 )
 {
@@ -67,20 +68,22 @@ void Tetrimino::init (
     {
         for (int col = 0; col < MAX_SCHEME_LEN; ++col)
         {
-            if (schemes[type][0][row][col])
+            if (schemes[type][rot][row][col])
             {
                 ++totalBlocks;
                 blocks.push_back(new Block(&blockTextureSheet, &blockClips[type]));
             }
         }
     }
-    this->type = type;
     this->posX = posX;
     this->posY = posY;
+    this->moveDelay = moveDelay;
+    this->elapsed = 0;
+    this->type = type;
     this->rot = rot;
 }
 
-void Tetrimino::render(int x, int y, int s)
+void Tetrimino::render(int x, int y, int size)
 {
     int blocksRendered = 0;
     for (int row = 0; row < MAX_SCHEME_LEN; ++row)
@@ -90,9 +93,7 @@ void Tetrimino::render(int x, int y, int s)
             if ((*rotations)[rot][row][col])
             {
                 blocks[blocksRendered]->render(
-                    x + (posX + col + 1) * s,
-                    y + (-posY - MAX_SCHEME_LEN + row - 1) * s,
-                    s
+                    x + (posX + col) * size, y + (posY + row) * size, size
                 );
                 if (++blocksRendered == totalBlocks)
                 {
@@ -102,4 +103,63 @@ void Tetrimino::render(int x, int y, int s)
             }
         }
     }
+}
+
+bool Tetrimino::move (TetrisField &field, int dt)
+{
+    elapsed += dt;
+    if (elapsed >= moveDelay)
+    {
+        elapsed -= moveDelay;
+        if (check_collision(field))
+        {
+            stop(field);
+            return true;
+        }
+        ++posY;
+    }
+    return false;
+}
+
+bool Tetrimino::check_collision (TetrisField &field)
+{
+    for (int row = MAX_SCHEME_LEN - 1; row >= 0; --row)
+    {
+        for (int col = 0; col < MAX_SCHEME_LEN; ++col)
+        {
+            if ((*rotations)[rot][row][col])
+            {
+                if (posY + row + 1 == field.get_height())
+                {
+                    return true;
+                }
+                if (field.has_block(posX + col, posY + row + 1))
+                {
+                    return true;
+                }
+            }
+        }
+    }
+    return false;
+}
+
+void Tetrimino::stop (TetrisField &field)
+{
+    int blocksAdded = 0;
+    for (int row = 0; row < MAX_SCHEME_LEN; ++row)
+    {
+        for (int col = 0; col < MAX_SCHEME_LEN; ++col)
+        {
+            if ((*rotations)[rot][row][col])
+            {
+                field.add_block(posX + col, posY + row, blocks[blocksAdded]);
+                if (++blocksAdded == totalBlocks)
+                {
+                    row = MAX_SCHEME_LEN;
+                    break;
+                }
+            }
+        }
+    }
+    blocks.resize(0);
 }
