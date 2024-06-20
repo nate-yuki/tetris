@@ -10,7 +10,7 @@
 std::vector<std::vector<Scheme>> Tetrimino::schemes;
 std::vector<SDL_Rect> Tetrimino::blockClips;
 
-#include <iostream>
+
 void Tetrimino::load_schemes (const std::string &path)
 {
     std::ifstream fin(path);
@@ -56,11 +56,27 @@ void Tetrimino::init_clips ()
     }
 }
 
-void Tetrimino::init (
-    int posX, int posY, int moveDelay, Texture &blockTextureSheet, TetriminoType type,
-    TetriminoRotation rot
+void Tetrimino::init (TetrisField *field, Texture &blockTextureSheet)
+{
+    this->field = field;
+    this->blockTextureSheet = &blockTextureSheet;
+    totalBlocks = 0;
+}
+
+void Tetrimino::free ()
+{
+    for (Block *block: blocks)
+    {
+        delete block;
+    }
+}
+
+bool Tetrimino::spawn (
+    int posX, int posY, int fallDelay, TetriminoType type, TetriminoRotation rot
 )
 {
+    bool fit = true;
+
     rotations = &schemes[type];
 
     totalBlocks = 0;
@@ -70,21 +86,31 @@ void Tetrimino::init (
         {
             if (schemes[type][rot][row][col])
             {
+                if (field->has_block(posX + col, posY + row))
+                {
+                    fit = false;
+                }
                 ++totalBlocks;
-                blocks.push_back(new Block(&blockTextureSheet, &blockClips[type]));
+                blocks.push_back(new Block(blockTextureSheet, &blockClips[type]));
             }
         }
     }
     this->posX = posX;
     this->posY = posY;
-    this->moveDelay = moveDelay;
+    this->fallDelay = fallDelay;
     this->elapsed = 0;
     this->type = type;
     this->rot = rot;
+
+    return fit;
 }
 
-void Tetrimino::render(int x, int y, int size)
+void Tetrimino::render (int x, int y, int size)
 {
+    if (!totalBlocks)
+    {
+        return;
+    }
     int blocksRendered = 0;
     for (int row = 0; row < MAX_SCHEME_LEN; ++row)
     {
@@ -105,15 +131,19 @@ void Tetrimino::render(int x, int y, int size)
     }
 }
 
-bool Tetrimino::move (TetrisField &field, int dt)
+bool Tetrimino::fall (int dt)
 {
-    elapsed += dt;
-    if (elapsed >= moveDelay)
+    if (!totalBlocks)
     {
-        elapsed -= moveDelay;
-        if (check_collision(field))
+        return true;
+    }
+    elapsed += dt;
+    if (elapsed >= fallDelay)
+    {
+        elapsed -= fallDelay;
+        if (check_collision_bottom())
         {
-            stop(field);
+            stop();
             return true;
         }
         ++posY;
@@ -121,7 +151,7 @@ bool Tetrimino::move (TetrisField &field, int dt)
     return false;
 }
 
-bool Tetrimino::check_collision (TetrisField &field)
+bool Tetrimino::check_collision_bottom ()
 {
     for (int row = MAX_SCHEME_LEN - 1; row >= 0; --row)
     {
@@ -129,11 +159,11 @@ bool Tetrimino::check_collision (TetrisField &field)
         {
             if ((*rotations)[rot][row][col])
             {
-                if (posY + row + 1 == field.get_height())
+                if (posY + row + 1 == field->get_height())
                 {
                     return true;
                 }
-                if (field.has_block(posX + col, posY + row + 1))
+                if (field->has_block(posX + col, posY + row + 1))
                 {
                     return true;
                 }
@@ -143,7 +173,7 @@ bool Tetrimino::check_collision (TetrisField &field)
     return false;
 }
 
-void Tetrimino::stop (TetrisField &field)
+void Tetrimino::stop ()
 {
     int blocksAdded = 0;
     for (int row = 0; row < MAX_SCHEME_LEN; ++row)
@@ -152,7 +182,7 @@ void Tetrimino::stop (TetrisField &field)
         {
             if ((*rotations)[rot][row][col])
             {
-                field.add_block(posX + col, posY + row, blocks[blocksAdded]);
+                field->add_block(posX + col, posY + row, blocks[blocksAdded]);
                 if (++blocksAdded == totalBlocks)
                 {
                     row = MAX_SCHEME_LEN;
@@ -162,4 +192,5 @@ void Tetrimino::stop (TetrisField &field)
         }
     }
     blocks.resize(0);
+    totalBlocks = 0;
 }

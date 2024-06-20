@@ -6,6 +6,7 @@
 #include "texture.hpp"
 #include "util.hpp"
 
+#include <SDL2/SDL.h>
 #include <vector>
 #include <string>
 
@@ -38,24 +39,30 @@ public:
     static void load_schemes(const std::string &path);
     static void init_clips();
 
-    void init(
-        int posX, int posY, int moveDelay, Texture &blockTextureSheet,
+    void init(TetrisField *field, Texture &blockTextureSheet);
+
+    void free();
+
+    bool spawn(
+        int posX, int posY, int fallDelay,
         TetriminoType type, TetriminoRotation rot=TETRIMINO_ROTATION_0
     );
 
     void render(int x, int y, int size);
 
-    bool move(TetrisField &field, int dt);
+    bool fall(int dt);
 
 private:
-    bool check_collision(TetrisField &field);
-    void stop(TetrisField &field);
+    bool check_collision_bottom();
+    void stop();
 
+    Texture *blockTextureSheet;
+    TetrisField *field;
     TetriminoType type;
     TetriminoRotation rot;
     int totalBlocks;
     int posX, posY;
-    int moveDelay, elapsed;
+    int fallDelay, elapsed;
     std::vector<Block *> blocks;
     std::vector<Scheme> *rotations;
 };
