@@ -70,3 +70,34 @@ void TetrisField::add_block (int posX, int posY, Block *block)
 {
     field[posY][posX] = block;
 }
+
+int TetrisField::clear_lines ()
+{
+    int shift = 0;
+    for (int row = cellsVer - 1, col; row - shift >= 0; --row)
+    {
+        field[row] = field[row - shift];
+        for (col = 0; col < cellsHor; ++col)
+        {
+            if (field[row][col] == nullptr)
+            {
+                break;
+            }
+        }
+        if (col == cellsHor)
+        {
+            for (int col = 0; col < cellsHor; ++col)
+            {
+                delete field[row][col];
+            }
+            ++shift;
+            ++row;
+        }
+    }
+    for (int row = 0; row < shift; ++row)
+    {
+        field[row] = std::vector<Block *>(cellsHor, nullptr);
+    }
+
+    return shift;
+}

@@ -42,6 +42,7 @@ public:
     bool has_block(int posX, int posY) const;
     int get_height() const;
     void add_block(int posX, int posY, Block *block);
+    int clear_lines();
 
 private:
     Texture *bgTexture;
