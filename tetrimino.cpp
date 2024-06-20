@@ -95,10 +95,34 @@ bool Tetrimino::spawn (
             }
         }
     }
+    fallElapsed = sideElapsed = rotElapsed = 0;
+    sideVel = rotVel = 0;
+    
+    const Uint8* keys = SDL_GetKeyboardState(NULL);
+    if (keys[SDL_SCANCODE_RIGHT] || keys[SDL_SCANCODE_D])
+    {
+        sideVel += TETRIMINO_SIDE_SPEED;
+    }
+    if (keys[SDL_SCANCODE_LEFT] || keys[SDL_SCANCODE_A])
+    {
+        sideVel -= TETRIMINO_SIDE_SPEED;
+    }
+    if (keys[SDL_SCANCODE_DOWN] || keys[SDL_SCANCODE_S])
+    {
+        fallDelay /= 4;
+    }
+    if (keys[SDL_SCANCODE_Q])
+    {
+        rotVel += TETRIMINO_ROT_SPEED;
+    }
+    if (keys[SDL_SCANCODE_E])
+    {
+        rotVel -= TETRIMINO_ROT_SPEED;
+    }
+    
     this->posX = posX;
     this->posY = posY;
     this->fallDelay = fallDelay;
-    this->elapsed = 0;
     this->type = type;
     this->rot = rot;
 
@@ -131,22 +155,209 @@ void Tetrimino::render (int x, int y, int size)
     }
 }
 
+void Tetrimino::handle_event (Game &game, const SDL_Event &e)
+{
+    if (!totalBlocks)
+    {
+        return;
+    }
+    if (e.type == SDL_KEYDOWN && e.key.repeat == 0)
+    {
+        switch (e.key.keysym.sym)
+        {
+        case SDLK_RIGHT:
+        case SDLK_d:
+            shift(1);
+            sideVel += TETRIMINO_SIDE_SPEED;
+            break;
+        case SDLK_LEFT:
+        case SDLK_a:
+            shift(-1);
+            sideVel -= TETRIMINO_SIDE_SPEED;
+            break;
+        case SDLK_DOWN:
+        case SDLK_s:
+            fallDelay /= 4;
+            fallElapsed += fallDelay;
+            break;
+        case SDLK_UP:
+        case SDLK_w:
+        case SDLK_SPACE:
+            drop();
+            break;
+        case SDLK_q:
+            rotate(1);
+            rotVel += TETRIMINO_ROT_SPEED;
+            break;
+        case SDLK_e:
+            rotate(-1);
+            rotVel -= TETRIMINO_ROT_SPEED;
+            break;
+        }
+    }
+    else if (e.type == SDL_KEYUP && e.key.repeat == 0)
+    {
+        switch (e.key.keysym.sym)
+        {
+        case SDLK_RIGHT:
+        case SDLK_d:
+            sideVel -= TETRIMINO_SIDE_SPEED;
+            break;
+        case SDLK_LEFT:
+        case SDLK_a:
+            sideVel += TETRIMINO_SIDE_SPEED;
+            break;
+        case SDLK_DOWN:
+        case SDLK_s:
+            fallDelay *= 4;
+            break;
+        case SDLK_q:
+            rotVel -= TETRIMINO_ROT_SPEED;
+            break;
+        case SDLK_e:
+            rotVel += TETRIMINO_ROT_SPEED;
+            break;
+        }
+    }
+}
+
 bool Tetrimino::fall (int dt)
 {
     if (!totalBlocks)
     {
         return true;
     }
-    elapsed += dt;
-    if (elapsed >= fallDelay)
+    fallElapsed += dt;
+    if (fallElapsed >= fallDelay)
     {
-        elapsed -= fallDelay;
+        fallElapsed -= fallDelay;
         if (check_collision_bottom())
         {
             stop();
             return true;
         }
         ++posY;
+    }
+    return false;
+}
+
+void Tetrimino::move (int dt)
+{
+    if (!totalBlocks)
+    {
+        return;
+    }
+
+    if (sideElapsed * sideVel <= 0)
+    {
+        sideElapsed = sideVel * dt;
+    }
+    else
+    {
+        sideElapsed += sideVel * dt;
+    }
+    if (sideElapsed / 1000)
+    {
+        shift(sideElapsed / 1000);
+        sideElapsed -= 1000 * sideVel / abs(sideVel);
+    }
+
+    if (rotElapsed * rotVel <= 0)
+    {
+        rotElapsed = rotVel * dt;
+    }
+    else
+    {
+        rotElapsed += rotVel * dt;
+    }
+    if (rotElapsed / 1000)
+    {
+        rotate(rotElapsed / 1000);
+        rotElapsed -= 1000 * rotVel / abs(rotVel);
+    }
+}
+
+void Tetrimino::shift (int dx)
+{
+    posX += dx;
+    if (dx > 0 && check_collision_right() || dx < 0 && check_collision_left())
+    {
+        posX -= dx;
+    }
+}
+
+void Tetrimino::drop()
+{
+    while (!check_collision_bottom())
+    {
+        ++posY;
+    }
+    stop();
+}
+
+void Tetrimino::rotate (int dir)
+{
+    int newRot = (rot + dir + TETRIMINO_ROTATION_TOTAL) % TETRIMINO_ROTATION_TOTAL;
+    int col;
+    for (int row = 0; row < MAX_SCHEME_LEN; ++row)
+    {
+        for (col = 0; col < MAX_SCHEME_LEN; ++col)
+        {
+            if ((*rotations)[newRot][row][col])
+            {
+                if (
+                    posX + col < 0 || posX + col >= TETRIS_FIELD_WIDTH ||
+                    posY + row >= field->get_height() ||
+                    field->has_block(posX + col, posY + row)
+                )
+                {
+                    row = MAX_SCHEME_LEN;
+                    break;
+                }
+            }
+        }
+    }
+    if (col == MAX_SCHEME_LEN)
+    {
+        rot = TetriminoRotation(newRot);
+    }
+}
+
+bool Tetrimino::check_collision_left ()
+{
+    for (int col = 0; col < MAX_SCHEME_LEN; ++col)
+    {
+        for (int row = 0; row < MAX_SCHEME_LEN; ++row)
+        {
+            if ((*rotations)[rot][row][col])
+            {
+                if (posX + col < 0 || field->has_block(posX + col, posY + row))
+                {
+                    return true;
+                }
+            }
+        }
+    }
+    return false;
+}
+
+bool Tetrimino::check_collision_right ()
+{
+    for (int col = MAX_SCHEME_LEN - 1; col >= 0; --col)
+    {
+        for (int row = 0; row < MAX_SCHEME_LEN; ++row)
+        {
+            if ((*rotations)[rot][row][col])
+            {
+                if (
+                    posX + col >= TETRIS_FIELD_WIDTH ||
+                    field->has_block(posX + col, posY + row)
+                )
+                {
+                    return true;
+                }
+            }
+        }
     }
     return false;
 }
@@ -159,11 +370,10 @@ bool Tetrimino::check_collision_bottom ()
         {
             if ((*rotations)[rot][row][col])
             {
-                if (posY + row + 1 == field->get_height())
-                {
-                    return true;
-                }
-                if (field->has_block(posX + col, posY + row + 1))
+                if (
+                    posY + row + 1 >= field->get_height() ||
+                    field->has_block(posX + col, posY + row + 1)
+                )
                 {
                     return true;
                 }

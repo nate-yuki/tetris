@@ -14,6 +14,9 @@
 class Tetrimino
 {
 public:
+    static constexpr int TETRIMINO_SIDE_SPEED = 8;
+    static constexpr int TETRIMINO_ROT_SPEED = 4;
+
     enum TetriminoType {
         TETRIMINO_I,
         TETRIMINO_T,
@@ -49,10 +52,17 @@ public:
     );
 
     void render(int x, int y, int size);
+    void handle_event(Game &game, const SDL_Event &e);
 
     bool fall(int dt);
+    void move(int dt);
 
 private:
+    void shift(int dx);
+    void drop();
+    void rotate(int dir);
+    bool check_collision_left();
+    bool check_collision_right();
     bool check_collision_bottom();
     void stop();
 
@@ -62,7 +72,9 @@ private:
     TetriminoRotation rot;
     int totalBlocks;
     int posX, posY;
-    int fallDelay, elapsed;
+    int fallDelay, fallElapsed;
+    int sideVel, sideElapsed;
+    int rotVel, rotElapsed;
     std::vector<Block *> blocks;
     std::vector<Scheme> *rotations;
 };
