@@ -35,8 +35,8 @@ clean:
 	rm -f *.o all
 
 tetris.exe: main.o game.o util.o states.o window.o renderer.o font.o texture.o \
-shapes.o text.o textbox.o timer.o menu.o tetris_field.o tetrimino.o exceptions.o \
-logger.o
+particles.o shapes.o text.o textbox.o timer.o menu.o tetris_field.o tetrimino.o \
+exceptions.o logger.o
 main.o: main.cpp game.hpp exceptions.hpp logger.hpp
 game.o: game.cpp game.hpp window.hpp renderer.hpp texture.hpp shapes.hpp states.hpp \
 constants.hpp exceptions.hpp logger.hpp
@@ -48,6 +48,7 @@ renderer.o: renderer.cpp renderer.hpp window.hpp util.hpp exceptions.hpp logger.
 font.o: font.cpp font.hpp util.hpp exceptions.hpp
 texture.o: texture.cpp texture.hpp renderer.hpp font.hpp util.hpp exceptions.hpp \
 logger.hpp
+particles.o: particles.cpp particles.hpp texture.hpp util.hpp constants.hpp
 shapes.o: shapes.cpp shapes.hpp renderer.hpp util.hpp logger.hpp
 text.o: text.cpp text.hpp texture.hpp
 textbox.o: textbox.cpp textbox.hpp texture.hpp shapes.hpp text.hpp logger.hpp

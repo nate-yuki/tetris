@@ -4,6 +4,7 @@
  */
 
 #include "game.hpp"
+#include "particles.hpp"
 #include "constants.hpp"
 #include "exceptions.hpp"
 #include "logger.hpp"
@@ -34,6 +35,9 @@ void Game::init ()
     {
         throw ExceptionSDL(__FILE__, __LINE__, TTF_GetError());
     }
+
+    // Initialize particles
+    Particle::init_clips();
 
     // Initialize class members
     window.init();
