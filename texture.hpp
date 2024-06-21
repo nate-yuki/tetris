@@ -79,10 +79,9 @@ public:
     /**
      * @brief Render a `clip` from the texture to `renderQuad` with possible
      *     stretching.
-     * @param x Upper left corner x coordinate.
-     * @param y Upper left corner y coordinate.
-     * @param renderQuad Portion of the current scene to render to;
-     *     NULL to render to the entire scene.
+     * @param renderQuad Portion of the current scene to render to.
+     * @param clip Portion of the texture to render; `NULL` to render the entire
+     *     texture.
      * @param angle Angle in degrees to rotate the texture.
      * @param center Point to rotate around;
      *     `NULL` to rotate around the texture center.
