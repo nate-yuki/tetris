@@ -3,11 +3,14 @@
 
 
 #include "texture.hpp"
+#include "tetrimino.hpp"
 
 #include <SDL2/SDL.h>
 #include <list>
 #include <vector>
 
+
+class Tetrimino;
 
 /// A tetrimino block class.
 class Block
@@ -36,16 +39,16 @@ private:
 class TetrisField
 {
 public:
-    void init(int cellsHor, int cellsVer, Texture *bgTexture);
+    void init(int cellsHor, int cellsVer, Texture *bgTexture, Texture *frameTexture);
     void free();
-    void render(int x, int y, int maxW, int maxH);
+    void render(int x, int y, int w, int h, Tetrimino &tetrimino);
     bool has_block(int posX, int posY) const;
     int get_height() const;
     void add_block(int posX, int posY, Block *block);
     int clear_lines();
 
 private:
-    Texture *bgTexture;
+    Texture *bgTexture, *frameTexture;
     std::vector<std::vector<Block *>> field;
     int cellsHor, cellsVer;
 };

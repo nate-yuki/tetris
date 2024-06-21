@@ -11,6 +11,9 @@
 #include <string>
 
 
+class Block;
+class TetrisField;
+
 class Tetrimino
 {
 public:

@@ -13,7 +13,9 @@ void Block::render (int x, int y, int size)
 }
 
 
-void TetrisField::init (int cellsHor, int cellsVer, Texture *bgTexture)
+void TetrisField::init (
+    int cellsHor, int cellsVer, Texture *bgTexture, Texture *frameTexture
+)
 {
     field = std::vector<std::vector<Block *>>(
         cellsVer, std::vector<Block *>(cellsHor, nullptr)
@@ -21,9 +23,10 @@ void TetrisField::init (int cellsHor, int cellsVer, Texture *bgTexture)
     this->cellsHor = cellsHor;
     this->cellsVer = cellsVer;
     this->bgTexture = bgTexture;
+    this->frameTexture = frameTexture;
 }
 
-void TetrisField::free ()
+void TetrisField::free()
 {
     for (int row = 0; row < cellsVer; ++row)
     {
@@ -37,23 +40,34 @@ void TetrisField::free ()
     }
 }
 
-void TetrisField::render (int x, int y, int maxW, int maxH)
+void TetrisField::render (int x, int y, int w, int h, Tetrimino &tetrimino)
 {
-    int size = min(maxW / cellsHor, maxH / cellsVer);
+    frameTexture->render({x, y, w, h});
+
+    int size = min(w / cellsHor, h / cellsVer);
+    int fieldX = x + (w - size * cellsHor) / 2;
+    int fieldY = y + (h - size * cellsVer) / 2;
+
     for (int row = 0; row < cellsVer; ++row)
     {
         for (int col = 0; col < cellsHor; ++col)
         {
             if (field[row][col] != nullptr)
             {
-                field[row][col]->render(x + col * size, y + row * size, size);
+                field[row][col]->render(
+                    fieldX + col * size, fieldY + row * size, size
+                );
             }
             else
             {
-                bgTexture->render({x + col * size, y + row * size, size, size});
+                bgTexture->render(
+                    {fieldX + col * size, fieldY + row * size, size, size}
+                );
             }
         }
     }
+
+    tetrimino.render(fieldX, fieldY, size);
 }
 
 bool TetrisField::has_block (int posX, int posY) const

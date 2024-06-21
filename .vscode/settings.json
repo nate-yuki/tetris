@@ -42,6 +42,8 @@
         "xlocale": "cpp",
         "xlocinfo": "cpp",
         "xlocnum": "cpp",
-        "xstddef": "cpp"
+        "xstddef": "cpp",
+        "set": "cpp",
+        "xtree": "cpp"
     }
 }
