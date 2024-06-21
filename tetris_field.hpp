@@ -32,25 +32,31 @@ public:
     void render(int x, int y, int size);
 
 private:
-    Texture *texture;
+    Texture *blockTextureSheet;
     const SDL_Rect *clip;
 };
 
 class TetrisField
 {
 public:
-    void init(int cellsHor, int cellsVer, Texture *bgTexture, Texture *frameTexture);
+    void init(
+        int cellsHor, int cellsVer,
+        Texture *bgTexture, Texture *frameTexture, Texture *clearTexture
+    );
     void free();
-    void render(int x, int y, int w, int h, Tetrimino &tetrimino);
+    void render(
+        int x, int y, int w, int h, Tetrimino &tetrimino, bool stopClearLineRender
+    );
     bool has_block(int posX, int posY) const;
     int get_height() const;
     void add_block(int posX, int posY, Block *block);
     int clear_lines();
 
 private:
-    Texture *bgTexture, *frameTexture;
+    Texture *bgTexture, *frameTexture, *clearTexture;
     std::vector<std::vector<Block *>> field;
     int cellsHor, cellsVer;
+    std::vector<int> clearedLines;
 };
 
 

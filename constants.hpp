@@ -26,8 +26,11 @@ constexpr int MAX_BLOCK_SIZE = 100;
 /// Maximum scheme length.
 constexpr int MAX_SCHEME_LEN = 4;
 
-/// Tetris field dimentions
+/// Tetris field dimentions.
 constexpr int TETRIS_FIELD_WIDTH = 10, TETRIS_FIELD_HIGHT = 20;
+
+/// Time to keep rendering cleared lines for.
+constexpr int CLEAR_LINE_RENDER_TIME = 150;
 
 
 #endif
