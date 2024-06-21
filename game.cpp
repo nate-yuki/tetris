@@ -111,9 +111,9 @@ void Game::render ()
     }
 }
 
-void Game::close ()
+void Game::free ()
 {
-    log("Closing Game", __FILE__, __LINE__);
+    log("Freeing Game", __FILE__, __LINE__);
 
     if (nextState != nullptr) // If a crash happed during entering next state
     {

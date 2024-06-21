@@ -59,7 +59,7 @@ public:
     void render();
 
     /// Free SDL libraries and class members.
-    void close();
+    void free();
 
     /// `true` if `currState` is `GameOverState`.
     bool is_over() const;

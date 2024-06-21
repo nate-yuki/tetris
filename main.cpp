@@ -40,7 +40,7 @@ int main (int argc, char *argv[])
         exitCode = -1;
     }
 
-    game.close();
+    game.free();
     Logger::get()->flush();
     Logger::get()->free();
     
