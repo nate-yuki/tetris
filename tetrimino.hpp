@@ -17,9 +17,6 @@ class TetrisField;
 class Tetrimino
 {
 public:
-    static constexpr int TETRIMINO_SIDE_SPEED = 8;
-    static constexpr int TETRIMINO_ROT_SPEED = 4;
-
     enum TetriminoType {
         TETRIMINO_I,
         TETRIMINO_T,
@@ -39,9 +36,6 @@ public:
         TETRIMINO_ROTATION_TOTAL,
     };
 
-    static std::vector<std::vector<Scheme>> schemes;
-    static std::vector<SDL_Rect> blockClips;
-
     static void load_schemes(const std::string &path);
     static void init_clips();
 
@@ -50,8 +44,8 @@ public:
     void free();
 
     bool spawn(
-        int posX, int posY, int fallDelay,
-        TetriminoType type, TetriminoRotation rot=TETRIMINO_ROTATION_0
+        int posX, int posY, int fallDelay, TetriminoType type,
+        TetriminoRotation rot=TETRIMINO_ROTATION_0, bool ghost=false
     );
 
     void render(int x, int y, int size);
@@ -61,6 +55,12 @@ public:
     void move(int dt);
 
 private:
+    static constexpr int TETRIMINO_SIDE_SPEED = 7;
+    static constexpr int TETRIMINO_ROT_SPEED = 4;
+    
+    static std::vector<std::vector<Scheme>> schemes;
+    static std::vector<SDL_Rect> blockClips;
+
     void shift(int dx);
     void drop();
     void rotate(int dir);

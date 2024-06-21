@@ -48,7 +48,7 @@ void Tetrimino::load_schemes (const std::string &path)
 
 void Tetrimino::init_clips ()
 {
-    for (int type = 0; type < TETRIMINO_TOTAL; ++type)
+    for (int type = 0; type < TETRIMINO_TOTAL + 1; ++type)
     {
         blockClips.push_back(
             {type * MAX_BLOCK_SIZE, 0, MAX_BLOCK_SIZE, MAX_BLOCK_SIZE}
@@ -58,6 +58,8 @@ void Tetrimino::init_clips ()
 
 void Tetrimino::init (TetrisField *field, Texture &blockTextureSheet)
 {
+    log("Initializing Tetrimino", __FILE__, __LINE__);
+
     this->field = field;
     this->blockTextureSheet = &blockTextureSheet;
     totalBlocks = 0;
@@ -65,6 +67,8 @@ void Tetrimino::init (TetrisField *field, Texture &blockTextureSheet)
 
 void Tetrimino::free ()
 {
+    log("Freeing Tetrimino", __FILE__, __LINE__);
+    
     for (Block *block: blocks)
     {
         delete block;
@@ -72,7 +76,8 @@ void Tetrimino::free ()
 }
 
 bool Tetrimino::spawn (
-    int posX, int posY, int fallDelay, TetriminoType type, TetriminoRotation rot
+    int posX, int posY, int fallDelay, TetriminoType type, TetriminoRotation rot,
+    bool ghost
 )
 {
     bool fit = true;
@@ -91,7 +96,10 @@ bool Tetrimino::spawn (
                     fit = false;
                 }
                 ++totalBlocks;
-                blocks.push_back(new Block(blockTextureSheet, &blockClips[type]));
+                
+                SDL_Rect *clip =
+                    ghost ? &blockClips[TETRIMINO_TOTAL] : &blockClips[type];
+                blocks.push_back(new Block(blockTextureSheet, clip));
             }
         }
     }
@@ -109,7 +117,7 @@ bool Tetrimino::spawn (
     }
     if (keys[SDL_SCANCODE_DOWN] || keys[SDL_SCANCODE_S])
     {
-        fallDelay /= 4;
+        fallDelay /= 8;
     }
     if (keys[SDL_SCANCODE_Q])
     {
@@ -153,6 +161,14 @@ void Tetrimino::render (int x, int y, int size)
             }
         }
     }
+    if (!check_collision_bottom())
+    {
+        Tetrimino ghost;
+        ghost.init(field, *blockTextureSheet);
+        ghost.spawn(posX, posY, -1, type, rot, true);
+        ghost.drop();
+        ghost.render(x, y, size);
+    }
 }
 
 void Tetrimino::handle_event (Game &game, const SDL_Event &e)
@@ -177,13 +193,14 @@ void Tetrimino::handle_event (Game &game, const SDL_Event &e)
             break;
         case SDLK_DOWN:
         case SDLK_s:
-            fallDelay /= 4;
+            fallDelay /= 8;
             fallElapsed += fallDelay;
             break;
         case SDLK_UP:
         case SDLK_w:
         case SDLK_SPACE:
             drop();
+            stop();
             break;
         case SDLK_q:
             rotate(1);
@@ -209,7 +226,7 @@ void Tetrimino::handle_event (Game &game, const SDL_Event &e)
             break;
         case SDLK_DOWN:
         case SDLK_s:
-            fallDelay *= 4;
+            fallDelay *= 8;
             break;
         case SDLK_q:
             rotVel -= TETRIMINO_ROT_SPEED;
@@ -292,7 +309,6 @@ void Tetrimino::drop()
     {
         ++posY;
     }
-    stop();
 }
 
 void Tetrimino::rotate (int dir)
