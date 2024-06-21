@@ -148,9 +148,11 @@ void Game::set_next_state (GameState *state)
     }
 }
 
-void Game::load_texture_from_file (Texture &texture, const std::string &path)
+void Game::load_texture_from_file (
+    Texture &texture, const std::string &path, const Color *keyColor
+)
 {
-    texture.load_from_file(renderer, path);
+    texture.load_from_file(renderer, path, keyColor);
 }
 
 void Game::create_text(

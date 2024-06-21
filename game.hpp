@@ -71,8 +71,11 @@ public:
      * @brief Load `texture` from the image stored in `path`.
      * @param[out] texture `Texture` object to initialize.
      * @param[in] path Image path.
+     * @param[in] keyColor The transparent pixel; `nullptr` to not use color keying.
      */
-    void load_texture_from_file(Texture &texture, const std::string &path);
+    void load_texture_from_file(
+        Texture &texture, const std::string &path, const Color *keyColor=nullptr
+    );
 
     /**
      * @brief Initialize `text`.
