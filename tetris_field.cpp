@@ -15,7 +15,8 @@ void Block::render (int x, int y, int size)
 
 void TetrisField::init (
     int cellsHor, int cellsVer,
-    Texture *bgTexture, Texture *frameTexture, Texture *clearTexture
+    Texture *bgTexture, Texture *frameTexture, Texture *clearTexture,
+    Texture *particleTextureSheet
 )
 {
     log("Initializing TetrisField", __FILE__, __LINE__);
@@ -30,6 +31,7 @@ void TetrisField::init (
     this->bgTexture = bgTexture;
     this->frameTexture = frameTexture;
     this->clearTexture = clearTexture;
+    this->particleTextureSheet = particleTextureSheet;
 }
 
 void TetrisField::free()
@@ -61,35 +63,66 @@ void TetrisField::render (
     int shift = 0;
     for (int row = cellsVer - 1; row - shift >= 0; --row)
     {
-        if (clearedLines[shift] == row)
+        if (clearedLines[shift] == row - shift)
         {
             clearTexture->render(
-                {fieldX, fieldY + row * size, size * cellsHor, size}
+                {fieldX, fieldY + (row - shift) * size, size * cellsHor, size}
             );
             ++shift;
+            ++row;
+
+            if (clearLineParticlers.size() < shift)
+            {
+                clearLineParticlers.push_back(new ParticleEmmiter(
+                    CLEAR_LINE_PARTICLES_MAX, CLEAR_LINE_PARTICLE_LIFESPAN,
+                    CLEAR_LINE_PARTICLE_SHIFT_MAX, particleTextureSheet
+                ));
+            }
         }
-        for (int col = 0; col < cellsHor; ++col)
+        else
         {
-            if (field[row][col] != nullptr)
+            for (int col = 0; col < cellsHor; ++col)
             {
-                field[row][col]->render(
-                    fieldX + col * size, fieldY + (row - shift) * size, size
-                );
-            }
-            else
-            {
-                bgTexture->render(
-                    {fieldX + col * size, fieldY + (row - shift) * size, size, size}
-                );
+                if (field[row][col] != nullptr)
+                {
+                    field[row][col]->render(
+                        fieldX + col * size, fieldY + (row - shift) * size, size
+                    );
+                }
+                else
+                {
+                    bgTexture->render(
+                        {
+                            fieldX + col * size, fieldY + (row - shift) * size,
+                            size, size
+                        }
+                    );
+                }
             }
         }
-    }
-    if (stopClearLineRender)
-    {
-        clearedLines = {-1};
     }
 
     tetrimino.render(fieldX, fieldY, size);
+
+    if (stopClearLineRender)
+    {
+        clearedLines = {-1};
+        for (ParticleEmmiter *&particler : clearLineParticlers)
+        {
+            delete particler;
+        }
+        clearLineParticlers.resize(0);
+    }
+    else
+    {
+        for (int i = 0; i < clearLineParticlers.size(); ++i)
+        {
+            clearLineParticlers[i]->render(
+                fieldX, fieldY + clearedLines[i] * size, size * cellsHor, size, 
+                size / 4
+            );
+        }
+    }
 }
 
 bool TetrisField::has_block (int posX, int posY) const

@@ -35,5 +35,9 @@ constexpr int TETRIS_FIELD_WIDTH = 10, TETRIS_FIELD_HIGHT = 20;
 /// Time to keep rendering cleared lines for.
 constexpr int CLEAR_LINE_RENDER_TIME = 150;
 
+constexpr int CLEAR_LINE_PARTICLES_MAX = (TETRIS_FIELD_WIDTH + 1) * 2;
+constexpr int CLEAR_LINE_PARTICLE_LIFESPAN = CLEAR_LINE_RENDER_TIME / 4;
+constexpr int CLEAR_LINE_PARTICLE_SHIFT_MAX = 10;
+
 
 #endif

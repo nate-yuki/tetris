@@ -4,6 +4,7 @@
 
 #include "texture.hpp"
 #include "tetrimino.hpp"
+#include "particles.hpp"
 
 #include <SDL2/SDL.h>
 #include <list>
@@ -41,7 +42,8 @@ class TetrisField
 public:
     void init(
         int cellsHor, int cellsVer,
-        Texture *bgTexture, Texture *frameTexture, Texture *clearTexture
+        Texture *bgTexture, Texture *frameTexture, Texture *clearTexture,
+        Texture *particleTextureSheet
     );
     void free();
     void render(
@@ -53,7 +55,8 @@ public:
     int clear_lines();
 
 private:
-    Texture *bgTexture, *frameTexture, *clearTexture;
+    Texture *bgTexture, *frameTexture, *clearTexture, *particleTextureSheet;
+    std::vector<ParticleEmmiter *> clearLineParticlers;
     std::vector<std::vector<Block *>> field;
     int cellsHor, cellsVer;
     std::vector<int> clearedLines;
