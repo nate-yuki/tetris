@@ -39,7 +39,7 @@ public:
     static void load_schemes(const std::string &path);
     static void init_clips();
 
-    void init(TetrisField *field, Texture &blockTextureSheet);
+    void init(TetrisField *field, Texture *blockTextureSheet);
 
     void free();
 

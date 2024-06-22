@@ -56,12 +56,10 @@ void Tetrimino::init_clips ()
     }
 }
 
-void Tetrimino::init (TetrisField *field, Texture &blockTextureSheet)
+void Tetrimino::init (TetrisField *field, Texture *blockTextureSheet)
 {
-    log("Initializing Tetrimino", __FILE__, __LINE__);
-
     this->field = field;
-    this->blockTextureSheet = &blockTextureSheet;
+    this->blockTextureSheet = blockTextureSheet;
     totalBlocks = 0;
 }
 
@@ -164,7 +162,7 @@ void Tetrimino::render (int x, int y, int size)
     if (!check_collision_bottom())
     {
         Tetrimino ghost;
-        ghost.init(field, *blockTextureSheet);
+        ghost.init(field, blockTextureSheet);
         ghost.spawn(posX, posY, -1, type, rot, true);
         ghost.drop();
         ghost.render(x, y, size);

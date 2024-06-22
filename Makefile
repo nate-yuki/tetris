@@ -36,13 +36,13 @@ clean:
 
 tetris.exe: main.o game.o util.o states.o window.o renderer.o font.o texture.o \
 particles.o shapes.o text.o textbox.o timer.o menu.o tetris_field.o tetrimino.o \
-exceptions.o logger.o
+tetris_layout.o exceptions.o logger.o
 main.o: main.cpp game.hpp exceptions.hpp logger.hpp
 game.o: game.cpp game.hpp window.hpp renderer.hpp texture.hpp shapes.hpp states.hpp \
 constants.hpp exceptions.hpp logger.hpp
 util.o: util.cpp util.hpp
 states.o: states.cpp states.hpp game.hpp texture.hpp timer.hpp menu.hpp \
-constants.hpp logger.hpp
+tetris_layout.hpp util.hpp constants.hpp logger.hpp
 window.o: window.cpp window.hpp constants.hpp exceptions.hpp logger.hpp
 renderer.o: renderer.cpp renderer.hpp window.hpp util.hpp exceptions.hpp logger.hpp
 font.o: font.cpp font.hpp util.hpp exceptions.hpp
@@ -58,3 +58,5 @@ tetris_field.o: tetris_field.cpp tetris_field.hpp texture.hpp
 tetrimino.o: tetrimino.cpp tetrimino.hpp tetris_field.hpp texture.hpp
 exceptions.o: exceptions.cpp exceptions.hpp
 logger.o: logger.cpp logger.hpp
+tetris_layout.o: tetris_layout.cpp tetris_layout.hpp tetris_field.hpp tetrimino.hpp \
+texture.hpp timer.hpp

@@ -12,7 +12,7 @@
 #include "text.hpp"
 #include "timer.hpp"
 #include "menu.hpp"
-#include "tetrimino.hpp"
+#include "tetris_layout.hpp"
 
 #include <SDL2/SDL.h>
 
@@ -82,8 +82,8 @@ public:
 
     void enter(Game *game);
     void exit();
+    
     void handle_event(Game &game, const SDL_Event &e);
-
     void do_logic();
     void render();
 
@@ -95,8 +95,11 @@ private:
     TetrisState();
 
     Game *game;
-    Texture bgTexture;
-    Texture blockTextureSheet;
+    Texture bgTexture, blockTextureSheet;
+    Texture fieldBgTexture, fieldFrameTexture, fieldClearTexture;
+    Texture fieldClearParticleTextureSheet;
+    TetrisLayout tetris;
+    Timer tetriminoTimer, clearLineTimer, gameOverTimer;
 };
 
 /// A utility state used only to indicate the game over.

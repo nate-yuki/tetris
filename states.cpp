@@ -4,6 +4,7 @@
  */
 
 #include "states.hpp"
+#include "util.hpp"
 #include "constants.hpp"
 #include "logger.hpp"
 
@@ -87,11 +88,24 @@ void TetrisState::enter (Game *game)
 
     this->game = game;
     
+    Color keyColor = {0, 255, 255};
     game->load_texture_from_file(bgTexture, "textures/bg.png");
-    game->load_texture_from_file(blockTextureSheet, "textures/blocks.png");
+    game->load_texture_from_file(blockTextureSheet, "textures/blocks.png", &keyColor);
+    game->load_texture_from_file(fieldBgTexture, "textures/field_bg.png");
+    game->load_texture_from_file(fieldFrameTexture, "textures/field_frame.png");
+    game->load_texture_from_file(fieldClearTexture, "textures/field_clear.png");
+    game->load_texture_from_file(
+        fieldClearParticleTextureSheet, "textures/field_particles.png", &keyColor
+    );
 
-    Tetrimino::load_schemes("schemes.txt");
-    Tetrimino::init_clips();
+    tetris.init(
+        TETRIS_FIELD_WIDTH, TETRIS_FIELD_HIGHT,
+        &tetriminoTimer, &clearLineTimer, &gameOverTimer,
+        &bgTexture, &blockTextureSheet,
+        &fieldBgTexture, &fieldFrameTexture, &fieldClearTexture,
+        &fieldClearParticleTextureSheet
+    );
+    tetriminoTimer.start();
 }
 
 void TetrisState::exit ()
@@ -100,6 +114,11 @@ void TetrisState::exit ()
 
     bgTexture.free();
     blockTextureSheet.free();
+    fieldBgTexture.free();
+    fieldFrameTexture.free();
+    fieldClearTexture.free();
+
+    tetris.free();
 }
 
 void TetrisState::handle_event (Game &game, const SDL_Event &e)
@@ -108,20 +127,42 @@ void TetrisState::handle_event (Game &game, const SDL_Event &e)
     {
         game.set_next_state(GameOverState::get());
     }
+    tetris.handle_event(game, e);
 }
 
-void TetrisState::do_logic () {}
+void TetrisState::do_logic ()
+{
+    if (tetris.game_over())
+    {
+        if (gameOverTimer.get_elapsed() >= 1500)
+        {
+            game->set_next_state(GameOverState::get());
+        }
+    }
+    else
+    {
+        tetris.do_logic();
+    }
+}
 
 void TetrisState::render ()
 {
-    bgTexture.render(
-        (game->get_renderer_width() - bgTexture.get_width()) / 2,
-        (game->get_renderer_height() - bgTexture.get_height()) / 2
-    );
+    tetris.render(0, 0, game->get_renderer_width(), game->get_renderer_height());
 }
 
-void TetrisState::pause_timers () {}
-void TetrisState::unpause_timers () {}
+void TetrisState::pause_timers ()
+{
+    tetriminoTimer.pause();
+    clearLineTimer.pause();
+    gameOverTimer.pause();
+}
+
+void TetrisState::unpause_timers ()
+{
+    tetriminoTimer.unpause();
+    clearLineTimer.unpause();
+    gameOverTimer.unpause();
+}
 
 
 GameOverState::GameOverState () {}
