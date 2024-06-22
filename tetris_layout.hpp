@@ -8,6 +8,7 @@
 #include "timer.hpp"
 
 #include <SDL2/SDL.h>
+#include <deque>
 
 
 class TetrisLayout
@@ -35,6 +36,8 @@ private:
     TetrisField field;
     Tetrimino tetrimino;
 
+    std::deque<TetriminoConfig> tetriminoQueue;
+    TetriminoConfig *tetriminoSwap;
     int tetriminoFallDelay;
     int gameOver;
 };

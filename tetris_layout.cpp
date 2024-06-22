@@ -21,6 +21,12 @@ void TetrisLayout::init (
     Tetrimino::init_clips();
     tetrimino.init(&field, blockTextureSheet);
 
+    for (int i = 0; i < TETRIMINO_QUEUE_LEN; ++i)
+    {
+        tetriminoQueue.push_back(TetriminoConfig());
+    }
+    tetriminoSwap = nullptr;
+
     tetriminoFallDelay = TETRIMINO_INITIAL_FALL_DELAY;
 
     gameOver = false;
@@ -55,17 +61,19 @@ void TetrisLayout::do_logic ()
         {
             clearLineTimer->start();
         }
+
         bool tetriminoFit = tetrimino.spawn(
             (TETRIS_FIELD_WIDTH - MAX_SCHEME_LEN) / 2, 0, tetriminoFallDelay,
-            //Tetrimino::TETRIMINO_I,
-            Tetrimino::TetriminoType(rand() % Tetrimino::TETRIMINO_TOTAL),
-            Tetrimino::TetriminoRotation(rand() % Tetrimino::TETRIMINO_ROTATION_TOTAL)
+            tetriminoQueue.front()
         );
         if (!tetriminoFit)
         {
             gameOverTimer->start();
             gameOver = true;
         }
+        tetriminoQueue.pop_front();
+        tetriminoQueue.push_back(TetriminoConfig());
+
         if (--tetriminoFallDelay < TETRIMINO_MIN_FALL_DELAY)
         {
             tetriminoFallDelay = TETRIMINO_MIN_FALL_DELAY;
@@ -85,6 +93,18 @@ void TetrisLayout::render (int x, int y, int w, int h)
         x + w / 3, y + h / 8, w / 3, 3 * h / 4,
         tetrimino, clearLineTimer->get_elapsed() >= CLEAR_LINE_RENDER_TIME
     );
+
+    int blockSize = min(w / TETRIS_FIELD_WIDTH, h / TETRIS_FIELD_HEIGHT);
+    for (int i = 0; i < tetriminoQueue.size(); ++i)
+    {
+        Tetrimino::render_config(
+            tetriminoQueue[i],
+            x + 2 * w / 3 + blockSize,
+            y + h / 8 + i * (MAX_SCHEME_LEN + 1) * blockSize / 2,
+            blockSize / 2,
+            blockTextureSheet
+        );
+    }
 }
 
 bool TetrisLayout::game_over () const

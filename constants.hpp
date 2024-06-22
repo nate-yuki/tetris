@@ -30,13 +30,19 @@ constexpr int MAX_BLOCK_SIZE = 100;
 constexpr int MAX_SCHEME_LEN = 4;
 
 /// Tetris field dimentions.
-constexpr int TETRIS_FIELD_WIDTH = 10, TETRIS_FIELD_HIGHT = 20;
+constexpr int TETRIS_FIELD_WIDTH = 10, TETRIS_FIELD_HEIGHT = 20;
 
 /// Initial tetrimino fall delay.
 constexpr int TETRIMINO_INITIAL_FALL_DELAY = 1000;
 
 /// Minimum tetrimino fall delay.
 constexpr int TETRIMINO_MIN_FALL_DELAY = 10;
+
+/// Number to decrease tetrimino fall delay by on acceleration.
+constexpr int TETRIMINO_DROP_ACC = 16;
+
+/// Amount of pending tetriminos to show.
+constexpr int TETRIMINO_QUEUE_LEN = 8;
 
 /// Time to keep rendering cleared lines for.
 constexpr int CLEAR_LINE_RENDER_TIME = 160;

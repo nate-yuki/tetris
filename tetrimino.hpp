@@ -11,6 +11,8 @@
 #include <string>
 
 
+struct TetriminoConfig;
+
 class Block;
 class TetrisField;
 
@@ -38,14 +40,18 @@ public:
 
     static void load_schemes(const std::string &path);
     static void init_clips();
+    static void render_config(
+        const TetriminoConfig &config, int x, int y, int size,
+        Texture *blockTextureSheet
+    );
 
     void init(TetrisField *field, Texture *blockTextureSheet);
 
     void free();
 
     bool spawn(
-        int posX, int posY, int fallDelay, TetriminoType type,
-        TetriminoRotation rot=TETRIMINO_ROTATION_0, bool ghost=false
+        int posX, int posY, int fallDelay, const TetriminoConfig &config,
+        bool ghost=false
     );
 
     void render(int x, int y, int size);
@@ -80,6 +86,15 @@ private:
     int rotVel, rotElapsed;
     std::vector<Block *> blocks;
     std::vector<Scheme> *rotations;
+};
+
+struct TetriminoConfig
+{
+    TetriminoConfig();
+    TetriminoConfig(Tetrimino::TetriminoType type, Tetrimino::TetriminoRotation rot);
+    
+    Tetrimino::TetriminoType type;
+    Tetrimino::TetriminoRotation rot;
 };
 
 

@@ -7,6 +7,19 @@
 #include <algorithm>
 
 
+TetriminoConfig::TetriminoConfig ()
+    : type(Tetrimino::TetriminoType(rand() % Tetrimino::TETRIMINO_TOTAL))
+    , rot(Tetrimino::TetriminoRotation(rand() % Tetrimino::TETRIMINO_ROTATION_TOTAL))
+{}
+
+TetriminoConfig::TetriminoConfig(
+    Tetrimino::TetriminoType type, Tetrimino::TetriminoRotation rot
+)
+    : type(type)
+    , rot(rot)
+{}
+
+
 std::vector<std::vector<Scheme>> Tetrimino::schemes;
 std::vector<SDL_Rect> Tetrimino::blockClips;
 
@@ -56,6 +69,24 @@ void Tetrimino::init_clips ()
     }
 }
 
+void Tetrimino::render_config (
+    const TetriminoConfig &config, int x, int y, int size, Texture *blockTextureSheet
+)
+{
+    for (int row = 0; row < MAX_SCHEME_LEN; ++row)
+    {
+        for (int col = 0; col < MAX_SCHEME_LEN; ++col)
+        {
+            if (schemes[config.type][config.rot][row][col])
+            {
+                Block(blockTextureSheet, &blockClips[config.type]).render(
+                    x + col * size, y + row * size, size
+                );
+            }
+        }
+    }
+}
+
 void Tetrimino::init (TetrisField *field, Texture *blockTextureSheet)
 {
     this->field = field;
@@ -74,30 +105,30 @@ void Tetrimino::free ()
 }
 
 bool Tetrimino::spawn (
-    int posX, int posY, int fallDelay, TetriminoType type, TetriminoRotation rot,
+    int posX, int posY, int fallDelay, const TetriminoConfig &config,
     bool ghost
 )
 {
     bool fit = true;
 
-    rotations = &schemes[type];
+    rotations = &schemes[config.type];
 
     totalBlocks = 0;
     for (int row = 0; row < MAX_SCHEME_LEN; ++row)
     {
         for (int col = 0; col < MAX_SCHEME_LEN; ++col)
         {
-            if (schemes[type][rot][row][col])
+            if (schemes[config.type][config.rot][row][col])
             {
                 if (field->has_block(posX + col, posY + row))
                 {
                     fit = false;
                 }
-                ++totalBlocks;
                 
                 SDL_Rect *clip =
-                    ghost ? &blockClips[TETRIMINO_TOTAL] : &blockClips[type];
+                    ghost ? &blockClips[TETRIMINO_TOTAL] : &blockClips[config.type];
                 blocks.push_back(new Block(blockTextureSheet, clip));
+                ++totalBlocks;
             }
         }
     }
@@ -115,7 +146,7 @@ bool Tetrimino::spawn (
     }
     if (keys[SDL_SCANCODE_DOWN] || keys[SDL_SCANCODE_S])
     {
-        fallDelay /= 8;
+        fallDelay /= TETRIMINO_DROP_ACC;
     }
     if (keys[SDL_SCANCODE_Q])
     {
@@ -129,8 +160,8 @@ bool Tetrimino::spawn (
     this->posX = posX;
     this->posY = posY;
     this->fallDelay = fallDelay;
-    this->type = type;
-    this->rot = rot;
+    this->type = config.type;
+    this->rot = config.rot;
 
     return fit;
 }
@@ -163,7 +194,7 @@ void Tetrimino::render (int x, int y, int size)
     {
         Tetrimino ghost;
         ghost.init(field, blockTextureSheet);
-        ghost.spawn(posX, posY, -1, type, rot, true);
+        ghost.spawn(posX, posY, -1, TetriminoConfig(type, rot), true);
         ghost.drop();
         ghost.render(x, y, size);
     }
@@ -191,8 +222,7 @@ void Tetrimino::handle_event (Game &game, const SDL_Event &e)
             break;
         case SDLK_DOWN:
         case SDLK_s:
-            fallDelay /= 8;
-            fallElapsed += fallDelay;
+            fallDelay /= TETRIMINO_DROP_ACC;
             break;
         case SDLK_UP:
         case SDLK_w:
@@ -224,7 +254,7 @@ void Tetrimino::handle_event (Game &game, const SDL_Event &e)
             break;
         case SDLK_DOWN:
         case SDLK_s:
-            fallDelay *= 8;
+            fallDelay *= TETRIMINO_DROP_ACC;
             break;
         case SDLK_q:
             rotVel -= TETRIMINO_ROT_SPEED;
