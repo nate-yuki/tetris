@@ -71,7 +71,7 @@ private:
 
     void shift(int dx);
     void drop();
-    void rotate(int dir);
+    void rotate(int dir, bool checkAdjacent=true);
     bool check_collision_left();
     bool check_collision_right();
     bool check_collision_bottom();

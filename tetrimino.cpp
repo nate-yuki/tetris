@@ -344,12 +344,22 @@ void Tetrimino::drop()
     }
 }
 
-void Tetrimino::rotate (int dir)
+void Tetrimino::rotate (int dir, bool checkAdjacent)
 {
     int newRot = (rot + dir + TETRIMINO_ROTATION_TOTAL) % TETRIMINO_ROTATION_TOTAL;
     int col;
+    bool left0 = checkAdjacent, right0 = checkAdjacent;
+    bool top0 = checkAdjacent, bottom0 = checkAdjacent;
     for (int row = 0; row < MAX_SCHEME_LEN; ++row)
     {
+        if ((*rotations)[newRot][row][0])
+        {
+            left0 = false;
+        }
+        if ((*rotations)[newRot][row][MAX_SCHEME_LEN - 1])
+        {
+            right0 = false;
+        }
         for (col = 0; col < MAX_SCHEME_LEN; ++col)
         {
             if ((*rotations)[newRot][row][col])
@@ -364,11 +374,58 @@ void Tetrimino::rotate (int dir)
                     break;
                 }
             }
+            if ((*rotations)[newRot][0][col])
+            {
+                top0 = false;
+            }
+            if ((*rotations)[newRot][MAX_SCHEME_LEN - 1][col])
+            {
+                bottom0 = false;
+            }
         }
     }
     if (col == MAX_SCHEME_LEN)
     {
         rot = TetriminoRotation(newRot);
+    }
+    else
+    {
+        if (left0)
+        {
+            --posX;
+            rotate(dir, false);
+            if (rot != newRot)
+            {
+                ++posX;
+            }
+        }
+        if (rot != newRot && right0)
+        {
+            ++posX;
+            rotate(dir, false);
+            if (rot != newRot)
+            {
+                --posX;
+            }
+        }
+        if (rot != newRot && bottom0)
+        {
+            ++posY;
+            rotate(dir, false);
+            if (rot != newRot)
+            {
+                --posY;
+            }
+        }
+        if (rot != newRot && top0)
+        {
+            --posY;
+            rotate(dir, false);
+            if (rot != newRot)
+            {
+                ++posY;
+            }
+        }
     }
 }
 
