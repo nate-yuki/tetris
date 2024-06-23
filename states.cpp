@@ -30,8 +30,8 @@ void TitleScreenState::enter (Game *game)
     this->game = game;
     
     game->load_texture_from_file(bgTexture, "textures/bg.png");
-    game->create_text(titleText, "TETRIS", {255, 255, 255});
-    game->create_text(promptText, "(press Enter to start)", {255, 255, 255});
+    game->create_text(titleText, "TETRIS", WHITE);
+    game->create_text(promptText, "(press Enter to start)", WHITE);
 }
 
 void TitleScreenState::exit ()
@@ -88,14 +88,13 @@ void TetrisState::enter (Game *game)
 
     this->game = game;
     
-    Color keyColor = {0, 255, 255};
     game->load_texture_from_file(bgTexture, "textures/bg.png");
-    game->load_texture_from_file(blockTextureSheet, "textures/blocks.png", &keyColor);
+    game->load_texture_from_file(blockTextureSheet, "textures/blocks.png", &CYAN);
     game->load_texture_from_file(fieldBgTexture, "textures/field_bg.png");
     game->load_texture_from_file(fieldFrameTexture, "textures/field_frame.png");
     game->load_texture_from_file(fieldClearTexture, "textures/field_clear.png");
     game->load_texture_from_file(
-        fieldClearParticleTextureSheet, "textures/field_particles.png", &keyColor
+        fieldClearParticleTextureSheet, "textures/field_particles.png", &CYAN
     );
 
     game->create_text(linesClearedText, "0", {255, 255, 255}, "9999");

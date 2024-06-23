@@ -16,6 +16,7 @@
 #include "textbox.hpp"
 #include "menu.hpp"
 #include "states.hpp"
+#include "util.hpp"
 
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
@@ -86,14 +87,14 @@ public:
      */
     void create_text(
         Text &text, const std::string &line,
-        const Color &color={0, 0, 0}, const std::string &maxText=""
+        const Color &color=BLACK, const std::string &maxText=""
     );
 
     void create_box(Box &box, const Color &fillColor, const Color &frameColor);
     void create_text_box(
         TextBox &box, const std::string &line,
         const Color &fillColor, const Color &frameColor,
-        const Color &textColor={0, 0, 0}, const std::string &maxText=""
+        const Color &textColor=BLACK, const std::string &maxText=""
     );
 
     /**
@@ -114,12 +115,12 @@ public:
         Menu &menu,
         const std::string &prompt, const std::vector<std::string> &options,
         const Color &promptFillColor={128, 128, 128},
-        const Color &promptFrameColor={0, 0, 0},
+        const Color &promptFrameColor=BLACK,
         const Color &optionFillColor={192, 192, 192},
         const Color &optionFrameColor={64, 64, 64},
         const Color &selectedOptionFillColor={224, 224, 224},
-        const Color &selectedOptionFrameColor={255, 255, 255},
-        const Color &promptTextColor={0, 0, 0}, const Color &optionTextColor={0, 0, 0}
+        const Color &selectedOptionFrameColor=WHITE,
+        const Color &promptTextColor=BLACK, const Color &optionTextColor=BLACK
     );
 
     /**

@@ -39,7 +39,7 @@ particles.o shapes.o text.o textbox.o timer.o timed_media.o menu.o tetris_field.
 tetrimino.o tetris_layout.o exceptions.o logger.o
 main.o: main.cpp game.hpp exceptions.hpp logger.hpp
 game.o: game.cpp game.hpp window.hpp renderer.hpp texture.hpp shapes.hpp states.hpp \
-constants.hpp exceptions.hpp logger.hpp
+util.hpp constants.hpp exceptions.hpp logger.hpp
 util.o: util.cpp util.hpp
 states.o: states.cpp states.hpp game.hpp texture.hpp timer.hpp menu.hpp \
 tetris_layout.hpp util.hpp constants.hpp logger.hpp
@@ -51,10 +51,10 @@ logger.hpp
 particles.o: particles.cpp particles.hpp texture.hpp util.hpp constants.hpp
 shapes.o: shapes.cpp shapes.hpp renderer.hpp util.hpp logger.hpp
 text.o: text.cpp text.hpp texture.hpp
-textbox.o: textbox.cpp textbox.hpp texture.hpp shapes.hpp text.hpp logger.hpp
+textbox.o: textbox.cpp textbox.hpp texture.hpp shapes.hpp text.hpp util.hpp logger.hpp
 timer.o: timer.cpp timer.hpp
 timed_media.o: timed_media.cpp timed_media.hpp text.hpp timer.hpp
-menu.o: menu.cpp menu.hpp shapes.hpp textbox.hpp
+menu.o: menu.cpp menu.hpp shapes.hpp textbox.hpp util.hpp
 tetris_field.o: tetris_field.cpp tetris_field.hpp texture.hpp
 tetrimino.o: tetrimino.cpp tetrimino.hpp tetris_field.hpp texture.hpp
 exceptions.o: exceptions.cpp exceptions.hpp

@@ -10,6 +10,7 @@
 #include "texture.hpp"
 #include "shapes.hpp"
 #include "text.hpp"
+#include "util.hpp"
 
 
 /// A resizable rectangle containing text.
@@ -29,7 +30,7 @@ public:
     void init(
         Renderer &renderer, Font &font, const std::string &line,
         const Color &fillColor, const Color &frameColor,
-        const Color &textColor={0, 0, 0}, const std::string &maxText=""
+        const Color &textColor=BLACK, const std::string &maxText=""
     );
 
     /// Free the text.

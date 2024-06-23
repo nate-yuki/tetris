@@ -10,6 +10,7 @@
 #include "renderer.hpp"
 #include "font.hpp"
 #include "textbox.hpp"
+#include "util.hpp"
 
 #include <SDL2/SDL.h>
 #include <string>
@@ -45,12 +46,12 @@ public:
         Renderer &renderer, Font &font,
         const std::string &prompt, const std::vector<std::string> &options,
         const Color &promptFillColor={128, 128, 128},
-        const Color &promptFrameColor={0, 0, 0},
+        const Color &promptFrameColor=BLACK,
         const Color &optionFillColor={192, 192, 192},
         const Color &optionFrameColor={64, 64, 64},
         const Color &selectedOptionFillColor={224, 224, 224},
-        const Color &selectedOptionFrameColor={255, 255, 255},
-        const Color &promptTextColor={0, 0, 0}, const Color &optionTextColor={0, 0, 0}
+        const Color &selectedOptionFrameColor=WHITE,
+        const Color &promptTextColor=BLACK, const Color &optionTextColor=BLACK
     );
 
     /// Free the boxes.
