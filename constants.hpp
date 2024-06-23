@@ -44,6 +44,9 @@ constexpr int TETRIMINO_DROP_ACC = 16;
 /// Amount of pending tetriminos to show.
 constexpr int TETRIMINO_QUEUE_LEN = 8;
 
+/// Time to keep showing a tetris message for
+constexpr int TETRIS_MSG_TIME = 2500;
+
 /// Time to keep rendering cleared lines for.
 constexpr int CLEAR_LINE_RENDER_TIME = 160;
 

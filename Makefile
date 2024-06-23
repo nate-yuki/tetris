@@ -60,4 +60,4 @@ tetrimino.o: tetrimino.cpp tetrimino.hpp tetris_field.hpp texture.hpp
 exceptions.o: exceptions.cpp exceptions.hpp
 logger.o: logger.cpp logger.hpp
 tetris_layout.o: tetris_layout.cpp tetris_layout.hpp tetris_field.hpp tetrimino.hpp \
-texture.hpp timer.hpp
+texture.hpp timer.hpp timed_media.hpp

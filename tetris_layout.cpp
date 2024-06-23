@@ -7,16 +7,19 @@
 void TetrisLayout::init (
     int cellsHor, int cellsVer,
     Timer *tetriminoTimer, Timer *clearLineTimer, Timer *gameOverTimer,
+    Timer *msgTextTimer,
     Texture *bgTexture, Texture *blockTextureSheet,
     Texture *fieldBgTexture, Texture *fieldFrameTexture, Texture *fieldClearTexture,
     Texture *fieldClearParticleTextureSheet,
-    Text *linesClearedText
+    Text *linesClearedText, Text *msgText
 )
 {
     field.init(
         cellsHor, cellsVer, fieldBgTexture, fieldFrameTexture, fieldClearTexture,
         fieldClearParticleTextureSheet
     );
+
+    msg.init(msgText, msgTextTimer);
 
     Tetrimino::load_schemes("schemes.txt");
     Tetrimino::init_clips();
@@ -77,6 +80,11 @@ void TetrisLayout::do_logic ()
             clearLineTimer->start();
             linesCleared += currLinesCleared;
             newLinesCleared = true;
+
+            msg.set_text(
+                std::to_string(currLinesCleared) + " line(s) cleared!",
+                TETRIS_MSG_TIME
+            );
         }
         spawn_tetrimino();
         if (--tetriminoFallDelay < TETRIMINO_MIN_FALL_DELAY)
@@ -131,6 +139,11 @@ void TetrisLayout::render (int x, int y, int w, int h)
     field.render(
         x + w / 3, y + h / 8, w / 3, 3 * h / 4,
         tetrimino, clearLineTimer->get_elapsed() >= CLEAR_LINE_RENDER_TIME
+    );
+
+    msg.render(
+        x + w / 16, y + 7 * h / 8 + blockSize, 7 * w / 8,
+        31 * h / 32 - (y + 7 * h / 8 + blockSize)
     );
 }
 

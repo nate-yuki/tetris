@@ -98,9 +98,9 @@ private:
     Texture bgTexture, blockTextureSheet;
     Texture fieldBgTexture, fieldFrameTexture, fieldClearTexture;
     Texture fieldClearParticleTextureSheet;
-    Text linesClearedText;
+    Text linesClearedText, msgText;
     TetrisLayout tetris;
-    Timer tetriminoTimer, clearLineTimer, gameOverTimer;
+    Timer tetriminoTimer, clearLineTimer, msgTextTimer, gameOverTimer;
 };
 
 /// A utility state used only to indicate the game over.

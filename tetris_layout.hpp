@@ -7,6 +7,7 @@
 #include "texture.hpp"
 #include "text.hpp"
 #include "timer.hpp"
+#include "timed_media.hpp"
 
 #include <SDL2/SDL.h>
 #include <deque>
@@ -18,10 +19,11 @@ public:
     void init(
         int cellsHor, int cellsVer,
         Timer *tetriminoTimer, Timer *clearLineTimer, Timer *gameOverTimer,
+        Timer *msgTextTimer,
         Texture *bgTexture, Texture *blockTextureSheet, Texture *fieldBgTexture,
         Texture *fieldFrameTexture, Texture *fieldClearTexture,
         Texture *fieldClearParticleTextureSheet,
-        Text *linesClearedText
+        Text *linesClearedText, Text *msgText
     );
     void free();
 
@@ -37,6 +39,7 @@ private:
 
     Texture *bgTexture, *blockTextureSheet;
     Text *linesClearedText;
+    TimedText msg;
     Timer *tetriminoTimer, *clearLineTimer, *gameOverTimer;
 
     TetrisField field;
