@@ -60,6 +60,8 @@ public:
     bool fall(int dt);
     void move(int dt);
 
+    TetriminoConfig get_config() const;
+
 private:
     static constexpr int TETRIMINO_SIDE_SPEED = 7;
     static constexpr int TETRIMINO_ROT_SPEED = 4;

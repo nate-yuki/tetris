@@ -30,6 +30,9 @@ public:
     bool game_over() const;
 
 private:
+    void spawn_tetrimino();
+    void swap();
+
     Texture *bgTexture, *blockTextureSheet;
     Timer *tetriminoTimer, *clearLineTimer, *gameOverTimer;
 
@@ -38,6 +41,7 @@ private:
 
     std::deque<TetriminoConfig> tetriminoQueue;
     TetriminoConfig *tetriminoSwap;
+    int swapped;
     int tetriminoFallDelay;
     int gameOver;
 };

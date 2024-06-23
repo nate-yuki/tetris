@@ -102,6 +102,7 @@ void Tetrimino::free ()
     {
         delete block;
     }
+    blocks.resize(0);
 }
 
 bool Tetrimino::spawn (
@@ -226,7 +227,6 @@ void Tetrimino::handle_event (Game &game, const SDL_Event &e)
             break;
         case SDLK_UP:
         case SDLK_w:
-        case SDLK_SPACE:
             drop();
             stop();
             break;
@@ -320,6 +320,11 @@ void Tetrimino::move (int dt)
         rotate(rotElapsed / 1000);
         rotElapsed -= 1000 * rotVel / abs(rotVel);
     }
+}
+
+TetriminoConfig Tetrimino::get_config() const
+{
+    return TetriminoConfig(type, rot);
 }
 
 void Tetrimino::shift (int dx)

@@ -44,6 +44,7 @@
         "xlocnum": "cpp",
         "xstddef": "cpp",
         "set": "cpp",
-        "xtree": "cpp"
+        "xtree": "cpp",
+        "deque": "cpp"
     }
 }

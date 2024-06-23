@@ -26,6 +26,7 @@ void TetrisLayout::init (
         tetriminoQueue.push_back(TetriminoConfig());
     }
     tetriminoSwap = nullptr;
+    swapped = 0;
 
     tetriminoFallDelay = TETRIMINO_INITIAL_FALL_DELAY;
 
@@ -49,6 +50,15 @@ void TetrisLayout::handle_event (Game &game, const SDL_Event &e)
     if (!game.is_paused() && !gameOver)
     {
         tetrimino.handle_event(game, e);
+        if (e.type == SDL_KEYDOWN && e.key.repeat == 0)
+        {
+            switch (e.key.keysym.sym)
+            {
+            case SDLK_SPACE:
+                swap();
+                break;
+            }
+        }
     }
 }
 
@@ -61,19 +71,7 @@ void TetrisLayout::do_logic ()
         {
             clearLineTimer->start();
         }
-
-        bool tetriminoFit = tetrimino.spawn(
-            (TETRIS_FIELD_WIDTH - MAX_SCHEME_LEN) / 2, 0, tetriminoFallDelay,
-            tetriminoQueue.front()
-        );
-        if (!tetriminoFit)
-        {
-            gameOverTimer->start();
-            gameOver = true;
-        }
-        tetriminoQueue.pop_front();
-        tetriminoQueue.push_back(TetriminoConfig());
-
+        spawn_tetrimino();
         if (--tetriminoFallDelay < TETRIMINO_MIN_FALL_DELAY)
         {
             tetriminoFallDelay = TETRIMINO_MIN_FALL_DELAY;
@@ -100,7 +98,17 @@ void TetrisLayout::render (int x, int y, int w, int h)
         Tetrimino::render_config(
             tetriminoQueue[i],
             x + 2 * w / 3 + blockSize,
-            y + h / 8 + i * (MAX_SCHEME_LEN + 1) * blockSize / 2,
+            y + h / 8 + i * (MAX_SCHEME_LEN + 1) * blockSize / 4,
+            blockSize / 4,
+            blockTextureSheet
+        );
+    }
+    if (tetriminoSwap != nullptr)
+    {
+        Tetrimino::render_config(
+            *tetriminoSwap,
+            x + w / 3 - (MAX_SCHEME_LEN + 1) * (blockSize / 2),
+            y + h / 8,
             blockSize / 2,
             blockTextureSheet
         );
@@ -110,4 +118,42 @@ void TetrisLayout::render (int x, int y, int w, int h)
 bool TetrisLayout::game_over () const
 {
     return gameOver;
+}
+
+void TetrisLayout::spawn_tetrimino ()
+{
+    bool tetriminoFit = tetrimino.spawn(
+        (TETRIS_FIELD_WIDTH - MAX_SCHEME_LEN) / 2, 0, tetriminoFallDelay,
+        tetriminoQueue.front()
+    );
+    if (!tetriminoFit)
+    {
+        gameOverTimer->start();
+        gameOver = true;
+    }
+    tetriminoQueue.pop_front();
+    if (!swapped || !--swapped)
+    {
+        tetriminoQueue.push_back(TetriminoConfig());
+    }
+}
+
+void TetrisLayout::swap()
+{
+    if (!swapped)
+    {
+        swapped = 2;
+        if (tetriminoSwap != nullptr)
+        {
+            tetriminoQueue.push_front(*tetriminoSwap);
+            delete tetriminoSwap;
+        }
+        else
+        {
+            tetriminoQueue.push_back(TetriminoConfig());
+        }
+        tetriminoSwap = new TetriminoConfig(tetrimino.get_config());
+        tetrimino.free();
+        spawn_tetrimino();
+    }
 }
