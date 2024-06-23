@@ -98,12 +98,15 @@ void TetrisState::enter (Game *game)
         fieldClearParticleTextureSheet, "textures/field_particles.png", &keyColor
     );
 
+    game->create_text(linesClearedText, "0", {255, 255, 255}, "9999");
+
     tetris.init(
-        TETRIS_FIELD_WIDTH, TETRIS_FIELD_HIGHT,
+        TETRIS_FIELD_WIDTH, TETRIS_FIELD_HEIGHT,
         &tetriminoTimer, &clearLineTimer, &gameOverTimer,
         &bgTexture, &blockTextureSheet,
         &fieldBgTexture, &fieldFrameTexture, &fieldClearTexture,
-        &fieldClearParticleTextureSheet
+        &fieldClearParticleTextureSheet,
+        &linesClearedText
     );
     tetriminoTimer.start();
 }
@@ -117,6 +120,9 @@ void TetrisState::exit ()
     fieldBgTexture.free();
     fieldFrameTexture.free();
     fieldClearTexture.free();
+    fieldClearParticleTextureSheet.free();
+
+    linesClearedText.free();
 
     tetris.free();
 }

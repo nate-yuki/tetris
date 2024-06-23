@@ -45,6 +45,7 @@
         "xstddef": "cpp",
         "set": "cpp",
         "xtree": "cpp",
-        "deque": "cpp"
+        "deque": "cpp",
+        "queue": "cpp"
     }
 }

@@ -98,6 +98,7 @@ private:
     Texture bgTexture, blockTextureSheet;
     Texture fieldBgTexture, fieldFrameTexture, fieldClearTexture;
     Texture fieldClearParticleTextureSheet;
+    Text linesClearedText;
     TetrisLayout tetris;
     Timer tetriminoTimer, clearLineTimer, gameOverTimer;
 };

@@ -5,6 +5,7 @@
 #include "tetris_field.hpp"
 #include "tetrimino.hpp"
 #include "texture.hpp"
+#include "text.hpp"
 #include "timer.hpp"
 
 #include <SDL2/SDL.h>
@@ -19,7 +20,8 @@ public:
         Timer *tetriminoTimer, Timer *clearLineTimer, Timer *gameOverTimer,
         Texture *bgTexture, Texture *blockTextureSheet, Texture *fieldBgTexture,
         Texture *fieldFrameTexture, Texture *fieldClearTexture,
-        Texture *fieldClearParticleTextureSheet
+        Texture *fieldClearParticleTextureSheet,
+        Text *linesClearedText
     );
     void free();
 
@@ -34,6 +36,7 @@ private:
     void swap();
 
     Texture *bgTexture, *blockTextureSheet;
+    Text *linesClearedText;
     Timer *tetriminoTimer, *clearLineTimer, *gameOverTimer;
 
     TetrisField field;
@@ -44,6 +47,9 @@ private:
     int swapped;
     int tetriminoFallDelay;
     int gameOver;
+
+    int linesCleared;
+    bool newLinesCleared;
 };
 
 

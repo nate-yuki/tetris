@@ -9,7 +9,8 @@ void TetrisLayout::init (
     Timer *tetriminoTimer, Timer *clearLineTimer, Timer *gameOverTimer,
     Texture *bgTexture, Texture *blockTextureSheet,
     Texture *fieldBgTexture, Texture *fieldFrameTexture, Texture *fieldClearTexture,
-    Texture *fieldClearParticleTextureSheet
+    Texture *fieldClearParticleTextureSheet,
+    Text *linesClearedText
 )
 {
     field.init(
@@ -32,8 +33,12 @@ void TetrisLayout::init (
 
     gameOver = false;
 
+    linesCleared = 0;
+    newLinesCleared = false;
+
     this->bgTexture = bgTexture;
     this->blockTextureSheet = blockTextureSheet;
+    this->linesClearedText = linesClearedText;
     this->tetriminoTimer = tetriminoTimer;
     this->clearLineTimer = clearLineTimer;
     this->gameOverTimer = gameOverTimer;
@@ -67,9 +72,11 @@ void TetrisLayout::do_logic ()
     tetrimino.move(tetriminoTimer->get_elapsed());
     if (tetrimino.fall(tetriminoTimer->get_elapsed()))
     {
-        if (field.clear_lines())
+        if (int currLinesCleared = field.clear_lines())
         {
             clearLineTimer->start();
+            linesCleared += currLinesCleared;
+            newLinesCleared = true;
         }
         spawn_tetrimino();
         if (--tetriminoFallDelay < TETRIMINO_MIN_FALL_DELAY)
@@ -86,20 +93,14 @@ void TetrisLayout::render (int x, int y, int w, int h)
         x + (w - bgTexture->get_width()) / 2, y + (h - bgTexture->get_height()) / 2
     );
 
-    clearLineTimer->get_elapsed();
-    field.render(
-        x + w / 3, y + h / 8, w / 3, 3 * h / 4,
-        tetrimino, clearLineTimer->get_elapsed() >= CLEAR_LINE_RENDER_TIME
-    );
-
-    int blockSize = min(w / TETRIS_FIELD_WIDTH, h / TETRIS_FIELD_HEIGHT);
+    int blockSize = min(w / 3 / TETRIS_FIELD_WIDTH, 3 * h / 4 / TETRIS_FIELD_HEIGHT);
     for (int i = 0; i < tetriminoQueue.size(); ++i)
     {
         Tetrimino::render_config(
             tetriminoQueue[i],
             x + 2 * w / 3 + blockSize,
-            y + h / 8 + i * (MAX_SCHEME_LEN + 1) * blockSize / 4,
-            blockSize / 4,
+            y + h / 8 + i * (MAX_SCHEME_LEN + 1) * blockSize / 2,
+            blockSize / 2,
             blockTextureSheet
         );
     }
@@ -107,12 +108,30 @@ void TetrisLayout::render (int x, int y, int w, int h)
     {
         Tetrimino::render_config(
             *tetriminoSwap,
-            x + w / 3 - (MAX_SCHEME_LEN + 1) * (blockSize / 2),
+            x + w / 3 - (MAX_SCHEME_LEN + 1) * blockSize,
             y + h / 8,
-            blockSize / 2,
+            blockSize,
             blockTextureSheet
         );
     }
+
+    if (newLinesCleared)
+    {
+        linesClearedText->set_text(std::to_string(linesCleared));
+        newLinesCleared = false;
+    }
+    linesClearedText->render(
+        x + w / 3 - (MAX_SCHEME_LEN + 1) * blockSize,
+        y + h / 8 + (MAX_SCHEME_LEN + 1) * blockSize,
+        blockSize * 4,
+        blockSize
+    );
+
+    clearLineTimer->get_elapsed();
+    field.render(
+        x + w / 3, y + h / 8, w / 3, 3 * h / 4,
+        tetrimino, clearLineTimer->get_elapsed() >= CLEAR_LINE_RENDER_TIME
+    );
 }
 
 bool TetrisLayout::game_over () const
