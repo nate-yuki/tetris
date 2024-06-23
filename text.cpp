@@ -94,11 +94,15 @@ void Text::render (int x, int y, int w, int h, TextAlign centering)
     }
 }
 
-void Text::set_text (const std::string &text)
+void Text::set_text (const std::string &text, const Color *color)
 {
     this->text = text;
     font->set_size(lastPtSize);
-    texture.load_from_text(*renderer, *font, text, color);
+    if (color != nullptr)
+    {
+        this->color = *color;
+    }
+    texture.load_from_text(*renderer, *font, text, this->color);
 }
 
 int Text::get_width () const

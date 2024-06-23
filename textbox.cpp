@@ -41,7 +41,7 @@ void TextBox::set_fill_color (const Color &color)
     box.set_fill_color(color);
 }
 
-void TextBox::set_text (const std::string &line)
+void TextBox::set_text (const std::string &line, const Color *color)
 {
-    text.set_text(line);
+    text.set_text(line, color);
 }

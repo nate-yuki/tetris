@@ -16,7 +16,7 @@ public:
         int x, int y, int w, int h,
         Text::TextAlign centering=Text::TextAlign::TEXT_CENTER
     );
-    void set_text(const std::string &text, int time);
+    void set_text(const std::string &text, int time, const Color *color=nullptr);
 
 private:
     Text *text;

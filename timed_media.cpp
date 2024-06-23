@@ -15,9 +15,9 @@ void TimedText::render (int x, int y, int w, int h, Text::TextAlign centering)
     }
 }
 
-void TimedText::set_text (const std::string &text, int time)
+void TimedText::set_text (const std::string &text, int time, const Color *color)
 {
-    this->text->set_text(text);
+    this->text->set_text(text, color);
     timer->start();
     
     this->time = time;

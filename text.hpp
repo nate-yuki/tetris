@@ -55,7 +55,7 @@ public:
      * @note
      * If `w` and `h` are the same since the previous call, uses the same texture.
      * If called for the first time or the dimensions have changed,
-     * fits the font point size starting from 1 if the current size is to small,
+     * fits the font point size starting from 1 if the current size is too small,
      * or from current size + 1 if `text` already fits.
      * If this results in a point size change, creates a new texture.
      */
@@ -70,7 +70,7 @@ public:
      * @note
      * `text` should fit in the same dimensions as `maxText`.
      */
-    void set_text(const std::string &text);
+    void set_text(const std::string &text, const Color *color=nullptr);
     
     /// Get texture width.
     int get_width() const;

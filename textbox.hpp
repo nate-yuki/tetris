@@ -56,7 +56,7 @@ public:
     void set_fill_color(const Color &color);
 
     /// Set new text. `line` should fit in the same dimensions as `maxText`.
-    void set_text(const std::string &line);
+    void set_text(const std::string &line, const Color *color=nullptr);
 
 private:
     Text text;
