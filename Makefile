@@ -2,7 +2,7 @@
 CC = g++
 
 #Compiler variables
-VARS =# -DDEBUG
+VARS = -DDEBUG
 
 #Additional include paths
 INCLUDE_PATHS = -I C:/Users/Nate/Documents/Programming/mingw_dev_lib/include
@@ -35,8 +35,8 @@ clean:
 	rm -f *.o all
 
 tetris.exe: main.o game.o util.o states.o window.o renderer.o font.o texture.o \
-particles.o shapes.o text.o textbox.o timer.o menu.o tetris_field.o tetrimino.o \
-tetris_layout.o exceptions.o logger.o
+particles.o shapes.o text.o textbox.o timer.o timed_media.o menu.o tetris_field.o \
+tetrimino.o tetris_layout.o exceptions.o logger.o
 main.o: main.cpp game.hpp exceptions.hpp logger.hpp
 game.o: game.cpp game.hpp window.hpp renderer.hpp texture.hpp shapes.hpp states.hpp \
 constants.hpp exceptions.hpp logger.hpp
@@ -53,6 +53,7 @@ shapes.o: shapes.cpp shapes.hpp renderer.hpp util.hpp logger.hpp
 text.o: text.cpp text.hpp texture.hpp
 textbox.o: textbox.cpp textbox.hpp texture.hpp shapes.hpp text.hpp logger.hpp
 timer.o: timer.cpp timer.hpp
+timed_media.o: timed_media.cpp timed_media.hpp text.hpp timer.hpp
 menu.o: menu.cpp menu.hpp shapes.hpp textbox.hpp
 tetris_field.o: tetris_field.cpp tetris_field.hpp texture.hpp
 tetrimino.o: tetrimino.cpp tetrimino.hpp tetris_field.hpp texture.hpp
