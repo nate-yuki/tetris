@@ -42,7 +42,7 @@ game.o: game.cpp game.hpp window.hpp renderer.hpp texture.hpp shapes.hpp states.
 util.hpp constants.hpp exceptions.hpp logger.hpp
 util.o: util.cpp util.hpp
 states.o: states.cpp states.hpp game.hpp texture.hpp timer.hpp menu.hpp \
-tetris_layout.hpp util.hpp constants.hpp logger.hpp
+tetris_layout.hpp util.hpp constants.hpp exceptions.hpp logger.hpp
 window.o: window.cpp window.hpp constants.hpp exceptions.hpp logger.hpp
 renderer.o: renderer.cpp renderer.hpp window.hpp util.hpp exceptions.hpp logger.hpp
 font.o: font.cpp font.hpp util.hpp exceptions.hpp

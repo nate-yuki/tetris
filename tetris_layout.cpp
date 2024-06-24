@@ -24,8 +24,6 @@ void TetrisLayout::init (
 
     msg.init(msgText, msgTextTimer);
 
-    Tetrimino::load_schemes("schemes.txt");
-    Tetrimino::init_clips();
     tetrimino.init(&field, blockTextureSheet);
 
     for (int i = 0; i < TETRIMINO_QUEUE_LEN; ++i)
@@ -39,7 +37,7 @@ void TetrisLayout::init (
 
     gameOver = false;
 
-    linesCleared = 0;
+    linesCleared = score = combo = 0;
 
     this->bgTexture = bgTexture;
     this->blockTextureSheet = blockTextureSheet;
@@ -60,6 +58,7 @@ void TetrisLayout::free ()
 {
     field.free();
     tetrimino.free();
+    tetriminoQueue.resize(0);
 }
 
 void TetrisLayout::handle_event (Game &game, const SDL_Event &e)
@@ -195,6 +194,11 @@ void TetrisLayout::render (int x, int y, int w, int h)
 bool TetrisLayout::game_over () const
 {
     return gameOver;
+}
+
+int TetrisLayout::get_score () const
+{
+    return score;
 }
 
 void TetrisLayout::spawn_tetrimino ()

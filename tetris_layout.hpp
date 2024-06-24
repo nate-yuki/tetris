@@ -35,6 +35,7 @@ public:
     void render(int x, int y, int w, int h);
 
     bool game_over() const;
+    int get_score() const;
 
 private:
     static constexpr int MULT_LINE = 1000;

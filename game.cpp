@@ -44,6 +44,10 @@ void Game::init ()
     renderer.init(window);
     font.init("fonts/font.ttf", 30);
 
+    // Initialize tetrimino
+    Tetrimino::load_schemes("schemes.txt");
+    Tetrimino::init_clips();
+
     paused = false;
 
     // Begin state rotation
@@ -225,6 +229,22 @@ int Game::get_renderer_height () const
 bool Game::is_paused () const
 {
     return paused;
+}
+
+void Game::set_scores(int score, int highScore)
+{
+    this->score = score;
+    this->highScore = highScore;
+}
+
+int Game::get_score () const
+{
+    return score;
+}
+
+int Game::get_high_score() const
+{
+    return highScore;
 }
 
 void Game::pause ()

@@ -145,6 +145,10 @@ public:
     /// `true` if the game is paused.
     bool is_paused() const;
 
+    void set_scores(int score, int highScore);
+    int get_score() const;
+    int get_high_score() const;
+
 private:
     void pause();
     void unpause();
@@ -154,6 +158,8 @@ private:
     Renderer renderer;
     GameState *currState, *nextState;
     bool paused;
+
+    int score, highScore;
 };
 
 

@@ -6,13 +6,17 @@
 #include "states.hpp"
 #include "util.hpp"
 #include "constants.hpp"
+#include "exceptions.hpp"
 #include "logger.hpp"
+
+#include <fstream>
 
 
 // Singleton instances
 
 TitleScreenState TitleScreenState::sTitleScreenState;
 TetrisState TetrisState::sTetrisState;
+ResultsScreenState ResultsScreenState::sResultsScreenState;
 GameOverState GameOverState::sGameOverState;
 
 
@@ -87,6 +91,22 @@ void TetrisState::enter (Game *game)
     log("Entering Tetris", __FILE__, __LINE__);
 
     this->game = game;
+
+    std::ifstream highScoreFile(
+        "high_score.hs", std::ifstream::in | std::ifstream::binary
+    );
+    if (highScoreFile.fail())
+    {
+        std::string msg = "Could not open \"" "high_score.hs" "\"";
+        throw ExceptionFile(__FILE__, __LINE__, msg.c_str());
+    }
+    highScoreFile >> highScore;
+    if (highScoreFile.fail())
+    {
+        std::string msg = "Could not read from \"" "high_score.hs" "\"";
+        throw ExceptionFile(__FILE__, __LINE__, msg.c_str());
+    }
+    highScoreFile.close();
     
     game->load_texture_from_file(bgTexture, "textures/bg.png");
     game->load_texture_from_file(blockTextureSheet, "textures/blocks.png", &CYAN);
@@ -101,7 +121,10 @@ void TetrisState::enter (Game *game)
     game->create_text(linesClearedPromptText, "Lines cleared:", WHITE);
     game->create_text(scoreText, "000000000", WHITE, "999999999");
     game->create_text(scorePromptText, "Score:", WHITE, "High score:");
-    game->create_text(highScoreText, "042424242", WHITE, "999999999");
+    game->create_text(
+        highScoreText,
+        get_padded(std::to_string(highScore), 9, '0'), WHITE, "999999999"
+    );
     game->create_text(highScorePromptText, "High score:", WHITE);
     game->create_text(msgText, "", WHITE, std::string(32, 'W'));
     game->create_text(comboText, "Combo: 0", WHITE, "Combo: 99");
@@ -124,6 +147,28 @@ void TetrisState::enter (Game *game)
 void TetrisState::exit ()
 {
     log("Exiting Tetris", __FILE__, __LINE__);
+
+    int score = tetris.get_score();
+    game->set_scores(score, highScore);
+
+    if (score > highScore)
+    {
+        std::ofstream highScoreFile(
+            "high_score.hs", std::ofstream::out | std::ofstream::binary
+        );
+        if (highScoreFile.fail())
+        {
+            std::string msg = "Could not open \"" "high_score.hs" "\"";
+            throw ExceptionFile(__FILE__, __LINE__, msg.c_str());
+        }
+        highScoreFile << score;
+        if (highScoreFile.fail())
+        {
+            std::string msg = "Could not write to \"" "high_score.hs" "\"";
+            throw ExceptionFile(__FILE__, __LINE__, msg.c_str());
+        }
+        highScoreFile.close();
+    }
 
     bgTexture.free();
     blockTextureSheet.free();
@@ -148,7 +193,7 @@ void TetrisState::handle_event (Game &game, const SDL_Event &e)
 {
     if (e.type == SDL_KEYDOWN && e.key.keysym.sym == SDLK_END && !game.is_paused())
     {
-        game.set_next_state(GameOverState::get());
+        game.set_next_state(ResultsScreenState::get());
     }
     tetris.handle_event(game, e);
 }
@@ -159,7 +204,7 @@ void TetrisState::do_logic ()
     {
         if (gameOverTimer.get_elapsed() >= 1500)
         {
-            game->set_next_state(GameOverState::get());
+            game->set_next_state(ResultsScreenState::get());
         }
     }
     else
@@ -189,6 +234,90 @@ void TetrisState::unpause_timers ()
     msgTextTimer.unpause();
 }
 
+
+ResultsScreenState::ResultsScreenState () {}
+
+ResultsScreenState *ResultsScreenState::get ()
+{
+    return &sResultsScreenState;
+}
+
+void ResultsScreenState::enter (Game *game)
+{
+    log("Entering ResultsScreen", __FILE__, __LINE__);
+
+    this->game = game;
+
+    game->load_texture_from_file(bgTexture, "textures/bg.png");
+    game->create_text(titleText, "Game over!", WHITE);
+
+    int score = game->get_score();
+    int highScore = game->get_high_score();
+    std::string scoreMsg = "Score: " + std::to_string(score)
+        + " (previous high score: " + std::to_string(highScore) + ")";
+    if (score > highScore)
+    {
+        scoreMsg += " New high score!";
+    }
+    game->create_text(resultsText, scoreMsg, {255, 255, 255});
+
+    resultsTimer.start();
+}
+
+void ResultsScreenState::exit()
+{
+    log("Entering ResultsScreen", __FILE__, __LINE__);
+
+    bgTexture.free();
+    titleText.free();
+    resultsText.free();
+}
+
+void ResultsScreenState::handle_event (Game &game, const SDL_Event &e)
+{
+    // Force transition to TitleScreenState
+    if (!game.is_paused() && e.type == SDL_KEYDOWN && e.key.keysym.sym == SDLK_RETURN)
+    {
+        game.set_next_state(TitleScreenState::get());
+    }
+}
+
+void ResultsScreenState::do_logic ()
+{
+    // Wait before transitioning back to TitleScreenState
+    if (resultsTimer.get_elapsed() >= 3000)
+    {
+        game->set_next_state(TitleScreenState::get());
+    }
+}
+
+void ResultsScreenState::render ()
+{
+    bgTexture.render(
+        (game->get_renderer_width() - bgTexture.get_width()) / 2,
+        (game->get_renderer_height() - bgTexture.get_height()) / 2
+    );
+
+    titleText.render(
+        0, 0, game->get_renderer_width(), game->get_renderer_height() / 2,
+        Text::TEXT_CENTER_BOTTOM
+    );
+    resultsText.render(
+        0, game->get_renderer_height() / 2,
+        game->get_renderer_width(), game->get_renderer_height() / 2,
+        Text::TEXT_CENTER_TOP
+    );
+}
+
+void ResultsScreenState::pause_timers ()
+{
+    resultsTimer.pause();
+}
+
+void ResultsScreenState::unpause_timers ()
+{
+    resultsTimer.unpause();
+}
 
 GameOverState::GameOverState () {}
 

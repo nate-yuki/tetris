@@ -103,6 +103,35 @@ private:
     Text msgText, comboText;
     TetrisLayout tetris;
     Timer tetriminoTimer, clearLineTimer, msgTextTimer, gameOverTimer;
+
+    int highScore;
+};
+
+class ResultsScreenState: public GameState
+{
+public:
+    static ResultsScreenState *get();
+
+    void enter(Game *game);
+    void exit();
+
+    void handle_event(Game &game, const SDL_Event &e);
+    void do_logic();
+    void render();
+
+    void pause_timers();
+    void unpause_timers();
+
+private:
+    static ResultsScreenState sResultsScreenState;
+    ResultsScreenState();
+
+    Game *game;
+    Texture bgTexture;
+    Text titleText, resultsText;
+
+    /// Halts automatic transition to the title screen state.
+    Timer resultsTimer;
 };
 
 /// A utility state used only to indicate the game over.
