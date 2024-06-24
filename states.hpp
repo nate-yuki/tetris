@@ -74,6 +74,30 @@ private:
     Text titleText, promptText;
 };
 
+class MenuState: public GameState
+{
+public:
+    static MenuState *get();
+
+    void enter(Game *game);
+    void exit();
+
+    void handle_event(Game &game, const SDL_Event &e);
+    void do_logic();
+    void render();
+
+    void pause_timers();
+    void unpause_timers();
+    
+private:
+    static MenuState sMenuState;
+    MenuState();
+
+    Game *game;
+
+    Menu menu;
+};
+
 /// The main state with the Tetris itself.
 class TetrisState: public GameState
 {

@@ -15,6 +15,7 @@
 // Singleton instances
 
 TitleScreenState TitleScreenState::sTitleScreenState;
+MenuState MenuState::sMenuState;
 TetrisState TetrisState::sTetrisState;
 ResultsScreenState ResultsScreenState::sResultsScreenState;
 GameOverState GameOverState::sGameOverState;
@@ -51,7 +52,7 @@ void TitleScreenState::handle_event (Game &game, const SDL_Event &e)
 {
     if (e.type == SDL_KEYDOWN && e.key.keysym.sym == SDLK_RETURN && !game.is_paused())
     {
-        game.set_next_state(TetrisState::get());
+        game.set_next_state(MenuState::get());
     }
 }
 
@@ -77,6 +78,65 @@ void TitleScreenState::render ()
 
 void TitleScreenState::pause_timers () {}
 void TitleScreenState::unpause_timers () {}
+
+
+MenuState::MenuState () {}
+
+MenuState *MenuState::get ()
+{
+    return &sMenuState;
+}
+
+void MenuState::enter (Game *game)
+{
+    log("Entering Menu", __FILE__, __LINE__);
+
+    this->game = game;
+
+    game->create_menu(
+        menu, "Choose an option:", {"Play", "Exit"}
+    );
+}
+
+void MenuState::exit ()
+{
+    log("Exiting Menu", __FILE__, __LINE__);
+
+    menu.free();
+}
+
+void MenuState::handle_event (Game &game, const SDL_Event &e)
+{
+    if (!game.is_paused())
+    {
+        menu.handle_event(game, e);
+    }
+}
+
+void MenuState::do_logic ()
+{
+    if (menu.choosen_option() != -1)
+    {
+        switch (menu.choosen_option())
+        {
+        case 0:
+            game->set_next_state(TetrisState::get());
+            break;
+        case 1:
+            game->set_next_state(GameOverState::get());
+            break;
+        }
+    }
+}
+
+void MenuState::render ()
+{
+    menu.render(0, 0, game->get_renderer_width(), game->get_renderer_height());
+}
+
+void MenuState::pause_timers () {}
+
+void MenuState::unpause_timers () {}
 
 
 TetrisState::TetrisState () {}
@@ -275,19 +335,19 @@ void ResultsScreenState::exit()
 
 void ResultsScreenState::handle_event (Game &game, const SDL_Event &e)
 {
-    // Force transition to TitleScreenState
+    // Force transition to MenuState
     if (!game.is_paused() && e.type == SDL_KEYDOWN && e.key.keysym.sym == SDLK_RETURN)
     {
-        game.set_next_state(TitleScreenState::get());
+        game.set_next_state(MenuState::get());
     }
 }
 
 void ResultsScreenState::do_logic ()
 {
-    // Wait before transitioning back to TitleScreenState
+    // Wait before transitioning back to MenuState
     if (resultsTimer.get_elapsed() >= 3000)
     {
-        game->set_next_state(TitleScreenState::get());
+        game->set_next_state(MenuState::get());
     }
 }
 
