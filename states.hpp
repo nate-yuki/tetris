@@ -98,7 +98,9 @@ private:
     Texture bgTexture, blockTextureSheet;
     Texture fieldBgTexture, fieldFrameTexture, fieldClearTexture;
     Texture fieldClearParticleTextureSheet;
-    Text linesClearedText, msgText;
+    Text linesClearedText, linesClearedPromptText;
+    Text scoreText, scorePromptText, highScoreText, highScorePromptText;
+    Text msgText, comboText;
     TetrisLayout tetris;
     Timer tetriminoTimer, clearLineTimer, msgTextTimer, gameOverTimer;
 };

@@ -23,7 +23,10 @@ public:
         Texture *bgTexture, Texture *blockTextureSheet, Texture *fieldBgTexture,
         Texture *fieldFrameTexture, Texture *fieldClearTexture,
         Texture *fieldClearParticleTextureSheet,
-        Text *linesClearedText, Text *msgText
+        Text *linesClearedText, Text *linesClearedPromptText,
+        Text *scoreText, Text *scorePromptText,
+        Text *highScoreText, Text *highScorePromptText,
+        Text *msgText, Text *comboText
     );
     void free();
 
@@ -34,11 +37,18 @@ public:
     bool game_over() const;
 
 private:
+    static constexpr int MULT_LINE = 1000;
+    static constexpr int MULT_COMBO = 1500;
+    static constexpr int SCORE_TETRIS = 1000;
+
     void spawn_tetrimino();
     void swap();
+    void manage_score(int currLinesCleared);
 
     Texture *bgTexture, *blockTextureSheet;
-    Text *linesClearedText;
+    Text *linesClearedText, *linesClearedPromptText;
+    Text *scoreText, *scorePromptText, *highScoreText, *highScorePromptText;
+    Text *msgText, *comboText;
     TimedText msg;
     Timer *tetriminoTimer, *clearLineTimer, *gameOverTimer;
 
@@ -52,7 +62,7 @@ private:
     int gameOver;
 
     int linesCleared;
-    bool newLinesCleared;
+    int score, combo;
 };
 
 

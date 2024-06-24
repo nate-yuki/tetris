@@ -8,8 +8,8 @@
 
 
 #include <SDL2/SDL.h>
-
 #include <vector>
+#include <string>
 
 
 using Scheme = std::vector<std::vector<int>>;
@@ -42,6 +42,8 @@ int min(int x, int y);
 
 /// Find maximum of `x` and `y`.
 int max(int x, int y);
+
+std::string get_padded(const std::string &str, int len, char padding);
 
 
 #endif

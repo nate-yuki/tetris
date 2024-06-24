@@ -97,8 +97,14 @@ void TetrisState::enter (Game *game)
         fieldClearParticleTextureSheet, "textures/field_particles.png", &CYAN
     );
 
-    game->create_text(linesClearedText, "0", WHITE, "9999");
-    game->create_text(msgText, "", WHITE, std::string(50, 'W'));
+    game->create_text(linesClearedText, "0000", WHITE, "999999999");
+    game->create_text(linesClearedPromptText, "Lines cleared:", WHITE);
+    game->create_text(scoreText, "000000000", WHITE, "999999999");
+    game->create_text(scorePromptText, "Score:", WHITE, "High score:");
+    game->create_text(highScoreText, "042424242", WHITE, "999999999");
+    game->create_text(highScorePromptText, "High score:", WHITE);
+    game->create_text(msgText, "", WHITE, std::string(32, 'W'));
+    game->create_text(comboText, "Combo: 0", WHITE, "Combo: 99");
 
     tetris.init(
         TETRIS_FIELD_WIDTH, TETRIS_FIELD_HEIGHT,
@@ -107,7 +113,10 @@ void TetrisState::enter (Game *game)
         &bgTexture, &blockTextureSheet,
         &fieldBgTexture, &fieldFrameTexture, &fieldClearTexture,
         &fieldClearParticleTextureSheet,
-        &linesClearedText, &msgText
+        &linesClearedText, &linesClearedPromptText,
+        &scoreText, &scorePromptText,
+        &highScoreText, &highScorePromptText,
+        &msgText, &comboText
     );
     tetriminoTimer.start();
 }
@@ -124,7 +133,13 @@ void TetrisState::exit ()
     fieldClearParticleTextureSheet.free();
 
     linesClearedText.free();
+    linesClearedPromptText.free();
+    scoreText.free();
+    scorePromptText.free();
+    highScoreText.free();
+    highScorePromptText.free();
     msgText.free();
+    comboText.free();
 
     tetris.free();
 }
