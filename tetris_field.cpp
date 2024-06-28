@@ -1,3 +1,8 @@
+/**
+ * @file  tetris_field.cpp
+ * @brief Implementation of TetrisField and Block classes.
+ */
+
 #include "tetris_field.hpp"
 #include "logger.hpp"
 
@@ -56,21 +61,26 @@ void TetrisField::render (
 {
     frameTexture->render({x, y, w, h});
 
-    int size = min(w / cellsHor, h / cellsVer);
-    int fieldX = x + (w - size * cellsHor) / 2;
-    int fieldY = y + (h - size * cellsVer) / 2;
+    int size = min(w / cellsHor, h / cellsVer); // Block size
+    int fieldX = x + (w - size * cellsHor) / 2; // Grid x coordinate
+    int fieldY = y + (h - size * cellsVer) / 2; // Grid x coordinate
 
-    int shift = 0;
+    int shift = 0; // Amount of rendered clear lines
+
+    // row represents the actual row, row - shift represents the row being rendered
     for (int row = cellsVer - 1; row - shift >= 0; --row)
     {
         if (clearedLines[shift] == row - shift)
         {
+            // If the row to be rendered was cleared, render the clear row texture
+            // instead and go back to the actual row on the next iteration
             clearTexture->render(
                 {fieldX, fieldY + (row - shift) * size, size * cellsHor, size}
             );
             ++shift;
             ++row;
 
+            // Add new particlers for newly appeared cleared rows
             if (clearLineParticlers.size() < shift)
             {
                 clearLineParticlers.push_back(new ParticleEmmiter(
@@ -81,6 +91,7 @@ void TetrisField::render (
         }
         else
         {
+            // Render an actual row risen by the amount of cleared lines bellow
             for (int col = 0; col < cellsHor; ++col)
             {
                 if (field[row][col] != nullptr)
@@ -119,7 +130,7 @@ void TetrisField::render (
         {
             clearLineParticlers[i]->render(
                 fieldX, fieldY + clearedLines[i] * size, size * cellsHor, size, 
-                size / 4
+                size / 2
             );
         }
     }
@@ -128,6 +139,11 @@ void TetrisField::render (
 bool TetrisField::has_block (int posX, int posY) const
 {
     return field[posY][posX] != nullptr;
+}
+
+int TetrisField::get_width () const
+{
+    return cellsHor;
 }
 
 int TetrisField::get_height () const
@@ -146,7 +162,10 @@ int TetrisField::clear_lines ()
     int shift = 0;
     for (int row = cellsVer - 1, col; row - shift >= 0; --row)
     {
+        // Shift the rows to skip the cleared ones
         field[row] = field[row - shift];
+
+        // Check if the current row is filled with blocks
         for (col = 0; col < cellsHor; ++col)
         {
             if (field[row][col] == nullptr)
@@ -154,6 +173,8 @@ int TetrisField::clear_lines ()
                 break;
             }
         }
+
+        // If the current row is filled with blocks, remove it
         if (col == cellsHor)
         {
             for (int col = 0; col < cellsHor; ++col)
@@ -166,6 +187,7 @@ int TetrisField::clear_lines ()
             clearedLines.push_back(row - shift);
         }
     }
+    // Empty the upper rows
     for (int row = 0; row < shift; ++row)
     {
         field[row] = std::vector<Block *>(cellsHor, nullptr);

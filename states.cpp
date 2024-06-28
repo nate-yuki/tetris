@@ -251,10 +251,12 @@ void TetrisState::exit ()
 
 void TetrisState::handle_event (Game &game, const SDL_Event &e)
 {
+    // Force transition to ResultsScreenState
     if (e.type == SDL_KEYDOWN && e.key.keysym.sym == SDLK_END && !game.is_paused())
     {
         game.set_next_state(ResultsScreenState::get());
     }
+
     tetris.handle_event(game, e);
 }
 

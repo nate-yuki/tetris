@@ -1,3 +1,8 @@
+/**
+ * @file  tetrimino.cpp
+ * @brief Implementation of the class Tetrimino and TetriminoConfig struct.
+ */
+
 #include "tetrimino.hpp"
 #include "constants.hpp"
 #include "exceptions.hpp"
@@ -5,19 +10,6 @@
 
 #include <fstream>
 #include <algorithm>
-
-
-TetriminoConfig::TetriminoConfig ()
-    : type(Tetrimino::TetriminoType(rand() % Tetrimino::TETRIMINO_TOTAL))
-    , rot(Tetrimino::TetriminoRotation(rand() % Tetrimino::TETRIMINO_ROTATION_TOTAL))
-{}
-
-TetriminoConfig::TetriminoConfig(
-    Tetrimino::TetriminoType type, Tetrimino::TetriminoRotation rot
-)
-    : type(type)
-    , rot(rot)
-{}
 
 
 std::vector<std::vector<Scheme>> Tetrimino::schemes;
@@ -114,28 +106,30 @@ bool Tetrimino::spawn (
 
     rotations = &schemes[config.type];
 
+    // Check if the tetrimino fits and create blocks
+    SDL_Rect *clip = ghost ? &blockClips[TETRIMINO_TOTAL] : &blockClips[config.type];
     totalBlocks = 0;
     for (int row = 0; row < MAX_SCHEME_LEN; ++row)
     {
         for (int col = 0; col < MAX_SCHEME_LEN; ++col)
         {
-            if (schemes[config.type][config.rot][row][col])
+            if ((*rotations)[config.rot][row][col])
             {
                 if (field->has_block(posX + col, posY + row))
                 {
                     fit = false;
                 }
                 
-                SDL_Rect *clip =
-                    ghost ? &blockClips[TETRIMINO_TOTAL] : &blockClips[config.type];
                 blocks.push_back(new Block(blockTextureSheet, clip));
                 ++totalBlocks;
             }
         }
     }
+
     fallElapsed = sideElapsed = rotElapsed = 0;
     sideVel = rotVel = 0;
     
+    // If movement control buttons are pressed, set corresponding velocities
     const Uint8* keys = SDL_GetKeyboardState(NULL);
     if (keys[SDL_SCANCODE_RIGHT] || keys[SDL_SCANCODE_D])
     {
@@ -158,11 +152,11 @@ bool Tetrimino::spawn (
         rotVel -= TETRIMINO_ROT_SPEED;
     }
     
+    this->type = config.type;
+    this->rot = config.rot;
     this->posX = posX;
     this->posY = posY;
     this->fallDelay = fallDelay;
-    this->type = config.type;
-    this->rot = config.rot;
 
     return fit;
 }
@@ -191,6 +185,7 @@ void Tetrimino::render (int x, int y, int size)
             }
         }
     }
+    // Render a ghost
     if (!check_collision_bottom())
     {
         Tetrimino ghost;
@@ -295,10 +290,12 @@ void Tetrimino::move (int dt)
 
     if (sideElapsed * sideVel <= 0)
     {
+        // If velocity changed direction, reset the elapsed time
         sideElapsed = sideVel * dt;
     }
     else
     {
+        // Otherwise, accumulate the elapsed time
         sideElapsed += sideVel * dt;
     }
     if (sideElapsed / 1000)
@@ -309,10 +306,12 @@ void Tetrimino::move (int dt)
 
     if (rotElapsed * rotVel <= 0)
     {
+        // If velocity changed direction, reset the elapsed time
         rotElapsed = rotVel * dt;
     }
     else
     {
+        // Otherwise, accumulate the elapsed time
         rotElapsed += rotVel * dt;
     }
     if (rotElapsed / 1000)
@@ -348,8 +347,11 @@ void Tetrimino::rotate (int dir, bool checkAdjacent)
 {
     int newRot = (rot + dir + TETRIMINO_ROTATION_TOTAL) % TETRIMINO_ROTATION_TOTAL;
     int col;
+    
     bool left0 = checkAdjacent, right0 = checkAdjacent;
     bool top0 = checkAdjacent, bottom0 = checkAdjacent;
+
+    // Check wether rotating creates a collision
     for (int row = 0; row < MAX_SCHEME_LEN; ++row)
     {
         if ((*rotations)[newRot][row][0])
@@ -365,7 +367,7 @@ void Tetrimino::rotate (int dir, bool checkAdjacent)
             if ((*rotations)[newRot][row][col])
             {
                 if (
-                    posX + col < 0 || posX + col >= TETRIS_FIELD_WIDTH ||
+                    posX + col < 0 || posX + col >= field->get_width() ||
                     posY + row >= field->get_height() ||
                     field->has_block(posX + col, posY + row)
                 )
@@ -386,10 +388,12 @@ void Tetrimino::rotate (int dir, bool checkAdjacent)
     }
     if (col == MAX_SCHEME_LEN)
     {
+        // No collisions
         rot = TetriminoRotation(newRot);
     }
     else
     {
+        // If there was a collision, try shifting once if the scheme allows it
         if (left0)
         {
             --posX;
@@ -456,7 +460,7 @@ bool Tetrimino::check_collision_right ()
             if ((*rotations)[rot][row][col])
             {
                 if (
-                    posX + col >= TETRIS_FIELD_WIDTH ||
+                    posX + col >= field->get_width() ||
                     field->has_block(posX + col, posY + row)
                 )
                 {
@@ -510,3 +514,16 @@ void Tetrimino::stop ()
     blocks.resize(0);
     totalBlocks = 0;
 }
+
+
+TetriminoConfig::TetriminoConfig ()
+    : type(Tetrimino::TetriminoType(rand() % Tetrimino::TETRIMINO_TOTAL))
+    , rot(Tetrimino::TetriminoRotation(rand() % Tetrimino::TETRIMINO_ROTATION_TOTAL))
+{}
+
+TetriminoConfig::TetriminoConfig(
+    Tetrimino::TetriminoType type, Tetrimino::TetriminoRotation rot
+)
+    : type(type)
+    , rot(rot)
+{}

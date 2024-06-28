@@ -51,7 +51,7 @@ public:
      * @param y Upper left corner y coordinate.
      * @param w Maximum width.
      * @param h Maximum height.
-     * @param centering Position to place text in relative to the rectangle.
+     * @param centering Position to place the text in relative to the rectangle.
      * @note
      * If `w` and `h` are the same since the previous call, uses the same texture.
      * If called for the first time or the dimensions have changed,
@@ -63,6 +63,8 @@ public:
 
     /**
      * @brief Set new text.
+     * @param text The new text.
+     * @param color New color; by default, does not change collor.
      * @note
      * Creates a new texture after setting `font` point size to the last one used for
      * rendering by this object. Should not be called before a first `render` call on

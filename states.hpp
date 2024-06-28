@@ -56,7 +56,7 @@ public:
     void enter(Game *game);
     void exit();
 
-    /// Transitions to `TetrisState` on Enter press.
+    /// Transitions to `MenuState` on Enter press.
     void handle_event(Game &game, const SDL_Event &e);
 
     void do_logic();
@@ -74,6 +74,7 @@ private:
     Text titleText, promptText;
 };
 
+/// A menu with options to start the game and to exit.
 class MenuState: public GameState
 {
 public:
@@ -104,11 +105,18 @@ class TetrisState: public GameState
 public:
     static TetrisState *get();
 
+    /// Read the high score.
     void enter(Game *game);
+
+    /// Pass the scores to `Game`. If the high score has changed, write it.
     void exit();
     
+    /// Force transition to `ResultsScreenState` on END key press.
     void handle_event(Game &game, const SDL_Event &e);
+
+    /// If the game is over, wait before transitioning to `ResultsScreenState`.
     void do_logic();
+
     void render();
 
     void pause_timers();
@@ -125,22 +133,29 @@ private:
     Text linesClearedText, linesClearedPromptText;
     Text scoreText, scorePromptText, highScoreText, highScorePromptText;
     Text msgText, comboText;
-    TetrisLayout tetris;
     Timer tetriminoTimer, clearLineTimer, msgTextTimer, gameOverTimer;
+    TetrisLayout tetris;
 
     int highScore;
 };
 
+/// A screen displaying the score and the high score.
 class ResultsScreenState: public GameState
 {
 public:
     static ResultsScreenState *get();
 
+    /// Get the score from `game` and construct messages.
     void enter(Game *game);
+
     void exit();
 
+    /// Force transition to `MenuState` on Enter key press.
     void handle_event(Game &game, const SDL_Event &e);
+
+    /// Wait before transitioning to `MenuState`.
     void do_logic();
+
     void render();
 
     void pause_timers();
@@ -154,8 +169,7 @@ private:
     Texture bgTexture;
     Text titleText, resultsText;
 
-    /// Halts automatic transition to the title screen state.
-    Timer resultsTimer;
+    Timer resultsTimer; /// Halts automatic transition to `MenuState`.
 };
 
 /// A utility state used only to indicate the game over.

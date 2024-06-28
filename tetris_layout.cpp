@@ -1,3 +1,8 @@
+/**
+ * @file  tetris_layout.cpp
+ * @brief Implementation of TetrisLayout class.
+ */
+
 #include "tetris_layout.hpp"
 #include "game.hpp"
 #include "constants.hpp"
@@ -63,9 +68,10 @@ void TetrisLayout::free ()
 
 void TetrisLayout::handle_event (Game &game, const SDL_Event &e)
 {
-    if (!game.is_paused() && !gameOver)
+    if (!game.is_paused())
     {
         tetrimino.handle_event(game, e);
+
         if (e.type == SDL_KEYDOWN && e.key.repeat == 0)
         {
             switch (e.key.keysym.sym)
@@ -89,104 +95,123 @@ void TetrisLayout::do_logic ()
             clearLineTimer->start();
         }
         manage_score(currLinesCleared);
-        spawn_tetrimino();
+        
         if (--tetriminoFallDelay < TETRIMINO_MIN_FALL_DELAY)
         {
             tetriminoFallDelay = TETRIMINO_MIN_FALL_DELAY;
         }
+
+        spawn_tetrimino();
     }
     tetriminoTimer->start();
 }
 
 void TetrisLayout::render (int x, int y, int w, int h)
 {
-    bgTexture->render(
-        x + (w - bgTexture->get_width()) / 2, y + (h - bgTexture->get_height()) / 2
-    );
+    bgTexture->render({x, y, w, h});
 
-    int blockSize = min(w / 3 / TETRIS_FIELD_WIDTH, 3 * h / 4 / TETRIS_FIELD_HEIGHT);
+    int blockSize = min(w / 3 / field.get_width(), 3 * h / 4 / field.get_height());
+    int fieldW = w / 3, fieldH = 3 * h / 4;
+    int fieldX = x + (w - fieldW) / 2, fieldY = y + (h - fieldH) / 2;
+
+    // Render the tetrimino queue
     for (int i = 0; i < tetriminoQueue.size(); ++i)
     {
         Tetrimino::render_config(
             tetriminoQueue[i],
-            x + 2 * w / 3 + blockSize,
-            y + h / 8 + i * (MAX_SCHEME_LEN + 1) * blockSize / 2,
+            fieldX + fieldW + blockSize,
+            fieldY + i * (MAX_SCHEME_LEN + 1) * blockSize / 2,
             blockSize / 2,
             blockTextureSheet
         );
     }
+    // Render the swap tetrimino
     if (tetriminoSwap != nullptr)
     {
         Tetrimino::render_config(
             *tetriminoSwap,
-            x + w / 3 - (MAX_SCHEME_LEN + 1) * blockSize,
-            y + h / 8,
+            fieldX - (MAX_SCHEME_LEN + 1) * blockSize,
+            fieldY,
             blockSize,
             blockTextureSheet
         );
     }
 
+    int promptW = blockSize * 9, promptH = blockSize;
+    int promptSpace = promptH / 2;
+    int promptX = fieldX - blockSize - promptW;
+
+    // Render cleared lines info under the swap tetrimino
+    int linesY = fieldY + (MAX_SCHEME_LEN + 1) * blockSize;
     linesClearedPromptText->render(
-        x + w / 3 - 10 * blockSize,
-        y + h / 8 + (MAX_SCHEME_LEN + 1) * blockSize,
-        blockSize * 9,
-        blockSize,
+        promptX,
+        linesY,
+        promptW,
+        promptH,
         Text::TextAlign::TEXT_CENTER_LEFT
     );
     linesClearedText->render(
-        x + w / 3 - 10 * blockSize,
-        y + h / 8 + (MAX_SCHEME_LEN + 1) * blockSize + 3 * blockSize / 2,
-        blockSize * 9,
-        blockSize,
+        promptX,
+        linesY + promptSpace + promptH,
+        promptW,
+        promptH,
         Text::TextAlign::TEXT_CENTER_RIGHT
     );
 
+    // Render score info adjacent to the field bottom
+    int scoreBottomY = fieldY + fieldH;
     scorePromptText->render(
-        x + w / 3 - 10 * blockSize,
-        y + 7 * h / 8 - 6 * blockSize,
-        blockSize * 9,
-        blockSize,
+        promptX,
+        scoreBottomY - 3 * promptH - 3 * promptSpace - promptSpace - promptH,
+        promptW,
+        promptH,
         Text::TextAlign::TEXT_CENTER_LEFT
     );
     scoreText->render(
-        x + w / 3 - 10 * blockSize,
-        y + 7 * h / 8 - 9 * blockSize / 2,
-        blockSize * 9,
-        blockSize,
+        promptX,
+        scoreBottomY - 2 * promptH - promptSpace - 2 * promptSpace - promptH,
+        promptW,
+        promptH,
         Text::TextAlign::TEXT_CENTER_RIGHT
     );
     highScorePromptText->render(
-        x + w / 3 - 10 * blockSize,
-        y + 7 * h / 8 - 5 * blockSize / 2,
-        blockSize * 9,
-        blockSize,
+        promptX,
+        scoreBottomY - promptH - promptSpace - promptH,
+        promptW,
+        promptH,
         Text::TextAlign::TEXT_CENTER_LEFT
     );
     highScoreText->render(
-        x + w / 3 - 10 * blockSize,
-        y + 7 * h / 8 - blockSize,
-        blockSize * 9,
-        blockSize,
+        promptX,
+        scoreBottomY - promptH,
+        promptW,
+        promptH,
         Text::TextAlign::TEXT_CENTER_RIGHT
     );
 
+    // Render combo info above the field
+    int comboY = h / 32;
+    int comboH = blockSize;
     comboText->render(
-        x + w / 3,
-        h / 32,
-        w / 3,
-        y + h / 8 - blockSize - h / 32
+        fieldX,
+        comboY,
+        fieldW,
+        fieldY - comboH - comboY
     );
 
+    // Render the message bellow the field
+    int msgW = 7 * w / 8;
+    int msgX = (w - msgW) / 2, msgY = fieldY + fieldH + blockSize;
+    int msgH = 31 * h / 32 - msgY;
     msg.render(
-        x + w / 16,
-        y + 7 * h / 8 + blockSize,
-        7 * w / 8,
-        31 * h / 32 - (y + 7 * h / 8 + blockSize)
+        msgX,
+        msgY,
+        msgW,
+        msgH
     );
 
-    clearLineTimer->get_elapsed();
     field.render(
-        x + w / 3, y + h / 8, w / 3, 3 * h / 4,
+        fieldX, fieldY, fieldW, fieldH,
         tetrimino, clearLineTimer->get_elapsed() >= CLEAR_LINE_RENDER_TIME
     );
 }
@@ -204,15 +229,18 @@ int TetrisLayout::get_score () const
 void TetrisLayout::spawn_tetrimino ()
 {
     bool tetriminoFit = tetrimino.spawn(
-        (TETRIS_FIELD_WIDTH - MAX_SCHEME_LEN) / 2, 0, tetriminoFallDelay,
+        (field.get_width() - MAX_SCHEME_LEN) / 2, 0, tetriminoFallDelay,
         tetriminoQueue.front()
     );
     if (!tetriminoFit)
     {
+        // Tetrimino could not be spawned because of obstructing field blocks
         gameOverTimer->start();
         gameOver = true;
     }
     tetriminoQueue.pop_front();
+    // If swapped > 0, decreases it
+    // If then swapped == 1, does nothing, if otherwise swapped == 0, fills the queue
     if (!swapped || !--swapped)
     {
         tetriminoQueue.push_back(TetriminoConfig());
@@ -226,15 +254,20 @@ void TetrisLayout::swap()
         swapped = 2;
         if (tetriminoSwap != nullptr)
         {
+            // If there were swaps, put the current tetrimino to the queue front
             tetriminoQueue.push_front(*tetriminoSwap);
             delete tetriminoSwap;
         }
         else
         {
+            // If there were no swaps, add to the queue so it doesn't get shortened
             tetriminoQueue.push_back(TetriminoConfig());
         }
+        // Move the current tetrimino to the swap buffer
         tetriminoSwap = new TetriminoConfig(tetrimino.get_config());
         tetrimino.free();
+
+        // Spawn a new tetrimino
         spawn_tetrimino();
     }
 }

@@ -43,6 +43,14 @@ int min(int x, int y);
 /// Find maximum of `x` and `y`.
 int max(int x, int y);
 
+/**
+ * @brief Get a `str` with `padding` added to the beginning for a total length `len`.
+ * @note If `str` length is greater than `len`, produces an error.
+ * @param str The string to pad.
+ * @param len The total length of the resulting string.
+ * @param padding Character to pad with.
+ * @return The padded string.
+ */
 std::string get_padded(const std::string &str, int len, char padding);
 
 

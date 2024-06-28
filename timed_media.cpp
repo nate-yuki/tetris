@@ -1,3 +1,8 @@
+/**
+ * @file  timed_media.cpp
+ * @brief Implementation of timed media classes.
+ */
+
 #include "timed_media.hpp"
 
 

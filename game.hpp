@@ -145,8 +145,22 @@ public:
     /// `true` if the game is paused.
     bool is_paused() const;
 
+    /**
+     * @brief Set the score and the high score.
+     * @note Used to transfer the scores between `GameState`s.
+     */
     void set_scores(int score, int highScore);
+
+    /**
+     * @brief Get the score.
+     * @note Used to transfer the score between `GameState`s.
+     */
     int get_score() const;
+
+    /**
+     * @brief Get the high score.
+     * @note Used to transfer the high score between `GameState`s.
+     */
     int get_high_score() const;
 
 private:

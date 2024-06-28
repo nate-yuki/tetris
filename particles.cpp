@@ -1,3 +1,8 @@
+/**
+ * @file  particles.cpp
+ * @brief Implementation of particle classes.
+ */
+
 #include "particles.hpp"
 #include "util.hpp"
 #include "constants.hpp"
@@ -71,6 +76,7 @@ ParticleEmmiter::~ParticleEmmiter ()
 
 void ParticleEmmiter::render (int x, int y, int w, int h, int size)
 {
+    // Determine the amount of particle per row/col proportionally to w/h
     double numenator = (
         std::sqrt(w * w + h * h + w * h * (4 * particlesTotal - 2)) - w - h
     ) / 2;
@@ -80,7 +86,8 @@ void ParticleEmmiter::render (int x, int y, int w, int h, int size)
     int spaceHor, spaceVer;
     if (particlesHor == 1)
     {
-        y += h / 2;
+        // If there is only one column, center it horisontally
+        x += w / 2;
         spaceHor = 0;
     }
     else
@@ -89,7 +96,8 @@ void ParticleEmmiter::render (int x, int y, int w, int h, int size)
     }
     if (particlesVer == 1)
     {
-        x += w / 2;
+        // If there is only one row, center it vertically
+        y += h / 2;
         spaceVer = 0;
     }
     else
@@ -97,20 +105,11 @@ void ParticleEmmiter::render (int x, int y, int w, int h, int size)
         spaceVer = h / (particlesVer - 1);
     }
 
-    /*log(
-        "particlesTotal " + std::to_string(particlesTotal) +
-        " particlesHor = " + std::to_string(particlesHor) +
-        " particlesVer = " + std::to_string(particlesVer) +
-        " spaceHor = " + std::to_string(spaceHor) +
-        " spaceVer = " + std::to_string(spaceVer) +
-        " numenator = " + std::to_string(numenator),
-        __FILE__, __LINE__
-    );
-    */
     for (int row = 0; row < particlesVer; ++row)
     {
         for (int col = 0; col < particlesHor; ++col)
         {
+            // Create new particles in place of the dead ones
             if (particles[row * particlesHor + col]->is_dead())
             {
                 delete particles[row * particlesHor + col];
@@ -118,6 +117,7 @@ void ParticleEmmiter::render (int x, int y, int w, int h, int size)
                     maxShift, lifespan, particleTextureSheet
                 );
             }
+            
             particles[row * particlesHor + col]->render(
                 x + col * spaceHor, y + row * spaceVer, size
             );
