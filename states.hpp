@@ -99,6 +99,31 @@ private:
     Menu menu;
 };
 
+/// A menu with player amount selection.
+class PlayersSelectState: public GameState
+{
+public:
+    static PlayersSelectState *get();
+
+    void enter(Game *game);
+    void exit();
+
+    void handle_event(Game &game, const SDL_Event &e);
+    void do_logic();
+    void render();
+
+    void pause_timers();
+    void unpause_timers();
+    
+private:
+    static PlayersSelectState sPlayersSelectState;
+    PlayersSelectState();
+
+    Game *game;
+
+    Menu menu;
+};
+
 /// The main state with the Tetris itself.
 class TetrisState: public GameState
 {
@@ -139,7 +164,47 @@ private:
     int highScore;
 };
 
-/// A screen displaying the score and the high score.
+/// Multiple players tetris state.
+class TetrisPVPState: public GameState
+{
+public:
+    static TetrisPVPState *get();
+
+    void enter(Game *game);
+
+    /// Pass the scores to `Game`. If the high score has changed, write it.
+    void exit();
+    
+    /// Force transition to `ResultsScreenState` on END key press.
+    void handle_event(Game &game, const SDL_Event &e);
+
+    /// If the game is over, wait before transitioning to `ResultsScreenState`.
+    void do_logic();
+
+    void render();
+
+    void pause_timers();
+    void unpause_timers();
+    
+private:
+    static TetrisPVPState sTetrisPVPState;
+    TetrisPVPState();
+
+    Game *game;
+    Texture bgTexture, blockTextureSheet;
+    Texture fieldBgTexture, fieldFrameTexture, fieldClearTexture;
+    Texture fieldClearParticleTextureSheet;
+    Text linesClearedPromptText, scorePromptText, highScorePromptText;
+    std::vector<Text> linesClearedTexts, scoreTexts, highScoreTexts;
+    std::vector<Text> msgTexts, comboTexts;
+    std::vector<Timer> tetriminoTimers, clearLineTimers, msgTextTimers;
+    std::vector<Timer> gameOverTimers;
+    std::vector<TetrisLayout> tetris;
+
+    int players;
+};
+
+/// A screen displaying the high score or the winner and the score.
 class ResultsScreenState: public GameState
 {
 public:
@@ -150,10 +215,10 @@ public:
 
     void exit();
 
-    /// Force transition to `MenuState` on Enter key press.
+    /// Force transition to a menu state on Enter key press.
     void handle_event(Game &game, const SDL_Event &e);
 
-    /// Wait before transitioning to `MenuState`.
+    /// Wait before transitioning to a menu state.
     void do_logic();
 
     void render();

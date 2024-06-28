@@ -242,12 +242,32 @@ int Game::get_score () const
     return score;
 }
 
-int Game::get_high_score() const
+int Game::get_high_score () const
 {
     return highScore;
 }
 
-void Game::pause ()
+void Game::set_players (int players)
+{
+    this->players = players;
+}
+
+int Game::get_players () const
+{
+    return players;
+}
+
+void Game::set_winner (int winner)
+{
+    this->winner = winner;
+}
+
+int Game::get_winner () const
+{
+    return winner;
+}
+
+void Game::pause()
 {
     currState->pause_timers();
     paused = true;

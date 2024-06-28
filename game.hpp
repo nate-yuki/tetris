@@ -163,6 +163,30 @@ public:
      */
     int get_high_score() const;
 
+    /**
+     * @brief Set the player amount.
+     * @note Used to transfer the player amount between `GameState`s.
+     */
+    void set_players(int players);
+
+    /**
+     * @brief Get the player amount.
+     * @note Used to transfer the player amount between `GameState`s.
+     */
+    int get_players() const;
+
+    /**
+     * @brief Set the winner index.
+     * @note Used to transfer the winner index between `GameState`s.
+     */
+    void set_winner(int winner);
+
+    /**
+     * @brief Get the winner index.
+     * @note Used to transfer the winner index between `GameState`s.
+     */
+    int get_winner() const;
+
 private:
     void pause();
     void unpause();
@@ -174,6 +198,7 @@ private:
     bool paused;
 
     int score, highScore;
+    int players, winner;
 };
 
 
