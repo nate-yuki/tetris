@@ -22,6 +22,71 @@ TetrisPVPState TetrisPVPState::sTetrisPVPState;
 ResultsScreenState ResultsScreenState::sResultsScreenState;
 GameOverState GameOverState::sGameOverState;
 
+KeyLayout TetrisState::tetrisLayout(
+    KeyMap{
+        {TetrisLayout::KeyMap::SWAP, {SDLK_SPACE}},
+    }
+);
+KeyLayout TetrisState::tetriminoLayout(
+    KeyMap{
+        {Tetrimino::KeyMap::RIGHT, {SDLK_RIGHT, SDLK_d}},
+        {Tetrimino::KeyMap::LEFT, {SDLK_LEFT, SDLK_a}},
+        {Tetrimino::KeyMap::ACC, {SDLK_DOWN, SDLK_s}},
+        {Tetrimino::KeyMap::DROP, {SDLK_UP, SDLK_w}},
+        {Tetrimino::KeyMap::ROT_CCW, {SDLK_RSHIFT, SDLK_q}},
+        {Tetrimino::KeyMap::ROT_CW, {SDLK_e, SDLK_KP_1}},
+    }
+);
+
+std::vector<KeyLayout> TetrisPVPState::tetrisLayouts{
+    KeyMap{
+        {TetrisLayout::KeyMap::SWAP, {SDLK_SPACE}},
+    },
+    KeyMap{
+        {TetrisLayout::KeyMap::SWAP, {SDLK_RETURN}},
+    },
+    KeyMap{
+        {TetrisLayout::KeyMap::SWAP, {SDLK_RETURN}},
+    },
+    KeyMap{
+        {TetrisLayout::KeyMap::SWAP, {SDLK_RETURN}},
+    },
+};
+std::vector<KeyLayout> TetrisPVPState::tetriminoLayouts{
+    KeyMap{
+        {Tetrimino::KeyMap::RIGHT, {SDLK_d}},
+        {Tetrimino::KeyMap::LEFT, {SDLK_a}},
+        {Tetrimino::KeyMap::ACC, {SDLK_s}},
+        {Tetrimino::KeyMap::DROP, {SDLK_w}},
+        {Tetrimino::KeyMap::ROT_CCW, {SDLK_q}},
+        {Tetrimino::KeyMap::ROT_CW, {SDLK_e}},
+    },
+    KeyMap{
+        {Tetrimino::KeyMap::RIGHT, {SDLK_RIGHT}},
+        {Tetrimino::KeyMap::LEFT, {SDLK_LEFT}},
+        {Tetrimino::KeyMap::ACC, {SDLK_DOWN}},
+        {Tetrimino::KeyMap::DROP, {SDLK_UP}},
+        {Tetrimino::KeyMap::ROT_CCW, {SDLK_RSHIFT}},
+        {Tetrimino::KeyMap::ROT_CW, {SDLK_KP_1}},
+    },
+    KeyMap{
+        {Tetrimino::KeyMap::RIGHT, {SDLK_RIGHT}},
+        {Tetrimino::KeyMap::LEFT, {SDLK_LEFT}},
+        {Tetrimino::KeyMap::ACC, {SDLK_DOWN}},
+        {Tetrimino::KeyMap::DROP, {SDLK_UP}},
+        {Tetrimino::KeyMap::ROT_CCW, {SDLK_RSHIFT}},
+        {Tetrimino::KeyMap::ROT_CW, {SDLK_KP_1}},
+    },
+    KeyMap{
+        {Tetrimino::KeyMap::RIGHT, {SDLK_RIGHT}},
+        {Tetrimino::KeyMap::LEFT, {SDLK_LEFT}},
+        {Tetrimino::KeyMap::ACC, {SDLK_DOWN}},
+        {Tetrimino::KeyMap::DROP, {SDLK_UP}},
+        {Tetrimino::KeyMap::ROT_CCW, {SDLK_RSHIFT}},
+        {Tetrimino::KeyMap::ROT_CW, {SDLK_KP_1}},
+    },
+};
+
 
 TitleScreenState::TitleScreenState () {}
 
@@ -256,6 +321,7 @@ void TetrisState::enter (Game *game)
 
     tetris.init(
         TETRIS_FIELD_WIDTH, TETRIS_FIELD_HEIGHT,
+        &tetrisLayout, &tetriminoLayout,
         &tetriminoTimer, &clearLineTimer, &gameOverTimer,
         &msgTextTimer,
         &bgTexture, &blockTextureSheet,
@@ -417,6 +483,7 @@ void TetrisPVPState::enter (Game *game)
 
         tetris[i].init(
             TETRIS_FIELD_WIDTH, TETRIS_FIELD_HEIGHT,
+            &tetrisLayouts[i], &tetriminoLayouts[i],
             &tetriminoTimers[i], &clearLineTimers[i], &gameOverTimers[i],
             &msgTextTimers[i],
             &bgTexture, &blockTextureSheet,

@@ -5,12 +5,14 @@
 
 #include "tetris_layout.hpp"
 #include "game.hpp"
+#include "key_layout.hpp"
 #include "constants.hpp"
 #include "logger.hpp"
 
 
 void TetrisLayout::init (
     int cellsHor, int cellsVer,
+    KeyLayout *tetrisKeyLayout, KeyLayout *tetriminoKeyLayout,
     Timer *tetriminoTimer, Timer *clearLineTimer, Timer *gameOverTimer,
     Timer *msgTextTimer,
     Texture *bgTexture, Texture *blockTextureSheet,
@@ -29,7 +31,7 @@ void TetrisLayout::init (
 
     msg.init(msgText, msgTextTimer);
 
-    tetrimino.init(&field, blockTextureSheet);
+    tetrimino.init(&field, blockTextureSheet, tetriminoKeyLayout);
 
     for (int i = 0; i < TETRIMINO_QUEUE_LEN; ++i)
     {
@@ -44,6 +46,7 @@ void TetrisLayout::init (
 
     linesCleared = score = combo = 0;
 
+    keyLayout = tetrisKeyLayout;
     this->bgTexture = bgTexture;
     this->blockTextureSheet = blockTextureSheet;
     this->linesClearedText = linesClearedText;
@@ -72,11 +75,12 @@ void TetrisLayout::handle_event (Game &game, const SDL_Event &e)
     {
         tetrimino.handle_event(game, e);
 
-        if (e.type == SDL_KEYDOWN && e.key.repeat == 0)
+        keyLayout->handle_event(game, e);
+        if (keyLayout->get_type() == SDL_KEYDOWN && keyLayout->get_repeat() == 0)
         {
-            switch (e.key.keysym.sym)
+            switch (keyLayout->get_map())
             {
-            case SDLK_SPACE:
+            case SWAP:
                 swap();
                 break;
             }
@@ -110,9 +114,9 @@ void TetrisLayout::render (int x, int y, int w, int h)
 {
     bgTexture->render({x, y, w, h});
 
-    int blockSize = min(w / 3 / field.get_width(), 3 * h / 4 / field.get_height());
     int fieldW = w / 3, fieldH = 3 * h / 4;
     int fieldX = x + (w - fieldW) / 2, fieldY = y + (h - fieldH) / 2;
+    int blockSize = min(fieldW / field.get_width(), fieldH / field.get_height());
 
     // Render the tetrimino queue
     for (int i = 0; i < tetriminoQueue.size(); ++i)
@@ -190,7 +194,7 @@ void TetrisLayout::render (int x, int y, int w, int h)
     );
 
     // Render combo info above the field
-    int comboY = h / 32;
+    int comboY = y + h / 32;
     int comboH = blockSize;
     comboText->render(
         fieldX,
@@ -201,8 +205,8 @@ void TetrisLayout::render (int x, int y, int w, int h)
 
     // Render the message bellow the field
     int msgW = 7 * w / 8;
-    int msgX = (w - msgW) / 2, msgY = fieldY + fieldH + blockSize;
-    int msgH = 31 * h / 32 - msgY;
+    int msgH = 31 * h / 32 - (fieldY - y) - fieldH - blockSize;
+    int msgX = x + (w - msgW) / 2, msgY = fieldY + fieldH + blockSize;
     msg.render(
         msgX,
         msgY,

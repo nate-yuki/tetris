@@ -12,9 +12,11 @@
 #include "text.hpp"
 #include "timer.hpp"
 #include "menu.hpp"
+#include "key_layout.hpp"
 #include "tetris_layout.hpp"
 
 #include <SDL2/SDL.h>
+#include <vector>
 
 
 class Game;
@@ -151,6 +153,8 @@ private:
     static TetrisState sTetrisState;
     TetrisState();
 
+    static KeyLayout tetrisLayout, tetriminoLayout;
+
     Game *game;
     Texture bgTexture, blockTextureSheet;
     Texture fieldBgTexture, fieldFrameTexture, fieldClearTexture;
@@ -189,6 +193,8 @@ public:
 private:
     static TetrisPVPState sTetrisPVPState;
     TetrisPVPState();
+    
+    static std::vector<KeyLayout> tetrisLayouts, tetriminoLayouts;
 
     Game *game;
     Texture bgTexture, blockTextureSheet;

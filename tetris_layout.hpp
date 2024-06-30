@@ -18,14 +18,22 @@
 #include <deque>
 
 
+class KeyLayout;
+
 /// A complete tetris setup class with logic, event handling and scoring.
 class TetrisLayout
 {
 public:
+    enum KeyMap {
+        SWAP,
+    };
+
     /**
      * @brief Initialize class members.
      * @param cellsHor Amount of cells in each row.
      * @param cellsVer Amount of cells in each column.
+     * @param tetrisKeyLayout Key layout to use for the tetris layout.
+     * @param tetriminoKeyLayout Key layout to use for the tetrimino.
      * @param tetriminoTimer Timer to use for tetrimino movement.
      * @param clearLineTimer Timer to use to time clear line rendering.
      * @param gameOverTimer Timer to start when the game is over.
@@ -49,6 +57,7 @@ public:
      */
     void init(
         int cellsHor, int cellsVer,
+        KeyLayout *tetrisKeyLayout, KeyLayout *tetriminoKeyLayout,
         Timer *tetriminoTimer, Timer *clearLineTimer, Timer *gameOverTimer,
         Timer *msgTextTimer,
         Texture *bgTexture, Texture *blockTextureSheet, Texture *fieldBgTexture,
@@ -113,6 +122,7 @@ private:
     /// Add score, set combo, and set message, score, and combo texts.
     void manage_score(int currLinesCleared);
 
+    KeyLayout *keyLayout;
     Texture *bgTexture, *blockTextureSheet;
     Text *linesClearedText, *linesClearedPromptText;
     Text *scoreText, *scorePromptText, *highScoreText, *highScorePromptText;

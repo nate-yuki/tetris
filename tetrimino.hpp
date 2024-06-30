@@ -20,6 +20,7 @@ struct TetriminoConfig;
 
 class Block;
 class TetrisField;
+class KeyLayout;
 
 /// The tetrimino class;
 class Tetrimino
@@ -46,6 +47,15 @@ public:
         TETRIMINO_ROTATION_TOTAL,
     };
 
+    enum KeyMap {
+        RIGHT,
+        LEFT,
+        ACC,
+        DROP,
+        ROT_CCW,
+        ROT_CW,
+    };
+
     /// Read and store tetrimino schemes from `path`.
     static void load_schemes(const std::string &path);
     
@@ -67,8 +77,8 @@ public:
         Texture *blockTextureSheet
     );
 
-    /// Store `field` and `blockTextureSheet`.
-    void init(TetrisField *field, Texture *blockTextureSheet);
+    /// Store `field`, `blockTextureSheet`, and `keyLayout`.
+    void init(TetrisField *field, Texture *blockTextureSheet, KeyLayout *keyLayout);
 
     /// Free the blocks.
     void free();
@@ -179,6 +189,7 @@ private:
 
     Texture *blockTextureSheet;
     TetrisField *field;
+    KeyLayout *keyLayout;
     TetriminoType type; /// Current tetrimino type.
     TetriminoRotation rot; /// Current rotation.
     int totalBlocks; /// Amount of blocks the current scheme has.

@@ -4,6 +4,7 @@
  */
 
 #include "tetrimino.hpp"
+#include "key_layout.hpp"
 #include "constants.hpp"
 #include "exceptions.hpp"
 #include "logger.hpp"
@@ -79,10 +80,13 @@ void Tetrimino::render_config (
     }
 }
 
-void Tetrimino::init (TetrisField *field, Texture *blockTextureSheet)
+void Tetrimino::init (
+    TetrisField *field, Texture *blockTextureSheet, KeyLayout *keyLayout
+)
 {
     this->field = field;
     this->blockTextureSheet = blockTextureSheet;
+    this->keyLayout = keyLayout;
     totalBlocks = 0;
 }
 
@@ -102,6 +106,11 @@ bool Tetrimino::spawn (
     bool ghost
 )
 {
+    this->type = config.type;
+    this->rot = config.rot;
+    this->posX = posX;
+    this->posY = posY;
+
     bool fit = true;
 
     rotations = &schemes[config.type];
@@ -126,36 +135,38 @@ bool Tetrimino::spawn (
         }
     }
 
+    // Only needed to create the blocks for a ghost
+    if (ghost)
+    {
+        return true;
+    }
+
     fallElapsed = sideElapsed = rotElapsed = 0;
     sideVel = rotVel = 0;
     
     // If movement control buttons are pressed, set corresponding velocities
-    const Uint8* keys = SDL_GetKeyboardState(NULL);
-    if (keys[SDL_SCANCODE_RIGHT] || keys[SDL_SCANCODE_D])
+    keyLayout->store_pressed();
+    if (keyLayout->pressed(RIGHT))
     {
         sideVel += TETRIMINO_SIDE_SPEED;
     }
-    if (keys[SDL_SCANCODE_LEFT] || keys[SDL_SCANCODE_A])
+    if (keyLayout->pressed(LEFT))
     {
         sideVel -= TETRIMINO_SIDE_SPEED;
     }
-    if (keys[SDL_SCANCODE_DOWN] || keys[SDL_SCANCODE_S])
+    if (keyLayout->pressed(ACC))
     {
         fallDelay /= TETRIMINO_DROP_ACC;
     }
-    if (keys[SDL_SCANCODE_Q])
+    if (keyLayout->pressed(ROT_CCW))
     {
         rotVel += TETRIMINO_ROT_SPEED;
     }
-    if (keys[SDL_SCANCODE_E])
+    if (keyLayout->pressed(ROT_CW))
     {
         rotVel -= TETRIMINO_ROT_SPEED;
     }
-    
-    this->type = config.type;
-    this->rot = config.rot;
-    this->posX = posX;
-    this->posY = posY;
+
     this->fallDelay = fallDelay;
 
     return fit;
@@ -189,7 +200,7 @@ void Tetrimino::render (int x, int y, int size)
     if (!check_collision_bottom())
     {
         Tetrimino ghost;
-        ghost.init(field, blockTextureSheet);
+        ghost.init(field, blockTextureSheet, nullptr);
         ghost.spawn(posX, posY, -1, TetriminoConfig(type, rot), true);
         ghost.drop();
         ghost.render(x, y, size);
@@ -202,59 +213,53 @@ void Tetrimino::handle_event (Game &game, const SDL_Event &e)
     {
         return;
     }
-    if (e.type == SDL_KEYDOWN && e.key.repeat == 0)
+    keyLayout->handle_event(game, e);
+    if (keyLayout->get_type() == SDL_KEYDOWN && keyLayout->get_repeat() == 0)
     {
-        switch (e.key.keysym.sym)
+        switch (keyLayout->get_map())
         {
-        case SDLK_RIGHT:
-        case SDLK_d:
+        case RIGHT:
             shift(1);
             sideVel += TETRIMINO_SIDE_SPEED;
             break;
-        case SDLK_LEFT:
-        case SDLK_a:
+        case LEFT:
             shift(-1);
             sideVel -= TETRIMINO_SIDE_SPEED;
             break;
-        case SDLK_DOWN:
-        case SDLK_s:
+        case ACC:
             fallDelay /= TETRIMINO_DROP_ACC;
             break;
-        case SDLK_UP:
-        case SDLK_w:
+        case DROP:
             drop();
             stop();
             break;
-        case SDLK_q:
+        case ROT_CCW:
             rotate(1);
             rotVel += TETRIMINO_ROT_SPEED;
             break;
-        case SDLK_e:
+        case ROT_CW:
             rotate(-1);
             rotVel -= TETRIMINO_ROT_SPEED;
             break;
         }
     }
-    else if (e.type == SDL_KEYUP && e.key.repeat == 0)
+    else if (keyLayout->get_type() == SDL_KEYUP && keyLayout->get_repeat() == 0)
     {
-        switch (e.key.keysym.sym)
+        switch (keyLayout->get_map())
         {
-        case SDLK_RIGHT:
-        case SDLK_d:
+        case RIGHT:
             sideVel -= TETRIMINO_SIDE_SPEED;
             break;
-        case SDLK_LEFT:
-        case SDLK_a:
+        case LEFT:
             sideVel += TETRIMINO_SIDE_SPEED;
             break;
-        case SDLK_DOWN:
-        case SDLK_s:
+        case ACC:
             fallDelay *= TETRIMINO_DROP_ACC;
             break;
-        case SDLK_q:
+        case ROT_CCW:
             rotVel -= TETRIMINO_ROT_SPEED;
             break;
-        case SDLK_e:
+        case ROT_CW:
             rotVel += TETRIMINO_ROT_SPEED;
             break;
         }
