@@ -17,7 +17,12 @@ void Game::init ()
     log("Initializing Game", __FILE__, __LINE__);
 
     // Initialize SDL libraries
-    if (SDL_Init(SDL_INIT_VIDEO) < 0)
+    if (
+        SDL_Init(
+            SDL_INIT_VIDEO | SDL_INIT_JOYSTICK | SDL_INIT_HAPTIC |
+            SDL_INIT_GAMECONTROLLER
+        ) < 0
+    )
     {
         throw ExceptionSDL(__FILE__, __LINE__, SDL_GetError());
     }
@@ -43,6 +48,7 @@ void Game::init ()
     window.init();
     renderer.init(window);
     font.init("fonts/font.ttf", 30);
+    gamepads.init();
 
     // Initialize tetrimino
     Tetrimino::load_schemes("schemes.txt");
@@ -138,6 +144,7 @@ void Game::free ()
     window.free();
     renderer.free();
     font.free();
+    gamepads.free();
 
     IMG_Quit();
     TTF_Quit();

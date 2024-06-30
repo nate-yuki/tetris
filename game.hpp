@@ -10,6 +10,7 @@
 #include "window.hpp"
 #include "renderer.hpp"
 #include "font.hpp"
+#include "gamepad.hpp"
 #include "texture.hpp"
 #include "text.hpp"
 #include "shapes.hpp"
@@ -194,6 +195,7 @@ private:
     Window window;
     Font font;
     Renderer renderer;
+    GamepadManager gamepads;
     GameState *currState, *nextState;
     bool paused;
 

@@ -34,18 +34,20 @@ run: tetris.exe
 clean:
 	rm -f *.o all
 
-tetris.exe: main.o game.o util.o states.o window.o renderer.o font.o texture.o \
-key_layout.o particles.o shapes.o text.o textbox.o timer.o timed_media.o menu.o \
-tetris_field.o tetrimino.o tetris_layout.o exceptions.o logger.o
+tetris.exe: main.o game.o util.o states.o window.o renderer.o font.o gamepad.o \
+texture.o key_layout.o particles.o shapes.o text.o textbox.o timer.o timed_media.o \
+menu.o tetris_field.o tetrimino.o tetris_layout.o exceptions.o logger.o
 main.o: main.cpp game.hpp exceptions.hpp logger.hpp
-game.o: game.cpp game.hpp window.hpp renderer.hpp texture.hpp shapes.hpp states.hpp \
-util.hpp constants.hpp exceptions.hpp logger.hpp
+game.o: game.cpp game.hpp window.hpp renderer.hpp font.hpp gamepad.hpp texture.hpp \
+text.hpp shapes.hpp textbox.hpp menu.hpp states.hpp util.hpp constants.hpp \
+exceptions.hpp logger.hpp
 util.o: util.cpp util.hpp
 states.o: states.cpp states.hpp game.hpp texture.hpp timer.hpp menu.hpp \
 key_layout.hpp tetris_layout.hpp util.hpp constants.hpp exceptions.hpp logger.hpp
 window.o: window.cpp window.hpp constants.hpp exceptions.hpp logger.hpp
 renderer.o: renderer.cpp renderer.hpp window.hpp util.hpp exceptions.hpp logger.hpp
 font.o: font.cpp font.hpp util.hpp exceptions.hpp
+gamepad.o: gamepad.cpp gamepad.hpp
 texture.o: texture.cpp texture.hpp renderer.hpp font.hpp util.hpp exceptions.hpp \
 logger.hpp
 key_layout.o: key_layout.cpp key_layout.hpp game.hpp
