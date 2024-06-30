@@ -20,7 +20,7 @@ void Text::init (
     this->color = color;
     this->maxText = maxText.size() ? maxText : text;
     lastW = lastH = -1;
-    lastPtSize = 1;
+    lastPtSize = -1;
 }
 
 void Text::free ()
@@ -30,6 +30,10 @@ void Text::free ()
 
 void Text::render (int x, int y, int w, int h, TextAlign centering)
 {
+    if (text.empty())
+    {
+        return;
+    }
     if (w != lastW || h != lastH)
     {
         if (font->text_fits(maxText, w, h))
@@ -43,10 +47,10 @@ void Text::render (int x, int y, int w, int h, TextAlign centering)
         if (font->get_size() != lastPtSize)
         {
             texture.load_from_text(*renderer, *font, text, color);
+            lastPtSize = font->get_size();
         }
         lastW = w;
         lastH = h;
-        lastPtSize = font->get_size();
     }
     switch (centering)
     {
