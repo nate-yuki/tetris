@@ -71,10 +71,10 @@ void TetrisLayout::free ()
 
 void TetrisLayout::handle_event (Game &game, const SDL_Event &e)
 {
+    tetrimino.handle_event(game, e);
+
     if (!game.is_paused())
     {
-        tetrimino.handle_event(game, e);
-
         keyLayout->handle_event(game, e);
         if (keyLayout->get_type() == SDL_KEYDOWN && keyLayout->get_repeat() == 0)
         {

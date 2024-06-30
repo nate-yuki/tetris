@@ -219,26 +219,41 @@ void Tetrimino::handle_event (Game &game, const SDL_Event &e)
         switch (keyLayout->get_map())
         {
         case RIGHT:
-            shift(1);
+            if (!game.is_paused())
+            {
+                shift(1);
+            }
             sideVel += TETRIMINO_SIDE_SPEED;
             break;
         case LEFT:
-            shift(-1);
+            if (!game.is_paused())
+            {
+                shift(-1);
+            }
             sideVel -= TETRIMINO_SIDE_SPEED;
             break;
         case ACC:
             fallDelay /= TETRIMINO_DROP_ACC;
             break;
         case DROP:
-            drop();
-            stop();
+            if (!game.is_paused())
+            {
+                drop();
+                stop();
+            }
             break;
         case ROT_CCW:
-            rotate(1);
+            if (!game.is_paused())
+            {
+                rotate(1);
+            }
             rotVel += TETRIMINO_ROT_SPEED;
             break;
         case ROT_CW:
-            rotate(-1);
+            if (!game.is_paused())
+            {
+                rotate(-1);
+            }
             rotVel -= TETRIMINO_ROT_SPEED;
             break;
         }
