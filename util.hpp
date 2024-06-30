@@ -12,11 +12,6 @@
 #include <string>
 
 
-using Scheme = std::vector<std::vector<int>>;
-using SchemeRow = std::vector<int>;
-using SchemeElem = int;
-
-
 /// Struct containing RGB color components in SDL format.
 struct Color
 {

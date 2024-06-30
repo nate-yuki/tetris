@@ -16,6 +16,11 @@
 #include <string>
 
 
+using SchemeElem = int;
+using SchemeRow = std::vector<SchemeElem>;
+using Scheme = std::vector<SchemeRow>;
+
+
 struct TetriminoConfig;
 
 class Block;
