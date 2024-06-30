@@ -68,7 +68,10 @@ void Game::handle_events ()
 
         window.handle_event(*this, e);
 
-        if (e.type == SDL_KEYDOWN && e.key.keysym.sym == SDLK_ESCAPE)
+        if (
+            e.type == SDL_KEYDOWN && e.key.keysym.sym == SDLK_ESCAPE &&
+            e.key.repeat == 0
+        )
         {
             if (paused)
             {
