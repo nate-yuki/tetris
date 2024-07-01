@@ -219,8 +219,8 @@ private:
     Texture bgTexture, blockTextureSheet;
     Texture fieldBgTexture, fieldFrameTexture, fieldClearTexture;
     Texture fieldClearParticleTextureSheet;
-    Text linesClearedPromptText, scorePromptText, highScorePromptText;
-    std::vector<Text> linesClearedTexts, scoreTexts, highScoreTexts;
+    Text linesClearedPromptText, scorePromptText;
+    std::vector<Text> linesClearedTexts, scoreTexts;
     std::vector<Text> msgTexts, comboTexts;
     std::vector<Timer> tetriminoTimers, clearLineTimers, msgTextTimers;
     std::vector<Timer> gameOverTimers;

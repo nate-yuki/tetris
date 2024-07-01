@@ -42,7 +42,7 @@ constexpr int TETRIMINO_MIN_FALL_DELAY = 10;
 constexpr int TETRIMINO_DROP_ACC = 16;
 
 /// Amount of pending tetriminos to show.
-constexpr int TETRIMINO_QUEUE_LEN = 8;
+constexpr int TETRIMINO_QUEUE_LEN = 6;
 
 /// Time to keep showing a tetris message for
 constexpr int TETRIS_MSG_TIME = 2500;

@@ -510,7 +510,7 @@ void TetrisState::enter (Game *game)
         get_padded(std::to_string(highScore), 9, '0'), WHITE, "999999999"
     );
     game->create_text(highScorePromptText, "High score:", WHITE);
-    game->create_text(msgText, "", WHITE, std::string(32, 'W'));
+    game->create_text(msgText, "", WHITE, std::string(24, 'W'));
     game->create_text(comboText, "Combo: 0", WHITE, "Combo: 99");
 
     game->create_key_loadout(
@@ -662,9 +662,8 @@ void TetrisPVPState::enter (Game *game)
         fieldClearParticleTextureSheet, "textures/field_particles.png", &CYAN
     );
     
-    game->create_text(linesClearedPromptText, "Lines cleared:", WHITE);
-    game->create_text(scorePromptText, "Score:", WHITE, "High score:");
-    game->create_text(highScorePromptText, "High score:", WHITE);
+    game->create_text(linesClearedPromptText, "Lines cleared:", WHITE, "999999999");
+    game->create_text(scorePromptText, "Score:", WHITE, "999999999");
 
     game->create_key_loadout(
         keyLayout, keyMap, KeyLayout::GamepadSelector::GAMEPAD_ANY
@@ -675,7 +674,6 @@ void TetrisPVPState::enter (Game *game)
     // Initializing individual objects
     linesClearedTexts.resize(players);
     scoreTexts.resize(players);
-    highScoreTexts.resize(players);
     msgTexts.resize(players);
     comboTexts.resize(players);
     tetris.resize(players);
@@ -686,16 +684,24 @@ void TetrisPVPState::enter (Game *game)
     tetrisLayouts.resize(players);
     tetriminoLayouts.resize(players);
 
+    TetrisLayout::Layout layout;
+    switch (players)
+    {
+    case 2:
+    case 3:
+        layout = TetrisLayout::REDUCED;
+        break;
+    case 4:
+        layout = TetrisLayout::MINIMAL;
+        break;
+    }
+
     for (int i = 0; i < players; ++i)
     {
         game->create_text(linesClearedTexts[i], "0000", WHITE, "999999999");
         game->create_text(scoreTexts[i], "000000000", WHITE, "999999999");
-        game->create_text(
-            highScoreTexts[i],
-            get_padded(std::to_string(0), 9, '0'), WHITE, "999999999"
-        );
-        game->create_text(msgTexts[i], "", WHITE, std::string(32, 'W'));
-        game->create_text(comboTexts[i], "Combo: 0", WHITE, "Combo: 99");
+        game->create_text(msgTexts[i], "", WHITE, std::string(24, 'W'));
+        game->create_text(comboTexts[i], "Combo: 0", WHITE, "999999999");
 
         game->create_key_loadout(tetrisLayouts[i], tetrisKeyMaps[i], i);
         game->create_key_loadout(tetriminoLayouts[i], tetriminoKeyMaps[i], i);
@@ -710,8 +716,9 @@ void TetrisPVPState::enter (Game *game)
             &fieldClearParticleTextureSheet,
             &linesClearedTexts[i], &linesClearedPromptText,
             &scoreTexts[i], &scorePromptText,
-            &highScoreTexts[i], &highScorePromptText,
-            &msgTexts[i], &comboTexts[i]
+            nullptr, nullptr,
+            &msgTexts[i], &comboTexts[i],
+            layout
         );
     }
     for (int i = 0; i < players; ++i)
@@ -747,13 +754,11 @@ void TetrisPVPState::exit ()
 
     linesClearedPromptText.free();
     scorePromptText.free();
-    highScorePromptText.free();
 
     for (int i = 0; i < players; ++i)
     {
         linesClearedTexts[i].free();
         scoreTexts[i].free();
-        highScoreTexts[i].free();
         msgTexts[i].free();
         comboTexts[i].free();
 
@@ -797,7 +802,7 @@ void TetrisPVPState::do_logic ()
         int timers_checked;
         for (timers_checked = 0; timers_checked < players; ++timers_checked)
         {
-            if (gameOverTimers[timers_checked].get_elapsed() < 1500)
+            if (gameOverTimers[timers_checked].get_elapsed() < 3000)
             {
                 break;
             }
@@ -844,10 +849,20 @@ void TetrisPVPState::render ()
             game->get_renderer_width() / 3, 0,
             game->get_renderer_width() / 3, game->get_renderer_height()
         );
+
+        // Rendering the background texture to fill empty space
+        bgTexture.render(
+            {
+                game->get_renderer_width() / 3 * 2, 0,
+                game->get_renderer_width() - game->get_renderer_width() / 3 * 2,
+                game->get_renderer_height()
+            }
+        );
         // Chosing the values to compensate for the rounding error
         tetris[2].render(
             game->get_renderer_width() / 3 * 2, 0,
-            game->get_renderer_width() - game->get_renderer_width() / 3 * 2,
+            game->get_renderer_width() / 3,
+            //game->get_renderer_width() - game->get_renderer_width() / 3 * 2,
             game->get_renderer_height()
         );
         break;

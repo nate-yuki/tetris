@@ -103,9 +103,11 @@ int Font::fit_font (const std::string &text, int w, int h, int minPtSize)
     {
         log(
             "Point size " + std::to_string(minPtSize) + " is to small to fit \""
-            + text + "\". Going back to point size " + std::to_string(currPtSize),
+            + text + "\" into " + std::to_string(w) + "x" + std::to_string(h)
+            + ". Going back to point size " + std::to_string(currPtSize),
             __FILE__, __LINE__
         );
+        
         set_size(currPtSize);
         return ptSize;
     }

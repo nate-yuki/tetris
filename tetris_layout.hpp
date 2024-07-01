@@ -28,6 +28,12 @@ public:
         SWAP,
     };
 
+    enum Layout{
+        FULL,
+        REDUCED,
+        MINIMAL,
+    };
+
     /**
      * @brief Initialize class members.
      * @param cellsHor Amount of cells in each row.
@@ -54,6 +60,7 @@ public:
      * @param highScorePromptText Text to use for high score prompt display.
      * @param msgText Text to use for messages.
      * @param comboText Text to use for current combo display.
+     * @param layout Controls how much is displayed; default is `FULL`.
      */
     void init(
         int cellsHor, int cellsVer,
@@ -66,7 +73,8 @@ public:
         Text *linesClearedText, Text *linesClearedPromptText,
         Text *scoreText, Text *scorePromptText,
         Text *highScoreText, Text *highScorePromptText,
-        Text *msgText, Text *comboText
+        Text *msgText, Text *comboText,
+        Layout layout=FULL
     );
 
     /// Free the class members.
@@ -112,6 +120,10 @@ private:
 
     static constexpr int SCORE_TETRIS = 1000; /// Additional score for a 4-line clear.
 
+    void render_full(int x, int y, int w, int h);
+    void render_reduced(int x, int y, int w, int h);
+    void render_minimal(int x, int y, int w, int h);
+
     /**
      * @brief Spawn a new tetrimino with the config from the front of the queue.
      * @details
@@ -138,6 +150,7 @@ private:
     TetrisField field;
     Tetrimino tetrimino;
 
+    Layout layout;
     std::deque<TetriminoConfig> tetriminoQueue;
     TetriminoConfig *tetriminoSwap;
     int swapped; /// Amount of tetrimino spawns since the last swap.

@@ -21,7 +21,8 @@ void TetrisLayout::init (
     Text *linesClearedText, Text *linesClearedPromptText,
     Text *scoreText, Text *scorePromptText,
     Text *highScoreText, Text *highScorePromptText,
-    Text *msgText, Text *comboText
+    Text *msgText, Text *comboText,
+    Layout layout
 )
 {
     field.init(
@@ -60,6 +61,7 @@ void TetrisLayout::init (
     this->tetriminoTimer = tetriminoTimer;
     this->clearLineTimer = clearLineTimer;
     this->gameOverTimer = gameOverTimer;
+    this->layout = layout;
 }
 
 void TetrisLayout::free ()
@@ -119,6 +121,32 @@ void TetrisLayout::render (int x, int y, int w, int h)
 {
     bgTexture->render({x, y, w, h});
 
+    switch (layout)
+    {
+    case FULL:
+        render_full(x, y, w, h);
+        break;
+    case REDUCED:
+        render_reduced(x, y, w, h);
+        break;
+    case MINIMAL:
+        render_minimal(x, y, w, h);
+        break;
+    }
+}
+
+bool TetrisLayout::game_over () const
+{
+    return gameOver;
+}
+
+int TetrisLayout::get_score () const
+{
+    return score;
+}
+
+void TetrisLayout::render_full (int x, int y, int w, int h)
+{
     int fieldW = w / 3, fieldH = 3 * h / 4;
     int fieldX = x + (w - fieldW) / 2, fieldY = y + (h - fieldH) / 2;
     int blockSize = min(fieldW / field.get_width(), fieldH / field.get_height());
@@ -183,35 +211,39 @@ void TetrisLayout::render (int x, int y, int w, int h)
         promptH,
         Text::TextAlign::TEXT_CENTER_RIGHT
     );
-    highScorePromptText->render(
-        promptX,
-        scoreBottomY - promptH - promptSpace - promptH,
-        promptW,
-        promptH,
-        Text::TextAlign::TEXT_CENTER_LEFT
-    );
-    highScoreText->render(
-        promptX,
-        scoreBottomY - promptH,
-        promptW,
-        promptH,
-        Text::TextAlign::TEXT_CENTER_RIGHT
-    );
+    if (highScorePromptText != nullptr && highScoreText != nullptr)
+    {
+        highScorePromptText->render(
+            promptX,
+            scoreBottomY - promptH - promptSpace - promptH,
+            promptW,
+            promptH,
+            Text::TextAlign::TEXT_CENTER_LEFT
+        );
+        highScoreText->render(
+            promptX,
+            scoreBottomY - promptH,
+            promptW,
+            promptH,
+            Text::TextAlign::TEXT_CENTER_RIGHT
+        );
+    }
 
     // Render combo info above the field
-    int comboY = y + h / 32;
-    int comboH = blockSize;
+    int comboSpace = h / 32;
+    int comboH = min(fieldY - y - 2 * comboSpace, blockSize);
     comboText->render(
         fieldX,
-        comboY,
+        fieldY - comboSpace - comboH,
         fieldW,
-        fieldY - comboH - comboY
+        comboH
     );
 
     // Render the message bellow the field
     int msgW = 7 * w / 8;
-    int msgH = 31 * h / 32 - (fieldY - y) - fieldH - blockSize;
-    int msgX = x + (w - msgW) / 2, msgY = fieldY + fieldH + blockSize;
+    int msgSpace = h / 32;
+    int msgH = h - 2 * msgSpace - (fieldY - y) - fieldH;
+    int msgX = x + (w - msgW) / 2, msgY = fieldY + fieldH + msgSpace;
     msg.render(
         msgX,
         msgY,
@@ -225,17 +257,170 @@ void TetrisLayout::render (int x, int y, int w, int h)
     );
 }
 
-bool TetrisLayout::game_over () const
+void TetrisLayout::render_reduced (int x, int y, int w, int h)
 {
-    return gameOver;
+    int fieldW = w / 2, fieldH = 3 * h / 4;
+    int fieldX = x + w / 12, fieldY = y + (h - fieldH) / 2;
+    int blockSize = min(fieldW / field.get_width(), fieldH / field.get_height());
+
+    // Render the swap tetrimino
+    if (tetriminoSwap != nullptr)
+    {
+        Tetrimino::render_config(
+            *tetriminoSwap,
+            fieldX + fieldW + blockSize,
+            fieldY,
+            blockSize,
+            blockTextureSheet
+        );
+    }
+    // Render the tetrimino queue
+    int queueBegX = fieldX + fieldW + 3 * blockSize / 4;
+    int queueBegY = fieldY + (MAX_SCHEME_LEN + 1) * blockSize;
+    int firstColRows = tetriminoQueue.size() / 2 + tetriminoQueue.size() % 2;
+    for (int i = 0; i < tetriminoQueue.size(); ++i)
+    {
+        int col = i >= firstColRows;
+        int row = i - col * firstColRows;
+        Tetrimino::render_config(
+            tetriminoQueue[i],
+            queueBegX + col * (MAX_SCHEME_LEN + 1) * blockSize / 2,
+            queueBegY + row * (MAX_SCHEME_LEN + 1) * blockSize / 2,
+            blockSize / 2,
+            blockTextureSheet
+        );
+    }
+
+    // Render score and lines cleared info adjacent to the field bottom
+    int promptW = blockSize * 9, promptH = blockSize;
+    int promptSpace = promptH / 2;
+    int promptX = fieldX + fieldW + blockSize;
+    int scoreBottomY = fieldY + fieldH;
+    linesClearedPromptText->render(
+        promptX,
+        scoreBottomY - 3 * promptH - 3 * promptSpace - promptSpace - promptH,
+        promptW,
+        promptH,
+        Text::TextAlign::TEXT_CENTER_LEFT
+    );
+    linesClearedText->render(
+        promptX,
+        scoreBottomY - 2 * promptH - promptSpace - 2 * promptSpace - promptH,
+        promptW,
+        promptH,
+        Text::TextAlign::TEXT_CENTER_LEFT
+    );
+    scorePromptText->render(
+        promptX,
+        scoreBottomY - promptH - promptSpace - promptH,
+        promptW,
+        promptH,
+        Text::TextAlign::TEXT_CENTER_LEFT
+    );
+    scoreText->render(
+        promptX,
+        scoreBottomY - promptH,
+        promptW,
+        promptH,
+        Text::TextAlign::TEXT_CENTER_LEFT
+    );
+
+    // Render combo info above the field
+    int comboSpace = h / 32;
+    int comboH = min(fieldY - y - 2 * comboSpace, blockSize);
+    comboText->render(
+        fieldX,
+        fieldY - comboSpace - comboH,
+        fieldW,
+        comboH
+    );
+
+    // Render the message bellow the field
+    int msgW = 7 * w / 8;
+    int msgSpace = h / 32;
+    int msgH = h - 2 * msgSpace - (fieldY - y) - fieldH;
+    int msgX = x + (w - msgW) / 2, msgY = fieldY + fieldH + msgSpace;
+    msg.render(
+        msgX,
+        msgY,
+        msgW,
+        msgH
+    );
+
+    field.render(
+        fieldX, fieldY, fieldW, fieldH,
+        tetrimino, clearLineTimer->get_elapsed() >= CLEAR_LINE_RENDER_TIME
+    );
 }
 
-int TetrisLayout::get_score () const
+void TetrisLayout::render_minimal (int x, int y, int w, int h)
 {
-    return score;
+    //log("w = " + std::to_string(w) + " h = " + std::to_string(h), __FILE__, __LINE__);
+    int paddingHor = w / 32;
+    int fieldW = 2 * w / 3, fieldH = 13 * h / 16;
+    int fieldX = x + paddingHor, fieldY = y + h - fieldH - h / 32;
+    int blockSize = min(fieldW / field.get_width(), fieldH / field.get_height());
+
+    // Render the swap tetrimino
+    if (tetriminoSwap != nullptr)
+    {
+        Tetrimino::render_config(
+            *tetriminoSwap,
+            fieldX + fieldW + blockSize / 2,
+            fieldY,
+            blockSize,
+            blockTextureSheet
+        );
+    }
+    // Render the tetrimino queue adjacent to the field bottom
+    int queueBegX = fieldX + fieldW + blockSize / 2 + blockSize / 2;
+    int queueEndY = fieldY + fieldH;
+    for (int i = 0; i < tetriminoQueue.size(); ++i)
+    {
+        Tetrimino::render_config(
+            tetriminoQueue[i],
+            queueBegX,
+            queueEndY - (tetriminoQueue.size() - i) * MAX_SCHEME_LEN * blockSize / 2
+                - (tetriminoQueue.size() - i - 1) * blockSize / 2,
+            blockSize / 2,
+            blockTextureSheet
+        );
+    }
+
+    // Render combo info above the field in the left
+    int promptSpace = h / 64;
+    int promptW = w - fieldW - blockSize - 2 * paddingHor;
+    int promptH = fieldY - y - 2 * promptSpace;
+    comboText->render(
+        fieldX,
+        fieldY - promptSpace - promptH,
+        promptW,
+        promptH,
+        Text::TEXT_CENTER_LEFT
+    );
+    // Render score info above the field in the right
+    scorePromptText->render(
+        fieldX + fieldW - promptW,
+        fieldY - promptSpace - promptH,
+        promptW,
+        promptH,
+        Text::TextAlign::TEXT_CENTER_RIGHT
+    );
+    scoreText->render(
+        fieldX + fieldW + blockSize,
+        fieldY - promptSpace - promptH,
+        promptW,
+        promptH,
+        Text::TextAlign::TEXT_CENTER_LEFT
+    );
+
+    field.render(
+        fieldX, fieldY, fieldW, fieldH,
+        tetrimino, clearLineTimer->get_elapsed() >= CLEAR_LINE_RENDER_TIME
+    );
 }
 
-void TetrisLayout::spawn_tetrimino ()
+void TetrisLayout::spawn_tetrimino()
 {
     bool tetriminoFit = tetrimino.spawn(
         (field.get_width() - MAX_SCHEME_LEN) / 2, 0, tetriminoFallDelay,
