@@ -24,7 +24,7 @@ class KeyLayout;
 class TetrisLayout
 {
 public:
-    enum KeyMap {
+    enum Commands{
         SWAP,
     };
 

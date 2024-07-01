@@ -22,9 +22,22 @@ TetrisPVPState TetrisPVPState::sTetrisPVPState;
 ResultsScreenState ResultsScreenState::sResultsScreenState;
 GameOverState GameOverState::sGameOverState;
 
+KeyMap TitleScreenState::keyMap{
+    {
+        TitleScreenState::Commands::START,
+        {SDLK_RETURN, KeyLayout::GP_CODE_SEP + SDL_CONTROLLER_BUTTON_A}
+    },
+};
+
+KeyMap TetrisState::keyMap{
+    {
+        TetrisState::Commands::END,
+        {SDLK_END, KeyLayout::GP_CODE_SEP + SDL_CONTROLLER_BUTTON_GUIDE}
+    },
+};
 KeyMap TetrisState::tetrisKeyMap{
     {
-        TetrisLayout::KeyMap::SWAP,
+        TetrisLayout::Commands::SWAP,
         {
             SDLK_SPACE,
             KeyLayout::GP_CODE_SEP + SDL_CONTROLLER_BUTTON_LEFTSHOULDER,
@@ -34,26 +47,26 @@ KeyMap TetrisState::tetrisKeyMap{
 };
 KeyMap TetrisState::tetriminoKeyMap{
     {
-        Tetrimino::KeyMap::RIGHT,
+        Tetrimino::Commands::RIGHT,
         {
             SDLK_RIGHT, SDLK_d,
             KeyLayout::GP_CODE_SEP + SDL_CONTROLLER_BUTTON_DPAD_RIGHT
         }
     },
     {
-        Tetrimino::KeyMap::LEFT,
+        Tetrimino::Commands::LEFT,
         {SDLK_LEFT, SDLK_a, KeyLayout::GP_CODE_SEP + SDL_CONTROLLER_BUTTON_DPAD_LEFT}
     },
     {
-        Tetrimino::KeyMap::ACC,
+        Tetrimino::Commands::ACC,
         {SDLK_DOWN, SDLK_s, KeyLayout::GP_CODE_SEP + SDL_CONTROLLER_BUTTON_DPAD_DOWN}
     },
     {
-        Tetrimino::KeyMap::DROP,
+        Tetrimino::Commands::DROP,
         {SDLK_UP, SDLK_w, KeyLayout::GP_CODE_SEP + SDL_CONTROLLER_BUTTON_DPAD_UP}
     },
     {
-        Tetrimino::KeyMap::ROT_CCW,
+        Tetrimino::Commands::ROT_CCW,
         {
             SDLK_RSHIFT, SDLK_q,
             KeyLayout::GP_CODE_SEP + SDL_CONTROLLER_BUTTON_B,
@@ -61,7 +74,7 @@ KeyMap TetrisState::tetriminoKeyMap{
         }
     },
     {
-        Tetrimino::KeyMap::ROT_CW,
+        Tetrimino::Commands::ROT_CW,
         {
             SDLK_e, SDLK_KP_1,
             KeyLayout::GP_CODE_SEP + SDL_CONTROLLER_BUTTON_A,
@@ -70,10 +83,16 @@ KeyMap TetrisState::tetriminoKeyMap{
     },
 };
 
+KeyMap TetrisPVPState::keyMap{
+    {
+        TetrisPVPState::Commands::END,
+        {SDLK_END, KeyLayout::GP_CODE_SEP + SDL_CONTROLLER_BUTTON_GUIDE}
+    },
+};
 std::vector<KeyMap> TetrisPVPState::tetrisKeyMaps{
     {
         {
-            TetrisLayout::KeyMap::SWAP,
+            TetrisLayout::Commands::SWAP,
             {
                 SDLK_SPACE,
                 KeyLayout::GP_CODE_SEP + SDL_CONTROLLER_BUTTON_LEFTSHOULDER,
@@ -83,7 +102,7 @@ std::vector<KeyMap> TetrisPVPState::tetrisKeyMaps{
     },
     {
         {
-            TetrisLayout::KeyMap::SWAP,
+            TetrisLayout::Commands::SWAP,
             {
                 SDLK_RETURN,
                 KeyLayout::GP_CODE_SEP + SDL_CONTROLLER_BUTTON_LEFTSHOULDER,
@@ -93,7 +112,7 @@ std::vector<KeyMap> TetrisPVPState::tetrisKeyMaps{
     },
     {
         {
-            TetrisLayout::KeyMap::SWAP,
+            TetrisLayout::Commands::SWAP,
             {
                 KeyLayout::GP_CODE_SEP + SDL_CONTROLLER_BUTTON_LEFTSHOULDER,
                 KeyLayout::GP_CODE_SEP + SDL_CONTROLLER_BUTTON_RIGHTSHOULDER
@@ -102,7 +121,7 @@ std::vector<KeyMap> TetrisPVPState::tetrisKeyMaps{
     },
     {
         {
-            TetrisLayout::KeyMap::SWAP,
+            TetrisLayout::Commands::SWAP,
             {
                 KeyLayout::GP_CODE_SEP + SDL_CONTROLLER_BUTTON_LEFTSHOULDER,
                 KeyLayout::GP_CODE_SEP + SDL_CONTROLLER_BUTTON_RIGHTSHOULDER
@@ -113,23 +132,23 @@ std::vector<KeyMap> TetrisPVPState::tetrisKeyMaps{
 std::vector<KeyMap> TetrisPVPState::tetriminoKeyMaps{
     {
         {
-            Tetrimino::KeyMap::RIGHT,
+            Tetrimino::Commands::RIGHT,
             {SDLK_d, KeyLayout::GP_CODE_SEP + SDL_CONTROLLER_BUTTON_DPAD_RIGHT}
         },
         {
-            Tetrimino::KeyMap::LEFT,
+            Tetrimino::Commands::LEFT,
             {SDLK_a, KeyLayout::GP_CODE_SEP + SDL_CONTROLLER_BUTTON_DPAD_LEFT}
         },
         {
-            Tetrimino::KeyMap::ACC,
+            Tetrimino::Commands::ACC,
             {SDLK_s, KeyLayout::GP_CODE_SEP + SDL_CONTROLLER_BUTTON_DPAD_DOWN}
         },
         {
-            Tetrimino::KeyMap::DROP,
+            Tetrimino::Commands::DROP,
             {SDLK_w, KeyLayout::GP_CODE_SEP + SDL_CONTROLLER_BUTTON_DPAD_UP}
         },
         {
-            Tetrimino::KeyMap::ROT_CCW,
+            Tetrimino::Commands::ROT_CCW,
             {
                 SDLK_q,
                 KeyLayout::GP_CODE_SEP + SDL_CONTROLLER_BUTTON_B,
@@ -137,7 +156,7 @@ std::vector<KeyMap> TetrisPVPState::tetriminoKeyMaps{
             }
         },
         {
-            Tetrimino::KeyMap::ROT_CW,
+            Tetrimino::Commands::ROT_CW,
             {
                 SDLK_e,
                 KeyLayout::GP_CODE_SEP + SDL_CONTROLLER_BUTTON_A,
@@ -147,23 +166,23 @@ std::vector<KeyMap> TetrisPVPState::tetriminoKeyMaps{
     },
     {
         {
-            Tetrimino::KeyMap::RIGHT,
+            Tetrimino::Commands::RIGHT,
             {SDLK_RIGHT, KeyLayout::GP_CODE_SEP + SDL_CONTROLLER_BUTTON_DPAD_RIGHT}
         },
         {
-            Tetrimino::KeyMap::LEFT,
+            Tetrimino::Commands::LEFT,
             {SDLK_LEFT, KeyLayout::GP_CODE_SEP + SDL_CONTROLLER_BUTTON_DPAD_LEFT}
         },
         {
-            Tetrimino::KeyMap::ACC,
+            Tetrimino::Commands::ACC,
             {SDLK_DOWN, KeyLayout::GP_CODE_SEP + SDL_CONTROLLER_BUTTON_DPAD_DOWN}
         },
         {
-            Tetrimino::KeyMap::DROP,
+            Tetrimino::Commands::DROP,
             {SDLK_UP, KeyLayout::GP_CODE_SEP + SDL_CONTROLLER_BUTTON_DPAD_UP}
         },
         {
-            Tetrimino::KeyMap::ROT_CCW,
+            Tetrimino::Commands::ROT_CCW,
             {
                 SDLK_RSHIFT,
                 KeyLayout::GP_CODE_SEP + SDL_CONTROLLER_BUTTON_B,
@@ -171,7 +190,7 @@ std::vector<KeyMap> TetrisPVPState::tetriminoKeyMaps{
             }
         },
         {
-            Tetrimino::KeyMap::ROT_CW,
+            Tetrimino::Commands::ROT_CW,
             {
                 SDLK_KP_1,
                 KeyLayout::GP_CODE_SEP + SDL_CONTROLLER_BUTTON_A,
@@ -181,30 +200,30 @@ std::vector<KeyMap> TetrisPVPState::tetriminoKeyMaps{
     },
     {
         {
-            Tetrimino::KeyMap::RIGHT,
+            Tetrimino::Commands::RIGHT,
             {KeyLayout::GP_CODE_SEP + SDL_CONTROLLER_BUTTON_DPAD_RIGHT}
         },
         {
-            Tetrimino::KeyMap::LEFT,
+            Tetrimino::Commands::LEFT,
             {KeyLayout::GP_CODE_SEP + SDL_CONTROLLER_BUTTON_DPAD_LEFT}
         },
         {
-            Tetrimino::KeyMap::ACC,
+            Tetrimino::Commands::ACC,
             {KeyLayout::GP_CODE_SEP + SDL_CONTROLLER_BUTTON_DPAD_DOWN}
         },
         {
-            Tetrimino::KeyMap::DROP,
+            Tetrimino::Commands::DROP,
             {KeyLayout::GP_CODE_SEP + SDL_CONTROLLER_BUTTON_DPAD_UP}
         },
         {
-            Tetrimino::KeyMap::ROT_CCW,
+            Tetrimino::Commands::ROT_CCW,
             {
                 KeyLayout::GP_CODE_SEP + SDL_CONTROLLER_BUTTON_B,
                 KeyLayout::GP_CODE_SEP + SDL_CONTROLLER_BUTTON_Y
             }
         },
         {
-            Tetrimino::KeyMap::ROT_CW,
+            Tetrimino::Commands::ROT_CW,
             {
                 KeyLayout::GP_CODE_SEP + SDL_CONTROLLER_BUTTON_A,
                 KeyLayout::GP_CODE_SEP + SDL_CONTROLLER_BUTTON_X
@@ -213,35 +232,42 @@ std::vector<KeyMap> TetrisPVPState::tetriminoKeyMaps{
     },
     {
         {
-            Tetrimino::KeyMap::RIGHT,
+            Tetrimino::Commands::RIGHT,
             {KeyLayout::GP_CODE_SEP + SDL_CONTROLLER_BUTTON_DPAD_RIGHT}
         },
         {
-            Tetrimino::KeyMap::LEFT,
+            Tetrimino::Commands::LEFT,
             {KeyLayout::GP_CODE_SEP + SDL_CONTROLLER_BUTTON_DPAD_LEFT}
         },
         {
-            Tetrimino::KeyMap::ACC,
+            Tetrimino::Commands::ACC,
             {KeyLayout::GP_CODE_SEP + SDL_CONTROLLER_BUTTON_DPAD_DOWN}
         },
         {
-            Tetrimino::KeyMap::DROP,
+            Tetrimino::Commands::DROP,
             {KeyLayout::GP_CODE_SEP + SDL_CONTROLLER_BUTTON_DPAD_UP}
         },
         {
-            Tetrimino::KeyMap::ROT_CCW,
+            Tetrimino::Commands::ROT_CCW,
             {
                 KeyLayout::GP_CODE_SEP + SDL_CONTROLLER_BUTTON_B,
                 KeyLayout::GP_CODE_SEP + SDL_CONTROLLER_BUTTON_Y
             }
         },
         {
-            Tetrimino::KeyMap::ROT_CW,
+            Tetrimino::Commands::ROT_CW,
             {
                 KeyLayout::GP_CODE_SEP + SDL_CONTROLLER_BUTTON_A,
                 KeyLayout::GP_CODE_SEP + SDL_CONTROLLER_BUTTON_X
             }
         },
+    },
+};
+
+KeyMap ResultsScreenState::keyMap{
+    {
+        ResultsScreenState::Commands::SKIP,
+        {SDLK_RETURN, KeyLayout::GP_CODE_SEP + SDL_CONTROLLER_BUTTON_A}
     },
 };
 
@@ -262,6 +288,10 @@ void TitleScreenState::enter (Game *game)
     game->load_texture_from_file(bgTexture, "textures/bg.png");
     game->create_text(titleText, "TETRIS", WHITE);
     game->create_text(promptText, "(press Enter to start)", WHITE);
+
+    game->create_key_loadout(
+        keyLayout, keyMap, KeyLayout::GamepadSelector::GAMEPAD_ANY
+    );
 }
 
 void TitleScreenState::exit ()
@@ -275,9 +305,15 @@ void TitleScreenState::exit ()
 
 void TitleScreenState::handle_event (Game &game, const SDL_Event &e)
 {
-    if (e.type == SDL_KEYDOWN && e.key.keysym.sym == SDLK_RETURN && !game.is_paused())
+    keyLayout.handle_event(game, e);
+    if (keyLayout.get_type() == KeyLayout::DOWN && !game.is_paused())
     {
-        game.set_next_state(MenuState::get());
+        switch (keyLayout.get_map())
+        {
+        case START:
+            game.set_next_state(MenuState::get());
+            break;
+        }
     }
 }
 
@@ -478,6 +514,9 @@ void TetrisState::enter (Game *game)
     game->create_text(comboText, "Combo: 0", WHITE, "Combo: 99");
 
     game->create_key_loadout(
+        keyLayout, keyMap, KeyLayout::GamepadSelector::GAMEPAD_ANY
+    );
+    game->create_key_loadout(
         tetrisLayout, tetrisKeyMap, KeyLayout::GamepadSelector::GAMEPAD_ANY
     );
     game->create_key_loadout(
@@ -549,9 +588,15 @@ void TetrisState::exit ()
 void TetrisState::handle_event (Game &game, const SDL_Event &e)
 {
     // Force transition to ResultsScreenState
-    if (e.type == SDL_KEYDOWN && e.key.keysym.sym == SDLK_END && !game.is_paused())
+    keyLayout.handle_event(game, e);
+    if (keyLayout.get_type() == KeyLayout::DOWN && !game.is_paused())
     {
-        game.set_next_state(ResultsScreenState::get());
+        switch (keyLayout.get_map())
+        {
+        case END:
+            game.set_next_state(ResultsScreenState::get());
+            break;
+        }
     }
 
     tetris.handle_event(game, e);
@@ -620,6 +665,10 @@ void TetrisPVPState::enter (Game *game)
     game->create_text(linesClearedPromptText, "Lines cleared:", WHITE);
     game->create_text(scorePromptText, "Score:", WHITE, "High score:");
     game->create_text(highScorePromptText, "High score:", WHITE);
+
+    game->create_key_loadout(
+        keyLayout, keyMap, KeyLayout::GamepadSelector::GAMEPAD_ANY
+    );
 
     players = game->get_players();
 
@@ -715,9 +764,15 @@ void TetrisPVPState::exit ()
 void TetrisPVPState::handle_event (Game &game, const SDL_Event &e)
 {
     // Force transition to ResultsScreenState
-    if (e.type == SDL_KEYDOWN && e.key.keysym.sym == SDLK_END && !game.is_paused())
+    keyLayout.handle_event(game, e);
+    if (keyLayout.get_type() == KeyLayout::DOWN && !game.is_paused())
     {
-        game.set_next_state(ResultsScreenState::get());
+        switch (keyLayout.get_map())
+        {
+        case END:
+            game.set_next_state(ResultsScreenState::get());
+            break;
+        }
     }
 
     for (int i = 0; i < players; ++i)
@@ -856,6 +911,10 @@ void ResultsScreenState::enter (Game *game)
     game->load_texture_from_file(bgTexture, "textures/bg.png");
     game->create_text(titleText, "Game over!", WHITE);
 
+    game->create_key_loadout(
+        keyLayout, keyMap, KeyLayout::GamepadSelector::GAMEPAD_ANY
+    );
+
     std::string resultsMsg;
     int score = game->get_score();
     if (game->get_players() == 1)
@@ -890,15 +949,21 @@ void ResultsScreenState::exit()
 void ResultsScreenState::handle_event (Game &game, const SDL_Event &e)
 {
     // Force transition to MenuState
-    if (!game.is_paused() && e.type == SDL_KEYDOWN && e.key.keysym.sym == SDLK_RETURN)
+    keyLayout.handle_event(game, e);
+    if (keyLayout.get_type() == KeyLayout::DOWN && !game.is_paused())
     {
-        if (game.get_players() == 1)
+        switch (keyLayout.get_map())
         {
-            game.set_next_state(MenuState::get());
-        }
-        else
-        {
-            game.set_next_state(PlayersSelectState::get());
+        case SKIP:
+            if (game.get_players() == 1)
+            {
+                game.set_next_state(MenuState::get());
+            }
+            else
+            {
+                game.set_next_state(PlayersSelectState::get());
+            }
+            break;
         }
     }
 }

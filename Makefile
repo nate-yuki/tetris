@@ -57,7 +57,7 @@ text.o: text.cpp text.hpp texture.hpp
 textbox.o: textbox.cpp textbox.hpp texture.hpp shapes.hpp text.hpp util.hpp logger.hpp
 timer.o: timer.cpp timer.hpp
 timed_media.o: timed_media.cpp timed_media.hpp text.hpp timer.hpp
-menu.o: menu.cpp menu.hpp shapes.hpp textbox.hpp util.hpp
+menu.o: menu.cpp menu.hpp game.hpp textbox.hpp util.hpp
 tetris_field.o: tetris_field.cpp tetris_field.hpp texture.hpp
 tetrimino.o: tetrimino.cpp tetrimino.hpp tetris_field.hpp texture.hpp game.hpp \
 key_layout.hpp

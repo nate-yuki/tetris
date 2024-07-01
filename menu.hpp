@@ -7,15 +7,16 @@
 #define MENU_HPP
 
 
-#include "renderer.hpp"
-#include "font.hpp"
 #include "textbox.hpp"
+#include "key_layout.hpp"
 #include "util.hpp"
 
 #include <SDL2/SDL.h>
 #include <string>
 #include <vector>
 
+
+class Game;
 
 /**
  * @brief A multiple row menu with a prompt at the top allowing for a single option
@@ -24,13 +25,18 @@
 class Menu
 {
 public:
+    enum Commands{
+        UP,
+        DOWN,
+        SELECT,
+    };
+
     /**
      * @brief Initialize class members.
      * @details
      * The longest text length is used for font fitting.
      * First row is set as the default selected one.
-     * @param renderer Renderer to use for text rendering.
-     * @param font Font to use for text.
+     * @param game `Game` object to use for object creation.
      * @param prompt Prompt text.
      * @param options Option texts in order.
      * @param promptFillColor Fill color for the prompt box.
@@ -43,7 +49,7 @@ public:
      * @param optionTextColor Option text color.
      */
     void init(
-        Renderer &renderer, Font &font,
+        Game &game,
         const std::string &prompt, const std::vector<std::string> &options,
         const Color &promptFillColor={128, 128, 128},
         const Color &promptFrameColor=BLACK,
@@ -79,6 +85,9 @@ public:
     int choosen_option() const;
 
 private:
+    static KeyMap keyMap;
+
+    KeyLayout keyLayout;
     TextBox promptBox;
     std::vector<TextBox> optionBoxes;
     Color selectedOptionFillColor, selectedOptionFrameColor;

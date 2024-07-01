@@ -33,6 +33,10 @@ class GameState;
 class Game
 {
 public:
+    enum Commands{
+        PAUSE,
+    };
+
     /**
      * @brief Initialize SDL libraries and class members.
      * @throws `ExceptionSDL` thrown if an SDL library could not be initialized.
@@ -201,6 +205,8 @@ public:
     int get_winner() const;
 
 private:
+    static KeyMap keyMap;
+    
     void pause();
     void unpause();
 
@@ -208,6 +214,7 @@ private:
     Font font;
     Renderer renderer;
     GamepadManager gamepads;
+    KeyLayout keyLayout;
     GameState *currState, *nextState;
     bool paused;
 

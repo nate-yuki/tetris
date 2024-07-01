@@ -4,11 +4,28 @@
  */
 
 #include "menu.hpp"
+#include "game.hpp"
 #include "util.hpp"
 
 
+KeyMap Menu::keyMap{
+    {
+        Menu::Commands::UP,
+        {SDLK_UP, KeyLayout::GP_CODE_SEP + SDL_CONTROLLER_BUTTON_DPAD_UP}
+    },
+    {
+        Menu::Commands::DOWN,
+        {SDLK_DOWN, KeyLayout::GP_CODE_SEP + SDL_CONTROLLER_BUTTON_DPAD_DOWN}
+    },
+    {
+        Menu::Commands::SELECT,
+        {SDLK_RETURN, KeyLayout::GP_CODE_SEP + SDL_CONTROLLER_BUTTON_A}
+    },
+};
+
+
 void Menu::init (
-    Renderer &renderer, Font &font,
+    Game &game,
     const std::string &prompt, const std::vector<std::string> &options,
     const Color &promptFillColor, const Color &promptFrameColor,
     const Color &optionFillColor, const Color &optionFrameColor,
@@ -16,6 +33,10 @@ void Menu::init (
     const Color &promptTextColor, const Color &optionTextColor
 )
 {
+    game.create_key_loadout(
+        keyLayout, keyMap, KeyLayout::GamepadSelector::GAMEPAD_ANY
+    );
+
     // Create text for fitting
     unsigned maxLen = prompt.size();
     for (const std::string &option : options)
@@ -28,15 +49,14 @@ void Menu::init (
     std::string maxText(maxLen, 'W');
 
     // Initialize boxes
-    promptBox.init(
-        renderer, font, prompt,
-        promptFillColor, promptFrameColor, promptTextColor, maxText
+    game.create_text_box(
+        promptBox, prompt, promptFillColor, promptFrameColor, promptTextColor, maxText
     );
     optionBoxes.resize(options.size());
     for (unsigned i = 0; i < options.size(); ++i)
     {
-        optionBoxes[i].init(
-            renderer, font, options[i],
+        game.create_text_box(
+            optionBoxes[i], options[i],
             optionFillColor, optionFrameColor, optionTextColor, maxText
         );
     }
@@ -67,11 +87,12 @@ void Menu::free ()
 
 void Menu::handle_event (Game &game, const SDL_Event &e)
 {
-    if (e.type == SDL_KEYDOWN)
+    keyLayout.handle_event(game, e);
+    if (keyLayout.get_type() == KeyLayout::DOWN)
     {
-        switch (e.key.keysym.sym)
+        switch (keyLayout.get_map())
         {
-        case SDLK_UP:
+        case UP:
             // Paint the previous selected option box with the default color
             optionBoxes[selectedInd].set_fill_color(optionFillColor);
             optionBoxes[selectedInd].set_frame_color(optionFrameColor);
@@ -85,7 +106,7 @@ void Menu::handle_event (Game &game, const SDL_Event &e)
             optionBoxes[selectedInd].set_frame_color(selectedOptionFrameColor);
             break;
             
-        case SDLK_DOWN:
+        case DOWN:
             // Paint the previous selected option box with the default color
             optionBoxes[selectedInd].set_fill_color(optionFillColor);
             optionBoxes[selectedInd].set_frame_color(optionFrameColor);
@@ -99,7 +120,7 @@ void Menu::handle_event (Game &game, const SDL_Event &e)
             optionBoxes[selectedInd].set_frame_color(selectedOptionFrameColor);
             break;
 
-        case SDLK_RETURN:
+        case SELECT:
             choiceMade = true;
             break;
         }

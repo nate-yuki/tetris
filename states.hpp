@@ -55,6 +55,12 @@ class TitleScreenState: public GameState
 public:
     static TitleScreenState *get();
 
+    enum Commands{
+        START,
+    };
+
+    static KeyMap keyMap;
+
     void enter(Game *game);
     void exit();
 
@@ -72,6 +78,7 @@ private:
     TitleScreenState();
 
     Game *game;
+    KeyLayout keyLayout;
     Texture bgTexture;
     Text titleText, promptText;
 };
@@ -132,6 +139,10 @@ class TetrisState: public GameState
 public:
     static TetrisState *get();
 
+    enum Commands{
+        END,
+    };
+
     /// Read the high score.
     void enter(Game *game);
 
@@ -153,10 +164,10 @@ private:
     static TetrisState sTetrisState;
     TetrisState();
 
-    static KeyMap tetrisKeyMap, tetriminoKeyMap;
+    static KeyMap keyMap, tetrisKeyMap, tetriminoKeyMap;
 
     Game *game;
-    KeyLayout tetrisLayout, tetriminoLayout;
+    KeyLayout keyLayout, tetrisLayout, tetriminoLayout;
     Texture bgTexture, blockTextureSheet;
     Texture fieldBgTexture, fieldFrameTexture, fieldClearTexture;
     Texture fieldClearParticleTextureSheet;
@@ -174,6 +185,10 @@ class TetrisPVPState: public GameState
 {
 public:
     static TetrisPVPState *get();
+
+    enum Commands{
+        END,
+    };
 
     void enter(Game *game);
 
@@ -194,10 +209,12 @@ public:
 private:
     static TetrisPVPState sTetrisPVPState;
     TetrisPVPState();
-    
+
+    static KeyMap keyMap;
     static std::vector<KeyMap> tetrisKeyMaps, tetriminoKeyMaps;
 
     Game *game;
+    KeyLayout keyLayout;
     std::vector<KeyLayout> tetrisLayouts, tetriminoLayouts;
     Texture bgTexture, blockTextureSheet;
     Texture fieldBgTexture, fieldFrameTexture, fieldClearTexture;
@@ -217,6 +234,10 @@ class ResultsScreenState: public GameState
 {
 public:
     static ResultsScreenState *get();
+
+    enum Commands{
+        SKIP,
+    };
 
     /// Get the score from `game` and construct messages.
     void enter(Game *game);
@@ -238,7 +259,10 @@ private:
     static ResultsScreenState sResultsScreenState;
     ResultsScreenState();
 
+    static KeyMap keyMap;
+
     Game *game;
+    KeyLayout keyLayout;
     Texture bgTexture;
     Text titleText, resultsText;
 

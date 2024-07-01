@@ -32,6 +32,15 @@ class KeyLayout;
 class Tetrimino
 {
 public:
+    enum Commands{
+        RIGHT,
+        LEFT,
+        ACC,
+        DROP,
+        ROT_CCW,
+        ROT_CW,
+    };
+    
     /// Tetrimino scheme type values.
     enum TetriminoType {
         TETRIMINO_I,
@@ -51,15 +60,6 @@ public:
         TETRIMINO_ROTATION_180,
         TETRIMINO_ROTATION_270,
         TETRIMINO_ROTATION_TOTAL,
-    };
-
-    enum KeyMap {
-        RIGHT,
-        LEFT,
-        ACC,
-        DROP,
-        ROT_CCW,
-        ROT_CW,
     };
 
     /// Read and store tetrimino schemes from `path`.

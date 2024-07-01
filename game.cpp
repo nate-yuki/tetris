@@ -10,6 +10,14 @@
 #include "logger.hpp"
 
 
+KeyMap Game::keyMap{
+    {
+        Game::Commands::PAUSE,
+        {SDLK_ESCAPE, KeyLayout::GP_CODE_SEP + SDL_CONTROLLER_BUTTON_START}
+    },
+};
+
+
 void Game::init ()
 {
     log("Initializing Game", __FILE__, __LINE__);
@@ -50,6 +58,7 @@ void Game::init ()
     renderer.init(window);
     font.init("fonts/font.ttf", 30);
     gamepads.init();
+    create_key_loadout(keyLayout, keyMap, KeyLayout::GamepadSelector::GAMEPAD_ANY);
 
     // Initialize tetrimino
     Tetrimino::load_schemes("schemes.txt");
@@ -75,18 +84,21 @@ void Game::handle_events ()
 
         window.handle_event(*this, e);
 
-        if (
-            e.type == SDL_KEYDOWN && e.key.keysym.sym == SDLK_ESCAPE &&
-            e.key.repeat == 0
-        )
+        keyLayout.handle_event(*this, e);
+        if (keyLayout.get_type() == KeyLayout::DOWN && keyLayout.get_repeat() == 0)
         {
-            if (paused)
+            switch (keyLayout.get_map())
             {
-                unpause();
-            }
-            else
-            {
-                pause();
+            case PAUSE:
+                if (paused)
+                {
+                    unpause();
+                }
+                else
+                {
+                    pause();
+                }
+                break;
             }
         }
 
@@ -211,7 +223,7 @@ void Game::create_menu (
 )
 {
     menu.init(
-        renderer, font, prompt, options,
+        *this, prompt, options,
         promptFillColor, promptFrameColor, optionFillColor, optionFrameColor,
         selectedOptionFillColor, selectedOptionFrameColor,
         promptTextColor, optionTextColor
