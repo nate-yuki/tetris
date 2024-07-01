@@ -78,8 +78,9 @@ const std::string make_log_msg(const char *file, int line, const std::string &ms
  * @param msg Log message.
  * @param file `__FILE__` initialized at the calling line.
  * @param line `__LINE__` initialized at the calling line.
+ * @param flush If true, flush after writing.
  */
-void log(const std::string &msg, const char *file, int line);
+void log(const std::string &msg, const char *file, int line, bool flush=FLUSH_ALL);
 
 
 #endif
