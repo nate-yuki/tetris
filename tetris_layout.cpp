@@ -71,6 +71,11 @@ void TetrisLayout::free ()
 
 void TetrisLayout::handle_event (Game &game, const SDL_Event &e)
 {
+    if (gameOver)
+    {
+        return;
+    }
+    
     tetrimino.handle_event(game, e);
 
     if (!game.is_paused())

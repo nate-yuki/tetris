@@ -72,7 +72,12 @@ public:
     /// Free the class members.
     void free();
 
-    /// If the game is not paused, handle tetrimino events, swap on SPACE key press.
+    /**
+     * @brief If the game is not over, handle events.
+     * @details
+     * Handles tetrimino events, and, if the game is not paused, swaps on `SWAP` key
+     * press.
+     */
     void handle_event(Game &game, const SDL_Event &e);
 
     /**
