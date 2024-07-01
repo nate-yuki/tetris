@@ -12,6 +12,7 @@
 #include "font.hpp"
 #include "gamepad.hpp"
 #include "texture.hpp"
+#include "key_layout.hpp"
 #include "text.hpp"
 #include "shapes.hpp"
 #include "textbox.hpp"
@@ -89,6 +90,17 @@ public:
     void create_text(
         Text &text, const std::string &line,
         const Color &color=BLACK, const std::string &maxText=""
+    );
+
+    /**
+     * @brief Initialize `keyLayout`.
+     * @param[out] keyLayout `KeyLayout` object to initialize.
+     * @param[in] mapping .
+     * @param[in] gamepadInd .
+     */
+    void create_key_loadout(
+        KeyLayout &keyLayout, KeyMap &mapping,
+        int gamepadInd=KeyLayout::GamepadSelector::GAMEPAD_NONE
     );
 
     void create_box(Box &box, const Color &fillColor, const Color &frameColor);

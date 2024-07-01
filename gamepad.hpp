@@ -34,10 +34,12 @@ public:
     void init();
     void free();
     void handle_event(Game &game, const SDL_Event &e);
+    SDL_JoystickID get_id(int index) const;
     void vibrate (
         int index=GAMEPAD_ALL,
         Uint32 duration=0, Uint16 low_freq=0xFFFF, Uint16 high_freq=0xFFFF
     );
+    bool button_pressed(int index, int button);
 
 private:
     std::vector<Gamepad> gamepads;

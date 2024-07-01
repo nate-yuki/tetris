@@ -151,6 +151,21 @@ void Gamepad::vibrate (Uint32 duration, Uint16 low_freq, Uint16 high_freq)
     }
 }
 
+bool Gamepad::button_pressed (int button)
+{
+    if (gameController != NULL)
+    {
+        return SDL_GameControllerGetButton(
+            gameController, SDL_GameControllerButton(button)
+        );
+    }
+    if (joystick != NULL)
+    {
+        return SDL_JoystickGetButton(joystick, button);
+    }
+    return false;
+}
+
 
 void GamepadManager::init ()
 {
@@ -292,6 +307,15 @@ void GamepadManager::handle_event (Game &game, const SDL_Event &e)
     }
 }
 
+SDL_JoystickID GamepadManager::get_id (int index) const
+{
+    if (index < gamepads.size())
+    {
+        return gamepads[index].get_id();
+    }
+    return -1;
+}
+
 void GamepadManager::vibrate (
     int index, Uint32 duration, Uint16 low_freq, Uint16 high_freq
 )
@@ -307,4 +331,24 @@ void GamepadManager::vibrate (
     {
         gamepads[index].vibrate(duration, low_freq, high_freq);
     }
+}
+
+bool GamepadManager::button_pressed (int index, int button)
+{
+    if (index == GAMEPAD_ANY)
+    {
+        for (Gamepad &gamepad : gamepads)
+        {
+            if (gamepad.button_pressed(button))
+            {
+                return true;
+            }
+        }
+        return false;
+    }
+    if (index < gamepads.size())
+    {
+        return gamepads[index].button_pressed(button);
+    }
+    return false;
 }

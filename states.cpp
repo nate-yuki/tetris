@@ -22,68 +22,226 @@ TetrisPVPState TetrisPVPState::sTetrisPVPState;
 ResultsScreenState ResultsScreenState::sResultsScreenState;
 GameOverState GameOverState::sGameOverState;
 
-KeyLayout TetrisState::tetrisLayout(
-    KeyMap{
-        {TetrisLayout::KeyMap::SWAP, {SDLK_SPACE}},
-    }
-);
-KeyLayout TetrisState::tetriminoLayout(
-    KeyMap{
-        {Tetrimino::KeyMap::RIGHT, {SDLK_RIGHT, SDLK_d}},
-        {Tetrimino::KeyMap::LEFT, {SDLK_LEFT, SDLK_a}},
-        {Tetrimino::KeyMap::ACC, {SDLK_DOWN, SDLK_s}},
-        {Tetrimino::KeyMap::DROP, {SDLK_UP, SDLK_w}},
-        {Tetrimino::KeyMap::ROT_CCW, {SDLK_RSHIFT, SDLK_q}},
-        {Tetrimino::KeyMap::ROT_CW, {SDLK_e, SDLK_KP_1}},
-    }
-);
-
-std::vector<KeyLayout> TetrisPVPState::tetrisLayouts{
-    KeyMap{
-        {TetrisLayout::KeyMap::SWAP, {SDLK_SPACE}},
-    },
-    KeyMap{
-        {TetrisLayout::KeyMap::SWAP, {SDLK_RETURN}},
-    },
-    KeyMap{
-        {TetrisLayout::KeyMap::SWAP, {SDLK_RETURN}},
-    },
-    KeyMap{
-        {TetrisLayout::KeyMap::SWAP, {SDLK_RETURN}},
+KeyMap TetrisState::tetrisKeyMap{
+    {
+        TetrisLayout::KeyMap::SWAP,
+        {
+            SDLK_SPACE,
+            KeyLayout::GP_CODE_SEP + SDL_CONTROLLER_BUTTON_LEFTSHOULDER,
+            KeyLayout::GP_CODE_SEP + SDL_CONTROLLER_BUTTON_RIGHTSHOULDER
+        }
     },
 };
-std::vector<KeyLayout> TetrisPVPState::tetriminoLayouts{
-    KeyMap{
-        {Tetrimino::KeyMap::RIGHT, {SDLK_d}},
-        {Tetrimino::KeyMap::LEFT, {SDLK_a}},
-        {Tetrimino::KeyMap::ACC, {SDLK_s}},
-        {Tetrimino::KeyMap::DROP, {SDLK_w}},
-        {Tetrimino::KeyMap::ROT_CCW, {SDLK_q}},
-        {Tetrimino::KeyMap::ROT_CW, {SDLK_e}},
+KeyMap TetrisState::tetriminoKeyMap{
+    {
+        Tetrimino::KeyMap::RIGHT,
+        {
+            SDLK_RIGHT, SDLK_d,
+            KeyLayout::GP_CODE_SEP + SDL_CONTROLLER_BUTTON_DPAD_RIGHT
+        }
     },
-    KeyMap{
-        {Tetrimino::KeyMap::RIGHT, {SDLK_RIGHT}},
-        {Tetrimino::KeyMap::LEFT, {SDLK_LEFT}},
-        {Tetrimino::KeyMap::ACC, {SDLK_DOWN}},
-        {Tetrimino::KeyMap::DROP, {SDLK_UP}},
-        {Tetrimino::KeyMap::ROT_CCW, {SDLK_RSHIFT}},
-        {Tetrimino::KeyMap::ROT_CW, {SDLK_KP_1}},
+    {
+        Tetrimino::KeyMap::LEFT,
+        {SDLK_LEFT, SDLK_a, KeyLayout::GP_CODE_SEP + SDL_CONTROLLER_BUTTON_DPAD_LEFT}
     },
-    KeyMap{
-        {Tetrimino::KeyMap::RIGHT, {SDLK_RIGHT}},
-        {Tetrimino::KeyMap::LEFT, {SDLK_LEFT}},
-        {Tetrimino::KeyMap::ACC, {SDLK_DOWN}},
-        {Tetrimino::KeyMap::DROP, {SDLK_UP}},
-        {Tetrimino::KeyMap::ROT_CCW, {SDLK_RSHIFT}},
-        {Tetrimino::KeyMap::ROT_CW, {SDLK_KP_1}},
+    {
+        Tetrimino::KeyMap::ACC,
+        {SDLK_DOWN, SDLK_s, KeyLayout::GP_CODE_SEP + SDL_CONTROLLER_BUTTON_DPAD_DOWN}
     },
-    KeyMap{
-        {Tetrimino::KeyMap::RIGHT, {SDLK_RIGHT}},
-        {Tetrimino::KeyMap::LEFT, {SDLK_LEFT}},
-        {Tetrimino::KeyMap::ACC, {SDLK_DOWN}},
-        {Tetrimino::KeyMap::DROP, {SDLK_UP}},
-        {Tetrimino::KeyMap::ROT_CCW, {SDLK_RSHIFT}},
-        {Tetrimino::KeyMap::ROT_CW, {SDLK_KP_1}},
+    {
+        Tetrimino::KeyMap::DROP,
+        {SDLK_UP, SDLK_w, KeyLayout::GP_CODE_SEP + SDL_CONTROLLER_BUTTON_DPAD_UP}
+    },
+    {
+        Tetrimino::KeyMap::ROT_CCW,
+        {
+            SDLK_RSHIFT, SDLK_q,
+            KeyLayout::GP_CODE_SEP + SDL_CONTROLLER_BUTTON_B,
+            KeyLayout::GP_CODE_SEP + SDL_CONTROLLER_BUTTON_Y
+        }
+    },
+    {
+        Tetrimino::KeyMap::ROT_CW,
+        {
+            SDLK_e, SDLK_KP_1,
+            KeyLayout::GP_CODE_SEP + SDL_CONTROLLER_BUTTON_A,
+            KeyLayout::GP_CODE_SEP + SDL_CONTROLLER_BUTTON_X
+        }
+    },
+};
+
+std::vector<KeyMap> TetrisPVPState::tetrisKeyMaps{
+    {
+        {
+            TetrisLayout::KeyMap::SWAP,
+            {
+                SDLK_SPACE,
+                KeyLayout::GP_CODE_SEP + SDL_CONTROLLER_BUTTON_LEFTSHOULDER,
+                KeyLayout::GP_CODE_SEP + SDL_CONTROLLER_BUTTON_RIGHTSHOULDER
+            }
+        }
+    },
+    {
+        {
+            TetrisLayout::KeyMap::SWAP,
+            {
+                SDLK_RETURN,
+                KeyLayout::GP_CODE_SEP + SDL_CONTROLLER_BUTTON_LEFTSHOULDER,
+                KeyLayout::GP_CODE_SEP + SDL_CONTROLLER_BUTTON_RIGHTSHOULDER
+            }
+        }
+    },
+    {
+        {
+            TetrisLayout::KeyMap::SWAP,
+            {
+                KeyLayout::GP_CODE_SEP + SDL_CONTROLLER_BUTTON_LEFTSHOULDER,
+                KeyLayout::GP_CODE_SEP + SDL_CONTROLLER_BUTTON_RIGHTSHOULDER
+            }
+        }
+    },
+    {
+        {
+            TetrisLayout::KeyMap::SWAP,
+            {
+                KeyLayout::GP_CODE_SEP + SDL_CONTROLLER_BUTTON_LEFTSHOULDER,
+                KeyLayout::GP_CODE_SEP + SDL_CONTROLLER_BUTTON_RIGHTSHOULDER
+            }
+        }
+    },
+};
+std::vector<KeyMap> TetrisPVPState::tetriminoKeyMaps{
+    {
+        {
+            Tetrimino::KeyMap::RIGHT,
+            {SDLK_d, KeyLayout::GP_CODE_SEP + SDL_CONTROLLER_BUTTON_DPAD_RIGHT}
+        },
+        {
+            Tetrimino::KeyMap::LEFT,
+            {SDLK_a, KeyLayout::GP_CODE_SEP + SDL_CONTROLLER_BUTTON_DPAD_LEFT}
+        },
+        {
+            Tetrimino::KeyMap::ACC,
+            {SDLK_s, KeyLayout::GP_CODE_SEP + SDL_CONTROLLER_BUTTON_DPAD_DOWN}
+        },
+        {
+            Tetrimino::KeyMap::DROP,
+            {SDLK_w, KeyLayout::GP_CODE_SEP + SDL_CONTROLLER_BUTTON_DPAD_UP}
+        },
+        {
+            Tetrimino::KeyMap::ROT_CCW,
+            {
+                SDLK_q,
+                KeyLayout::GP_CODE_SEP + SDL_CONTROLLER_BUTTON_B,
+                KeyLayout::GP_CODE_SEP + SDL_CONTROLLER_BUTTON_Y
+            }
+        },
+        {
+            Tetrimino::KeyMap::ROT_CW,
+            {
+                SDLK_e,
+                KeyLayout::GP_CODE_SEP + SDL_CONTROLLER_BUTTON_A,
+                KeyLayout::GP_CODE_SEP + SDL_CONTROLLER_BUTTON_X
+            }
+        },
+    },
+    {
+        {
+            Tetrimino::KeyMap::RIGHT,
+            {SDLK_RIGHT, KeyLayout::GP_CODE_SEP + SDL_CONTROLLER_BUTTON_DPAD_RIGHT}
+        },
+        {
+            Tetrimino::KeyMap::LEFT,
+            {SDLK_LEFT, KeyLayout::GP_CODE_SEP + SDL_CONTROLLER_BUTTON_DPAD_LEFT}
+        },
+        {
+            Tetrimino::KeyMap::ACC,
+            {SDLK_DOWN, KeyLayout::GP_CODE_SEP + SDL_CONTROLLER_BUTTON_DPAD_DOWN}
+        },
+        {
+            Tetrimino::KeyMap::DROP,
+            {SDLK_UP, KeyLayout::GP_CODE_SEP + SDL_CONTROLLER_BUTTON_DPAD_UP}
+        },
+        {
+            Tetrimino::KeyMap::ROT_CCW,
+            {
+                SDLK_RSHIFT,
+                KeyLayout::GP_CODE_SEP + SDL_CONTROLLER_BUTTON_B,
+                KeyLayout::GP_CODE_SEP + SDL_CONTROLLER_BUTTON_Y
+            }
+        },
+        {
+            Tetrimino::KeyMap::ROT_CW,
+            {
+                SDLK_KP_1,
+                KeyLayout::GP_CODE_SEP + SDL_CONTROLLER_BUTTON_A,
+                KeyLayout::GP_CODE_SEP + SDL_CONTROLLER_BUTTON_X
+            }
+        },
+    },
+    {
+        {
+            Tetrimino::KeyMap::RIGHT,
+            {KeyLayout::GP_CODE_SEP + SDL_CONTROLLER_BUTTON_DPAD_RIGHT}
+        },
+        {
+            Tetrimino::KeyMap::LEFT,
+            {KeyLayout::GP_CODE_SEP + SDL_CONTROLLER_BUTTON_DPAD_LEFT}
+        },
+        {
+            Tetrimino::KeyMap::ACC,
+            {KeyLayout::GP_CODE_SEP + SDL_CONTROLLER_BUTTON_DPAD_DOWN}
+        },
+        {
+            Tetrimino::KeyMap::DROP,
+            {KeyLayout::GP_CODE_SEP + SDL_CONTROLLER_BUTTON_DPAD_UP}
+        },
+        {
+            Tetrimino::KeyMap::ROT_CCW,
+            {
+                KeyLayout::GP_CODE_SEP + SDL_CONTROLLER_BUTTON_B,
+                KeyLayout::GP_CODE_SEP + SDL_CONTROLLER_BUTTON_Y
+            }
+        },
+        {
+            Tetrimino::KeyMap::ROT_CW,
+            {
+                KeyLayout::GP_CODE_SEP + SDL_CONTROLLER_BUTTON_A,
+                KeyLayout::GP_CODE_SEP + SDL_CONTROLLER_BUTTON_X
+            }
+        },
+    },
+    {
+        {
+            Tetrimino::KeyMap::RIGHT,
+            {KeyLayout::GP_CODE_SEP + SDL_CONTROLLER_BUTTON_DPAD_RIGHT}
+        },
+        {
+            Tetrimino::KeyMap::LEFT,
+            {KeyLayout::GP_CODE_SEP + SDL_CONTROLLER_BUTTON_DPAD_LEFT}
+        },
+        {
+            Tetrimino::KeyMap::ACC,
+            {KeyLayout::GP_CODE_SEP + SDL_CONTROLLER_BUTTON_DPAD_DOWN}
+        },
+        {
+            Tetrimino::KeyMap::DROP,
+            {KeyLayout::GP_CODE_SEP + SDL_CONTROLLER_BUTTON_DPAD_UP}
+        },
+        {
+            Tetrimino::KeyMap::ROT_CCW,
+            {
+                KeyLayout::GP_CODE_SEP + SDL_CONTROLLER_BUTTON_B,
+                KeyLayout::GP_CODE_SEP + SDL_CONTROLLER_BUTTON_Y
+            }
+        },
+        {
+            Tetrimino::KeyMap::ROT_CW,
+            {
+                KeyLayout::GP_CODE_SEP + SDL_CONTROLLER_BUTTON_A,
+                KeyLayout::GP_CODE_SEP + SDL_CONTROLLER_BUTTON_X
+            }
+        },
     },
 };
 
@@ -319,6 +477,13 @@ void TetrisState::enter (Game *game)
     game->create_text(msgText, "", WHITE, std::string(32, 'W'));
     game->create_text(comboText, "Combo: 0", WHITE, "Combo: 99");
 
+    game->create_key_loadout(
+        tetrisLayout, tetrisKeyMap, KeyLayout::GamepadSelector::GAMEPAD_ANY
+    );
+    game->create_key_loadout(
+        tetriminoLayout, tetriminoKeyMap, KeyLayout::GamepadSelector::GAMEPAD_ANY
+    );
+
     tetris.init(
         TETRIS_FIELD_WIDTH, TETRIS_FIELD_HEIGHT,
         &tetrisLayout, &tetriminoLayout,
@@ -469,6 +634,8 @@ void TetrisPVPState::enter (Game *game)
     clearLineTimers.resize(players);
     msgTextTimers.resize(players);
     gameOverTimers.resize(players);
+    tetrisLayouts.resize(players);
+    tetriminoLayouts.resize(players);
 
     for (int i = 0; i < players; ++i)
     {
@@ -480,6 +647,9 @@ void TetrisPVPState::enter (Game *game)
         );
         game->create_text(msgTexts[i], "", WHITE, std::string(32, 'W'));
         game->create_text(comboTexts[i], "Combo: 0", WHITE, "Combo: 99");
+
+        game->create_key_loadout(tetrisLayouts[i], tetrisKeyMaps[i], i);
+        game->create_key_loadout(tetriminoLayouts[i], tetriminoKeyMaps[i], i);
 
         tetris[i].init(
             TETRIS_FIELD_WIDTH, TETRIS_FIELD_HEIGHT,

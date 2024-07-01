@@ -76,7 +76,7 @@ void TetrisLayout::handle_event (Game &game, const SDL_Event &e)
     if (!game.is_paused())
     {
         keyLayout->handle_event(game, e);
-        if (keyLayout->get_type() == SDL_KEYDOWN && keyLayout->get_repeat() == 0)
+        if (keyLayout->get_type() == KeyLayout::DOWN && keyLayout->get_repeat() == 0)
         {
             switch (keyLayout->get_map())
             {

@@ -25,6 +25,7 @@ struct TetriminoConfig;
 
 class Block;
 class TetrisField;
+class Game;
 class KeyLayout;
 
 /// The tetrimino class;
@@ -116,12 +117,13 @@ public:
     /**
      * @brief If initialized, handle tetrimino events.
      * @details
-     * On a/LEFT or d/RIGHT key press moves the tetrimino to the left or to the right
+     * On `RIGHT`/`LEFT` key press moves the tetrimino to the right or to the left
      * respectively and sets horizontal speed.
-     * On s/DOWN key hold increases the falling speed.
-     * On w/UP key press drops the tetrimino and moves the blocks to the TetrisField.
-     * On q or e key press rotates the tetrimino counter-clockwise or clockwise
-     * respectively and sets rotation speed.
+     * On `ACC` key hold increases the falling speed.
+     * On `DROP` key press drops the tetrimino and moves the blocks to the
+     * TetrisField.
+     * On `ROT_CCW` or `ROT_CW` key press rotates the tetrimino counter-clockwise or
+     * clockwise respectively and sets rotation speed.
      */
     void handle_event(Game &game, const SDL_Event &e);
 

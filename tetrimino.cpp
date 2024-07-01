@@ -4,6 +4,7 @@
  */
 
 #include "tetrimino.hpp"
+#include "game.hpp"
 #include "key_layout.hpp"
 #include "constants.hpp"
 #include "exceptions.hpp"
@@ -214,7 +215,7 @@ void Tetrimino::handle_event (Game &game, const SDL_Event &e)
         return;
     }
     keyLayout->handle_event(game, e);
-    if (keyLayout->get_type() == SDL_KEYDOWN && keyLayout->get_repeat() == 0)
+    if (keyLayout->get_type() == KeyLayout::DOWN && keyLayout->get_repeat() == 0)
     {
         switch (keyLayout->get_map())
         {
@@ -258,7 +259,7 @@ void Tetrimino::handle_event (Game &game, const SDL_Event &e)
             break;
         }
     }
-    else if (keyLayout->get_type() == SDL_KEYUP && keyLayout->get_repeat() == 0)
+    else if (keyLayout->get_type() == KeyLayout::UP && keyLayout->get_repeat() == 0)
     {
         switch (keyLayout->get_map())
         {

@@ -153,7 +153,7 @@ void Game::free ()
     SDL_Quit();
 }
 
-bool Game::is_over() const
+bool Game::is_over () const
 {
     return currState == GameOverState::get();
 }
@@ -175,12 +175,17 @@ void Game::load_texture_from_file (
     texture.load_from_file(renderer, path, keyColor);
 }
 
-void Game::create_text(
+void Game::create_text (
     Text &text, const std::string &line, const Color &color,
     const std::string &maxText
 )
 {
     text.init(renderer, font, line, color, maxText);
+}
+
+void Game::create_key_loadout (KeyLayout &keyLayout, KeyMap &mapping, int gamepadInd)
+{
+    keyLayout.init(mapping, &gamepads, gamepadInd);
 }
 
 void Game::create_box (Box &box, const Color &fillColor, const Color &frameColor)
@@ -243,7 +248,7 @@ bool Game::is_paused () const
     return paused;
 }
 
-void Game::set_scores(int score, int highScore)
+void Game::set_scores (int score, int highScore)
 {
     this->score = score;
     this->highScore = highScore;
@@ -279,7 +284,7 @@ int Game::get_winner () const
     return winner;
 }
 
-void Game::pause()
+void Game::pause ()
 {
     currState->pause_timers();
     paused = true;

@@ -153,9 +153,10 @@ private:
     static TetrisState sTetrisState;
     TetrisState();
 
-    static KeyLayout tetrisLayout, tetriminoLayout;
+    static KeyMap tetrisKeyMap, tetriminoKeyMap;
 
     Game *game;
+    KeyLayout tetrisLayout, tetriminoLayout;
     Texture bgTexture, blockTextureSheet;
     Texture fieldBgTexture, fieldFrameTexture, fieldClearTexture;
     Texture fieldClearParticleTextureSheet;
@@ -194,9 +195,10 @@ private:
     static TetrisPVPState sTetrisPVPState;
     TetrisPVPState();
     
-    static std::vector<KeyLayout> tetrisLayouts, tetriminoLayouts;
+    static std::vector<KeyMap> tetrisKeyMaps, tetriminoKeyMaps;
 
     Game *game;
+    std::vector<KeyLayout> tetrisLayouts, tetriminoLayouts;
     Texture bgTexture, blockTextureSheet;
     Texture fieldBgTexture, fieldFrameTexture, fieldClearTexture;
     Texture fieldClearParticleTextureSheet;
