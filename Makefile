@@ -47,7 +47,7 @@ key_layout.hpp tetris_layout.hpp util.hpp constants.hpp exceptions.hpp logger.hp
 window.o: window.cpp window.hpp constants.hpp exceptions.hpp logger.hpp
 renderer.o: renderer.cpp renderer.hpp window.hpp util.hpp exceptions.hpp logger.hpp
 font.o: font.cpp font.hpp util.hpp exceptions.hpp
-gamepad.o: gamepad.cpp gamepad.hpp
+gamepad.o: gamepad.cpp gamepad.hpp game.hpp logger.hpp
 texture.o: texture.cpp texture.hpp renderer.hpp font.hpp util.hpp exceptions.hpp \
 logger.hpp
 key_layout.o: key_layout.cpp key_layout.hpp game.hpp

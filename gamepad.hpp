@@ -6,15 +6,20 @@
 #include <vector>
 
 
+class Game;
+
 class Gamepad
 {
 public:
     void init(int ind);
     void free();
+    SDL_JoystickID get_id() const;
+    bool is_attached();
     void vibrate(Uint32 duration=0, Uint16 low_freq=0xFFFF, Uint16 high_freq=0xFFFF);
+    bool button_pressed(int button);
 
 private:
-    int index;
+    SDL_JoystickID id;
     SDL_GameController *gameController = NULL;
     SDL_Joystick *joystick = NULL;
     SDL_Haptic *joyHaptic = NULL;
@@ -24,10 +29,13 @@ private:
 class GamepadManager
 {
 public:
+    static constexpr int GAMEPAD_ANY = -1, GAMEPAD_ALL = -1;
+
     void init();
     void free();
+    void handle_event(Game &game, const SDL_Event &e);
     void vibrate (
-        int index=-1,
+        int index=GAMEPAD_ALL,
         Uint32 duration=0, Uint16 low_freq=0xFFFF, Uint16 high_freq=0xFFFF
     );
 

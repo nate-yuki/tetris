@@ -9,8 +9,6 @@
 #include "exceptions.hpp"
 #include "logger.hpp"
 
-#include <cstdio>
-
 
 void Game::init ()
 {
@@ -28,7 +26,10 @@ void Game::init ()
     }
     if (!SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "1"))
     {
-        printf("Warning: Linear texture filtering not enabled!");
+        log(
+            "[WARNING] Linear texture filtering not enabled!",
+            __FILE__, __LINE__, true
+        );
     }
 
     int imgFlags = IMG_INIT_PNG;
@@ -89,6 +90,7 @@ void Game::handle_events ()
             }
         }
 
+        gamepads.handle_event(*this, e);
         currState->handle_event(*this, e);
     }
 }
