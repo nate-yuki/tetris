@@ -364,32 +364,34 @@ void Tetrimino::drop()
     }
 }
 
-void Tetrimino::rotate (int dir, bool checkAdjacent)
+bool Tetrimino::check_adjacent (int dir, int dx, int dy)
+{
+    posX += dx;
+    posY += dy;
+    if (rotate(dir, false))
+    {
+        return true;
+    }
+    posX -= dx;
+    posY -= dy;
+    return false;
+}
+
+bool Tetrimino::rotate (int dir, bool checkAdjacent)
 {
     int newRot = (rot + dir + TETRIMINO_ROTATION_TOTAL) % TETRIMINO_ROTATION_TOTAL;
     int col;
-    
-    bool left0 = checkAdjacent, right0 = checkAdjacent;
-    bool top0 = checkAdjacent, bottom0 = checkAdjacent;
 
     // Check wether rotating creates a collision
     for (int row = 0; row < MAX_SCHEME_LEN; ++row)
     {
-        if ((*rotations)[newRot][row][0])
-        {
-            left0 = false;
-        }
-        if ((*rotations)[newRot][row][MAX_SCHEME_LEN - 1])
-        {
-            right0 = false;
-        }
         for (col = 0; col < MAX_SCHEME_LEN; ++col)
         {
             if ((*rotations)[newRot][row][col])
             {
                 if (
                     posX + col < 0 || posX + col >= field->get_width() ||
-                    posY + row >= field->get_height() ||
+                    posY + row < 0 || posY + row >= field->get_height() ||
                     field->has_block(posX + col, posY + row)
                 )
                 {
@@ -397,61 +399,30 @@ void Tetrimino::rotate (int dir, bool checkAdjacent)
                     break;
                 }
             }
-            if ((*rotations)[newRot][0][col])
-            {
-                top0 = false;
-            }
-            if ((*rotations)[newRot][MAX_SCHEME_LEN - 1][col])
-            {
-                bottom0 = false;
-            }
         }
     }
     if (col == MAX_SCHEME_LEN)
     {
         // No collisions
         rot = TetriminoRotation(newRot);
+        return true;
     }
-    else
+    if (checkAdjacent)
     {
-        // If there was a collision, try shifting once if the scheme allows it
-        if (left0)
+        // If there was a collision, try shifting no more than twice
+        if (
+            check_adjacent(dir, -1, 0) || check_adjacent(dir, 1, 0) ||
+            check_adjacent(dir, 0, -1) || check_adjacent(dir, 0, 1) ||
+            check_adjacent(dir, -2, 0) || check_adjacent(dir, 2, 0) ||
+            check_adjacent(dir, 0, -2) || check_adjacent(dir, 0, 2) ||
+            check_adjacent(dir, -1, -1) || check_adjacent(dir, 1, -1) ||
+            check_adjacent(dir, -1, 1) || check_adjacent(dir, 1, 1)
+        )
         {
-            --posX;
-            rotate(dir, false);
-            if (rot != newRot)
-            {
-                ++posX;
-            }
-        }
-        if (rot != newRot && right0)
-        {
-            ++posX;
-            rotate(dir, false);
-            if (rot != newRot)
-            {
-                --posX;
-            }
-        }
-        if (rot != newRot && bottom0)
-        {
-            ++posY;
-            rotate(dir, false);
-            if (rot != newRot)
-            {
-                --posY;
-            }
-        }
-        if (rot != newRot && top0)
-        {
-            --posY;
-            rotate(dir, false);
-            if (rot != newRot)
-            {
-                ++posY;
-            }
+            return true;
         }
     }
+    return false;
 }
 
 bool Tetrimino::check_collision_left ()

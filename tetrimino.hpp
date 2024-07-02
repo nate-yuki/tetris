@@ -173,13 +173,18 @@ private:
      */
     void drop();
 
+    /// `true` if the tetrimino was rotated by `dir` after shifting by `dx`, `dy`.
+    bool check_adjacent(int dir, int dx, int dy);
+
     /**
      * @brief Rotate the tetrimino if it doesn't create a collision.
      * @param dir Amount of rotations. Positive values rotate counter-clockwise,
      *     negative values rotate clockwise.
      * @param checkAdjacent If `true` and rotation causes a collision, tries to shift
-     *     the tetrimino once in each direction if the scheme allows it.
+     *     the tetrimino once or twice before rotating.
+     * @return `true` if the tetrimino was rotated.
      */
+    bool rotate(int dir, bool checkAdjacent=true);
     void rotate(int dir, bool checkAdjacent=true);
 
     /// Check if the tetrimino overlaps with a field block or exceeds the left wall.
