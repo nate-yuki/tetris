@@ -235,6 +235,10 @@ void Tetrimino::handle_event (Game &game, const SDL_Event &e)
             break;
         case ACC:
             fallDelay /= TETRIMINO_DROP_ACC;
+            if (fallElapsed > fallDelay)
+            {
+                fallElapsed = fallDelay;
+            }
             break;
         case DROP:
             if (!game.is_paused())
@@ -271,6 +275,7 @@ void Tetrimino::handle_event (Game &game, const SDL_Event &e)
             break;
         case ACC:
             fallDelay *= TETRIMINO_DROP_ACC;
+            fallElapsed *= TETRIMINO_DROP_ACC;
             break;
         case ROT_CCW:
             rotVel -= TETRIMINO_ROT_SPEED;
