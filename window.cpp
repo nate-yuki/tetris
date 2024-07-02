@@ -117,7 +117,7 @@ void Window::handle_event (Game &game, const SDL_Event &e)
         keyLayout.handle_event(game, e);
         if (keyLayout.get_type() == KeyLayout::DOWN)
         {
-            switch (keyLayout.get_map())
+            switch (keyLayout.get_command())
             {
             case FULL_SCREEN_TOGGLE:
                 if (fullScreen)

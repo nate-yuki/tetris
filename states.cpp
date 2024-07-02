@@ -32,7 +32,7 @@ KeyMap TitleScreenState::keyMap{
 KeyMap TetrisState::keyMap{
     {
         TetrisState::Commands::END,
-        {SDLK_END, KeyLayout::GP_CODE_SEP + SDL_CONTROLLER_BUTTON_GUIDE}
+        {SDLK_END, KeyLayout::GP_CODE_SEP + SDL_CONTROLLER_BUTTON_RIGHTSTICK}
     },
 };
 KeyMap TetrisState::tetrisKeyMap{
@@ -86,7 +86,7 @@ KeyMap TetrisState::tetriminoKeyMap{
 KeyMap TetrisPVPState::keyMap{
     {
         TetrisPVPState::Commands::END,
-        {SDLK_END, KeyLayout::GP_CODE_SEP + SDL_CONTROLLER_BUTTON_GUIDE}
+        {SDLK_END, KeyLayout::GP_CODE_SEP + SDL_CONTROLLER_BUTTON_RIGHTSTICK}
     },
 };
 std::vector<KeyMap> TetrisPVPState::tetrisKeyMaps{
@@ -308,7 +308,7 @@ void TitleScreenState::handle_event (Game &game, const SDL_Event &e)
     keyLayout.handle_event(game, e);
     if (keyLayout.get_type() == KeyLayout::DOWN && !game.is_paused())
     {
-        switch (keyLayout.get_map())
+        switch (keyLayout.get_command())
         {
         case START:
             game.set_next_state(MenuState::get());
@@ -591,7 +591,7 @@ void TetrisState::handle_event (Game &game, const SDL_Event &e)
     keyLayout.handle_event(game, e);
     if (keyLayout.get_type() == KeyLayout::DOWN && !game.is_paused())
     {
-        switch (keyLayout.get_map())
+        switch (keyLayout.get_command())
         {
         case END:
             game.set_next_state(ResultsScreenState::get());
@@ -772,7 +772,7 @@ void TetrisPVPState::handle_event (Game &game, const SDL_Event &e)
     keyLayout.handle_event(game, e);
     if (keyLayout.get_type() == KeyLayout::DOWN && !game.is_paused())
     {
-        switch (keyLayout.get_map())
+        switch (keyLayout.get_command())
         {
         case END:
             game.set_next_state(ResultsScreenState::get());
@@ -967,7 +967,7 @@ void ResultsScreenState::handle_event (Game &game, const SDL_Event &e)
     keyLayout.handle_event(game, e);
     if (keyLayout.get_type() == KeyLayout::DOWN && !game.is_paused())
     {
-        switch (keyLayout.get_map())
+        switch (keyLayout.get_command())
         {
         case SKIP:
             if (game.get_players() == 1)

@@ -24,14 +24,16 @@ class KeyLayout;
 class TetrisLayout
 {
 public:
+    /// Tetris commands.
     enum Commands{
-        SWAP,
+        SWAP, // Swap the tetrimino with the buffered one.
     };
 
+    /// Tetris layout settings.
     enum Layout{
-        FULL,
-        REDUCED,
-        MINIMAL,
+        FULL, // The full layout.
+        REDUCED, // No high score.
+        MINIMAL, // No high score, no lines cleared, no messages.
     };
 
     /**
@@ -120,8 +122,13 @@ private:
 
     static constexpr int SCORE_TETRIS = 1000; /// Additional score for a 4-line clear.
 
+    /// Render the full layout.
     void render_full(int x, int y, int w, int h);
+
+    /// Render the reduced layout.
     void render_reduced(int x, int y, int w, int h);
+
+    /// Render the minimal layout.
     void render_minimal(int x, int y, int w, int h);
 
     /**

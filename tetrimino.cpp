@@ -217,7 +217,7 @@ void Tetrimino::handle_event (Game &game, const SDL_Event &e)
     keyLayout->handle_event(game, e);
     if (keyLayout->get_type() == KeyLayout::DOWN && keyLayout->get_repeat() == 0)
     {
-        switch (keyLayout->get_map())
+        switch (keyLayout->get_command())
         {
         case RIGHT:
             if (!game.is_paused())
@@ -237,6 +237,8 @@ void Tetrimino::handle_event (Game &game, const SDL_Event &e)
             fallDelay /= TETRIMINO_DROP_ACC;
             if (fallElapsed > fallDelay)
             {
+                // Decrease elapsed falling time so that the tetrimino does not
+                // bolt down
                 fallElapsed = fallDelay;
             }
             break;
@@ -265,7 +267,7 @@ void Tetrimino::handle_event (Game &game, const SDL_Event &e)
     }
     else if (keyLayout->get_type() == KeyLayout::UP && keyLayout->get_repeat() == 0)
     {
-        switch (keyLayout->get_map())
+        switch (keyLayout->get_command())
         {
         case RIGHT:
             sideVel -= TETRIMINO_SIDE_SPEED;
@@ -347,7 +349,7 @@ void Tetrimino::move (int dt)
     }
 }
 
-TetriminoConfig Tetrimino::get_config() const
+TetriminoConfig Tetrimino::get_config () const
 {
     return TetriminoConfig(type, rot);
 }
@@ -361,7 +363,7 @@ void Tetrimino::shift (int dx)
     }
 }
 
-void Tetrimino::drop()
+void Tetrimino::drop ()
 {
     while (!check_collision_bottom())
     {
@@ -518,7 +520,7 @@ TetriminoConfig::TetriminoConfig ()
     , rot(Tetrimino::TetriminoRotation(rand() % Tetrimino::TETRIMINO_ROTATION_TOTAL))
 {}
 
-TetriminoConfig::TetriminoConfig(
+TetriminoConfig::TetriminoConfig (
     Tetrimino::TetriminoType type, Tetrimino::TetriminoRotation rot
 )
     : type(type)

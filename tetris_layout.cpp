@@ -85,7 +85,7 @@ void TetrisLayout::handle_event (Game &game, const SDL_Event &e)
         keyLayout->handle_event(game, e);
         if (keyLayout->get_type() == KeyLayout::DOWN && keyLayout->get_repeat() == 0)
         {
-            switch (keyLayout->get_map())
+            switch (keyLayout->get_command())
             {
             case SWAP:
                 swap();
@@ -355,7 +355,6 @@ void TetrisLayout::render_reduced (int x, int y, int w, int h)
 
 void TetrisLayout::render_minimal (int x, int y, int w, int h)
 {
-    //log("w = " + std::to_string(w) + " h = " + std::to_string(h), __FILE__, __LINE__);
     int paddingHor = w / 32;
     int fieldW = 2 * w / 3, fieldH = 13 * h / 16;
     int fieldX = x + paddingHor, fieldY = y + h - fieldH - h / 32;

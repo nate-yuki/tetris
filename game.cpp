@@ -88,7 +88,7 @@ void Game::handle_events ()
         keyLayout.handle_event(*this, e);
         if (keyLayout.get_type() == KeyLayout::DOWN && keyLayout.get_repeat() == 0)
         {
-            switch (keyLayout.get_map())
+            switch (keyLayout.get_command())
             {
             case PAUSE:
                 if (paused)

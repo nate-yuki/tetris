@@ -12,7 +12,7 @@
 #include <string>
 
 
-/// Struct containing RGB color components in SDL format.
+/// A struct containing RGB color components in SDL format.
 struct Color
 {
     Uint8 r, g, b;

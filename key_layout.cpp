@@ -1,3 +1,8 @@
+/**
+ * @file  key_layout.cpp
+ * @brief Implementation of the class KeyLayout.
+ */
+
 #include "key_layout.hpp"
 #include "game.hpp"
 #include "logger.hpp"
@@ -13,7 +18,7 @@ void KeyLayout::init (KeyMap &mapping, GamepadManager *gamepads, int gamepadInd)
 void KeyLayout::handle_event (Game &game, const SDL_Event &e)
 {
     eventType = e.type;
-    map = -1;
+    command = -1;
     code = -1;
     repeat = -1;
     
@@ -45,11 +50,12 @@ void KeyLayout::handle_event (Game &game, const SDL_Event &e)
         // Falls through
     case SDL_KEYDOWN:
     case SDL_KEYUP:
+        // Get the triggered command
         for (const auto &mapKeys : mapping)
         {
             if (mapKeys.second.find(code) != mapKeys.second.end())
             {
-                map = mapKeys.first;
+                command = mapKeys.first;
                 break;
             }
         }
@@ -71,9 +77,9 @@ KeyLayout::EventType KeyLayout::get_type () const
     return NONE;
 }
 
-int KeyLayout::get_map () const
+int KeyLayout::get_command () const
 {
-    return map;
+    return command;
 }
 
 Uint8 KeyLayout::get_repeat () const
@@ -83,18 +89,23 @@ Uint8 KeyLayout::get_repeat () const
 
 void KeyLayout::store_pressed ()
 {
-    keys = SDL_GetKeyboardState(NULL);
+    const Uint8 *keys = SDL_GetKeyboardState(NULL);
     pressedKeyMaps.clear();
     for (const auto &mapKeys : mapping)
     {
         for (const auto &key : mapKeys.second)
         {
-            if (keys[SDL_GetScancodeFromKey(key)])
+            // Check the keyboard codes
+            if (key < GP_CODE_SEP)
             {
-                pressedKeyMaps.insert(mapKeys.first);
-                break;
+                if (keys[SDL_GetScancodeFromKey(key)])
+                {
+                    pressedKeyMaps.insert(mapKeys.first);
+                    break;
+                }
             }
-            if (key >= GP_CODE_SEP)
+            // Check the gamepad codes
+            else
             {
                 if (gamepads->button_pressed(gamepadInd, key - GP_CODE_SEP))
                 {
@@ -106,7 +117,7 @@ void KeyLayout::store_pressed ()
     }
 }
 
-bool KeyLayout::pressed (int keyMap) const
+bool KeyLayout::pressed (int command) const
 {
-    return pressedKeyMaps.find(keyMap) != pressedKeyMaps.end();
+    return pressedKeyMaps.find(command) != pressedKeyMaps.end();
 }

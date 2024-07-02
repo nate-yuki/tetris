@@ -38,7 +38,7 @@ void Menu::init (
     );
 
     // Create text for fitting
-    unsigned maxLen = prompt.size();
+    int maxLen = prompt.size();
     for (const std::string &option : options)
     {
         if (option.size() > maxLen)
@@ -90,7 +90,7 @@ void Menu::handle_event (Game &game, const SDL_Event &e)
     keyLayout.handle_event(game, e);
     if (keyLayout.get_type() == KeyLayout::DOWN)
     {
-        switch (keyLayout.get_map())
+        switch (keyLayout.get_command())
         {
         case UP:
             // Paint the previous selected option box with the default color

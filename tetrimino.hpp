@@ -28,17 +28,18 @@ class TetrisField;
 class Game;
 class KeyLayout;
 
-/// The tetrimino class;
+/// The tetrimino class.
 class Tetrimino
 {
 public:
+    /// Tetrimino commands.
     enum Commands{
-        RIGHT,
-        LEFT,
-        ACC,
-        DROP,
-        ROT_CCW,
-        ROT_CW,
+        RIGHT, // Move the tetrimino to the right.
+        LEFT, // Move the tetrimino to the left.
+        ACC, // Increase the tetrimino falling speed.
+        DROP, // Drop the tetrimino.
+        ROT_CCW, // Rotate the tetrimino counter-clockwise.
+        ROT_CW, // Rotate the tetrimino clockwise.
     };
     
     /// Tetrimino scheme type values.
@@ -62,7 +63,11 @@ public:
         TETRIMINO_ROTATION_TOTAL,
     };
 
-    /// Read and store tetrimino schemes from `path`.
+    /**
+     * @brief Read and store tetrimino schemes from `path`.
+     * @throws `ExceptionFile` thrown if `path` does not exist or is not readable, or
+     *     if there was an error during reading.
+     */
     static void load_schemes(const std::string &path);
     
     /// Create clips to use for selecting a block texture from the sheet.
@@ -185,7 +190,6 @@ private:
      * @return `true` if the tetrimino was rotated.
      */
     bool rotate(int dir, bool checkAdjacent=true);
-    void rotate(int dir, bool checkAdjacent=true);
 
     /// Check if the tetrimino overlaps with a field block or exceeds the left wall.
     bool check_collision_left();

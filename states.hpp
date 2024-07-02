@@ -55,16 +55,15 @@ class TitleScreenState: public GameState
 public:
     static TitleScreenState *get();
 
+    /// Title screen commands.
     enum Commands{
-        START,
+        START, // Start the game.
     };
-
-    static KeyMap keyMap;
 
     void enter(Game *game);
     void exit();
 
-    /// Transitions to `MenuState` on Enter press.
+    /// Transition to `MenuState` on `START` key press.
     void handle_event(Game &game, const SDL_Event &e);
 
     void do_logic();
@@ -76,6 +75,8 @@ public:
 private:
     static TitleScreenState sTitleScreenState;
     TitleScreenState();
+
+    static KeyMap keyMap;
 
     Game *game;
     KeyLayout keyLayout;
@@ -139,17 +140,24 @@ class TetrisState: public GameState
 public:
     static TetrisState *get();
 
+    /// Title screen commands.
     enum Commands{
-        END,
+        END, // Force transition to `ResultsScreenState`
     };
 
-    /// Read the high score.
+    /**
+     * @brief Read the high score.
+     * @throws `ExceptionFile` thrown if `path` does not exist or is not readable.
+     */
     void enter(Game *game);
 
-    /// Pass the scores to `Game`. If the high score has changed, write it.
+    /**
+     * @brief Pass the scores to `Game`. If the high score has changed, write it.
+     * @throws `ExceptionFile` thrown if `path` does not exist or is not writeable.
+     */
     void exit();
     
-    /// Force transition to `ResultsScreenState` on END key press.
+    /// Force transition to `ResultsScreenState` on `END` key press.
     void handle_event(Game &game, const SDL_Event &e);
 
     /// If the game is over, wait before transitioning to `ResultsScreenState`.
@@ -186,8 +194,9 @@ class TetrisPVPState: public GameState
 public:
     static TetrisPVPState *get();
 
+    /// Title screen commands.
     enum Commands{
-        END,
+        END, // Force transition to `ResultsScreenState`
     };
 
     void enter(Game *game);
@@ -195,7 +204,7 @@ public:
     /// Pass the scores to `Game`. If the high score has changed, write it.
     void exit();
     
-    /// Force transition to `ResultsScreenState` on END key press.
+    /// Force transition to `ResultsScreenState` on `END` key press.
     void handle_event(Game &game, const SDL_Event &e);
 
     /// If the game is over, wait before transitioning to `ResultsScreenState`.
@@ -235,8 +244,9 @@ class ResultsScreenState: public GameState
 public:
     static ResultsScreenState *get();
 
+    /// Results screen commands.
     enum Commands{
-        SKIP,
+        SKIP, // Force transition to a menu state.
     };
 
     /// Get the score from `game` and construct messages.
@@ -244,7 +254,7 @@ public:
 
     void exit();
 
-    /// Force transition to a menu state on Enter key press.
+    /// Force transition to a menu state on `SKIP` key press.
     void handle_event(Game &game, const SDL_Event &e);
 
     /// Wait before transitioning to a menu state.

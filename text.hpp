@@ -52,12 +52,12 @@ public:
      * @param w Maximum width.
      * @param h Maximum height.
      * @param centering Position to place the text in relative to the rectangle.
-     * @note
-     * If `w` and `h` are the same since the previous call, uses the same texture.
-     * If called for the first time or the dimensions have changed,
-     * fits the font point size starting from 1 if the current size is too small,
-     * or from current size + 1 if `text` already fits.
-     * If this results in a point size change, creates a new texture.
+     * @note If `w` and `h` are the same since the previous call, uses the same
+     *     texture.
+     * @note If called for the first time or the dimensions have changed,
+     *     fits the font point size starting from 1 if the current size is too small,
+     *     or from current size + 1 if `text` already fits.
+     *     If this results in a point size change, creates a new texture.
      */
     void render(int x, int y, int w, int h, TextAlign centering=TEXT_CENTER);
 
@@ -69,8 +69,7 @@ public:
      * Creates a new texture after setting `font` point size to the last one used for
      * rendering by this object. Should not be called before a first `render` call on
      * this object.
-     * @note
-     * `text` should fit in the same dimensions as `maxText`.
+     * @note `text` should fit in the same dimensions as `maxText`.
      */
     void set_text(const std::string &text, const Color *color=nullptr);
     

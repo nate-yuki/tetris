@@ -25,10 +25,11 @@ class Game;
 class Menu
 {
 public:
+    /// Menu commands.
     enum Commands{
-        UP,
-        DOWN,
-        SELECT,
+        UP, // Scroll up.
+        DOWN, // Scroll down.
+        SELECT, // Make the choice.
     };
 
     /**

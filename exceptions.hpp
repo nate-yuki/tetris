@@ -23,10 +23,10 @@
 class Exception
 {
 public:
-    /// Get error message.
+    /// Get the error message.
     virtual const std::string &what() const = 0;
 
-    /// Get exit code.
+    /// Get the exit code.
     virtual int get_exit_code() const = 0;
 
     virtual ~Exception(){};

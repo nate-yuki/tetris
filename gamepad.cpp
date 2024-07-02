@@ -1,7 +1,10 @@
+/**
+ * @file  gamepad.cpp
+ * @brief Implementation of the classes Gamepad and GamepadManager.
+ */
+
 #include "gamepad.hpp"
 #include "logger.hpp"
-
-
 #include "game.hpp"
 
 #include <string>

@@ -99,15 +99,33 @@ public:
     /**
      * @brief Initialize `keyLayout`.
      * @param[out] keyLayout `KeyLayout` object to initialize.
-     * @param[in] mapping .
-     * @param[in] gamepadInd .
+     * @param[in] mapping The mappings for commands.
+     * @param[in] gamepadInd Gamepad to get input from; set to
+     *     `KeyLayout::GamepadSelector::GAMEPAD_ANY` to get input from every gamepad;
+     *     by default does not use a gamepad.
      */
     void create_key_loadout(
         KeyLayout &keyLayout, KeyMap &mapping,
         int gamepadInd=KeyLayout::GamepadSelector::GAMEPAD_NONE
     );
 
+    /**
+     * @brief Initialize `box`.
+     * @param[out] box `Box` object to initialize.
+     * @param[in] fillColor Fill color.
+     * @param[in] frameColor Frame color.
+     */
     void create_box(Box &box, const Color &fillColor, const Color &frameColor);
+
+    /**
+     * @brief Initialize `box`.
+     * @param box `TextBox` object to initialize.
+     * @param line The displayed text.
+     * @param fillColor Fill color.
+     * @param frameColor Frame color.
+     * @param textColor Text color.
+     * @param maxText Text to use for font fitting; by default, `text` is used.
+     */
     void create_text_box(
         TextBox &box, const std::string &line,
         const Color &fillColor, const Color &frameColor,

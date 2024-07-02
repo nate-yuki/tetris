@@ -24,6 +24,7 @@ public:
 
     /**
      * @brief Create the window.
+     * @param game `Game` object to use for `KeyLayout` creation.
      * @throws `ExceptionSDL` thrown if the window could not be created.
      */
     void init(Game &game);
