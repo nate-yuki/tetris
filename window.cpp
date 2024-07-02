@@ -10,12 +10,20 @@
 #include "logger.hpp"
 
 
-void Window::init ()
+KeyMap Window::keyMap{
+    {
+        Window::Commands::FULL_SCREEN_TOGGLE,
+        {SDLK_F11, KeyLayout::GP_CODE_SEP + SDL_CONTROLLER_BUTTON_LEFTSTICK}
+    },
+};
+
+
+void Window::init (Game &game)
 {
     log("Initializing Window", __FILE__, __LINE__);
 
     window = SDL_CreateWindow(
-        "Pong",
+        "Tetris",
         SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED,
         WINDOW_WIDTH, WINDOW_HEIGHT,
         SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE | SDL_WINDOW_ALLOW_HIGHDPI
@@ -24,6 +32,10 @@ void Window::init ()
     {
         throw ExceptionSDL(__FILE__, __LINE__, SDL_GetError());
     }
+
+    game.create_key_loadout(
+        keyLayout, keyMap, KeyLayout::GamepadSelector::GAMEPAD_ANY
+    );
 
     w = WINDOW_WIDTH;
     h = WINDOW_HEIGHT;
@@ -45,7 +57,7 @@ void Window::free ()
 SDL_Renderer *Window::create_renderer ()
 {
     SDL_Renderer *renderer = SDL_CreateRenderer(
-        window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC
+        window, -1, SDL_RENDERER_ACCELERATED// | SDL_RENDERER_PRESENTVSYNC
     );
     if (renderer == NULL)
     {
@@ -100,18 +112,26 @@ void Window::handle_event (Game &game, const SDL_Event &e)
             break;
         }
     }
-    else if (e.type == SDL_KEYDOWN && e.key.keysym.sym == SDLK_F11)
+    else
     {
-        if (fullScreen)
+        keyLayout.handle_event(game, e);
+        if (keyLayout.get_type() == KeyLayout::DOWN)
         {
-            SDL_SetWindowFullscreen(window, 0);
-            fullScreen = false;
-        }
-        else
-        {
-            SDL_SetWindowFullscreen(window, SDL_WINDOW_FULLSCREEN_DESKTOP);
-            fullScreen = true;
-            minimized = false;
+            switch (keyLayout.get_map())
+            {
+            case FULL_SCREEN_TOGGLE:
+                if (fullScreen)
+                {
+                    SDL_SetWindowFullscreen(window, 0);
+                    fullScreen = false;
+                }
+                else
+                {
+                    SDL_SetWindowFullscreen(window, SDL_WINDOW_FULLSCREEN_DESKTOP);
+                    fullScreen = true;
+                    minimized = false;
+                }
+            }
         }
     }
 }

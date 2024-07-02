@@ -7,6 +7,8 @@
 #define WINDOW_HPP
 
 
+#include "key_layout.hpp"
+
 #include <SDL2/SDL.h>
 
 
@@ -16,11 +18,15 @@ class Game;
 class Window
 {
 public:
+    enum Commands{
+        FULL_SCREEN_TOGGLE,
+    };
+
     /**
      * @brief Create the window.
      * @throws `ExceptionSDL` thrown if the window could not be created.
      */
-    void init();
+    void init(Game &game);
 
     /// Destroy the window if it was not destroyed.
     void free();
@@ -51,7 +57,10 @@ public:
     bool is_minimized() const;
 
 private:
+    static KeyMap keyMap;
+
     SDL_Window *window = NULL;
+    KeyLayout keyLayout;
     int w, h;
     bool mouseFocus;
     bool keyboardFocus;

@@ -50,15 +50,16 @@ void Game::init ()
         throw ExceptionSDL(__FILE__, __LINE__, TTF_GetError());
     }
 
-    // Initialize particles
-    Particle::init_clips();
-
     // Initialize class members
-    window.init();
+    window.init(*this);
     renderer.init(window);
     font.init("fonts/font.ttf", 30);
     gamepads.init();
+
     create_key_loadout(keyLayout, keyMap, KeyLayout::GamepadSelector::GAMEPAD_ANY);
+
+    // Initialize particles
+    Particle::init_clips();
 
     // Initialize tetrimino
     Tetrimino::load_schemes("schemes.txt");
