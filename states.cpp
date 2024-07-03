@@ -820,13 +820,13 @@ void TetrisPVPState::do_logic ()
         int timers_checked;
         for (timers_checked = 0; timers_checked < players; ++timers_checked)
         {
-            if (gameOverTimers[timers_checked].get_elapsed() < 3000)
+            if (gameOverTimers[timers_checked].get_elapsed() < 1500)
             {
                 break;
             }
         }
         // If all game over pauses have elapsed, transit to ResultsScreenState
-        if (timers_checked = players)
+        if (timers_checked == players)
         {
             game->set_next_state(ResultsScreenState::get());
         }
