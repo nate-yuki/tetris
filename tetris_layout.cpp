@@ -40,6 +40,7 @@ void TetrisLayout::init (
         tetriminoQueue.push_back(TetriminoConfig());
     }
     tetriminoSwap = nullptr;
+    trySwap = false;
     swapped = 0;
 
     tetriminoFallDelay = TETRIMINO_INITIAL_FALL_DELAY;
@@ -79,7 +80,11 @@ void TetrisLayout::handle_event (Game &game, const SDL_Event &e)
         return;
     }
     
-    tetrimino.handle_event(game, e);
+    // Only handle current tetrimino event if it is not being swapped
+    if (!trySwap)
+    {
+        tetrimino.handle_event(game, e);
+    }
 
     if (!game.is_paused())
     {
@@ -89,7 +94,8 @@ void TetrisLayout::handle_event (Game &game, const SDL_Event &e)
             switch (keyLayout->get_command())
             {
             case SWAP:
-                swap();
+                // Delegate swapping to logic
+                trySwap = true;
                 break;
             }
         }
@@ -98,6 +104,11 @@ void TetrisLayout::handle_event (Game &game, const SDL_Event &e)
 
 void TetrisLayout::do_logic ()
 {
+    if (trySwap)
+    {
+        swap();
+        trySwap = false;
+    }
     tetrimino.move(tetriminoTimer->get_elapsed());
     if (tetrimino.fall(tetriminoTimer->get_elapsed()))
     {

@@ -160,11 +160,23 @@ private:
     Layout layout;
     std::deque<TetriminoConfig> tetriminoQueue;
     TetriminoConfig *tetriminoSwap;
-    int swapped; /// Amount of tetrimino spawns since the last swap.
+
+    /**
+     * @brief If true, swap when doing logic.
+     * @note
+     * Swapping in the event loop might cause the following bug: pressing swap key and
+     * then quickly pressing and holding a movement key may cause the new tetrimino to
+     * increase its velocity after getting key states on spawn, and then increase the
+     * same velocity during the key press event handling, leading to the tetrimino
+     * moving on its own.
+     */
+    bool trySwap;
+
+    int swapped; // Amount of tetrimino spawns since the last swap.
     int tetriminoFallDelay;
     int gameOver;
 
-    int linesCleared; /// Total lines cleared.
+    int linesCleared; // Total lines cleared.
     int score, combo;
 };
 
