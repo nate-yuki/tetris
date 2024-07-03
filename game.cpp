@@ -106,16 +106,10 @@ void Game::handle_events ()
                 if (paused)
                 {
                     unpause();
-
-                    Audio::play_sound(Audio::GAME_UNPAUSE);
-                    Audio::unpause_music();
                 }
                 else
                 {
                     pause();
-
-                    Audio::play_sound(Audio::GAME_PAUSE);
-                    Audio::pause_music();
                 }
                 break;
             case SOUND_TOGGLE:
@@ -134,7 +128,7 @@ void Game::handle_events ()
 
 void Game::do_logic ()
 {
-    if (!window.has_keyboard_focus())
+    if (!window.has_keyboard_focus() && !paused)
     {
         pause();
     }
@@ -328,10 +322,16 @@ void Game::pause ()
 {
     currState->pause_timers();
     paused = true;
+
+    Audio::play_sound(Audio::GAME_PAUSE);
+    Audio::pause_music();
 }
 
 void Game::unpause ()
 {
     currState->unpause_timers();
     paused = false;
+
+    Audio::play_sound(Audio::GAME_UNPAUSE);
+    Audio::unpause_music();
 }
