@@ -5,6 +5,7 @@
 
 #include "tetrimino.hpp"
 #include "game.hpp"
+#include "audio.hpp"
 #include "key_layout.hpp"
 #include "constants.hpp"
 #include "exceptions.hpp"
@@ -247,19 +248,35 @@ void Tetrimino::handle_event (Game &game, const SDL_Event &e)
             {
                 drop();
                 stop();
+
+                Audio::play_sound(Audio::TETRIMINO_DROP);
             }
             break;
         case ROT_CCW:
             if (!game.is_paused())
             {
-                rotate(1);
+                if (rotate(1))
+                {
+                    Audio::play_sound(Audio::TETRIMINO_ROTATE);
+                }
+                else
+                {
+                    Audio::play_sound(Audio::TETRIMINO_BLOCKED);
+                }
             }
             rotVel += TETRIMINO_ROT_SPEED;
             break;
         case ROT_CW:
             if (!game.is_paused())
             {
-                rotate(-1);
+                if (rotate(-1))
+                {
+                    Audio::play_sound(Audio::TETRIMINO_ROTATE);
+                }
+                else
+                {
+                    Audio::play_sound(Audio::TETRIMINO_BLOCKED);
+                }
             }
             rotVel -= TETRIMINO_ROT_SPEED;
             break;
@@ -302,9 +319,13 @@ bool Tetrimino::fall (int dt)
         if (check_collision_bottom())
         {
             stop();
+
+            Audio::play_sound(Audio::TETRIMINO_STOP);
             return true;
         }
         ++posY;
+            
+        Audio::play_sound(Audio::TETRIMINO_FALL);
     }
     return false;
 }
@@ -344,7 +365,14 @@ void Tetrimino::move (int dt)
     }
     if (rotElapsed / 1000)
     {
-        rotate(rotElapsed / 1000);
+        if (rotate(rotElapsed / 1000))
+        {
+            Audio::play_sound(Audio::TETRIMINO_ROTATE);
+        }
+        else
+        {
+            Audio::play_sound(Audio::TETRIMINO_BLOCKED);
+        }
         rotElapsed -= 1000 * rotVel / abs(rotVel);
     }
 }
@@ -360,6 +388,12 @@ void Tetrimino::shift (int dx)
     if (dx > 0 && check_collision_right() || dx < 0 && check_collision_left())
     {
         posX -= dx;
+
+        Audio::play_sound(Audio::TETRIMINO_BLOCKED);
+    }
+    else
+    {
+        Audio::play_sound(Audio::TETRIMINO_MOVE);
     }
 }
 

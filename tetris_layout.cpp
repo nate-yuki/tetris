@@ -5,6 +5,7 @@
 
 #include "tetris_layout.hpp"
 #include "game.hpp"
+#include "audio.hpp"
 #include "key_layout.hpp"
 #include "constants.hpp"
 #include "logger.hpp"
@@ -430,6 +431,8 @@ void TetrisLayout::spawn_tetrimino()
         // Tetrimino could not be spawned because of obstructing field blocks
         gameOverTimer->start();
         gameOver = true;
+
+        Audio::play_sound(Audio::TETRIS_GAME_OVER);
     }
     tetriminoQueue.pop_front();
     // If swapped > 0, decreases it
@@ -462,6 +465,8 @@ void TetrisLayout::swap()
 
         // Spawn a new tetrimino
         spawn_tetrimino();
+
+        Audio::play_sound(Audio::TETRIS_SWAP);
     }
 }
 
@@ -478,16 +483,24 @@ void TetrisLayout::manage_score (int currLinesCleared)
         break;
     case 1:
         msg.set_text("Line clear", TETRIS_MSG_TIME, &WHITE);
+        
+        Audio::play_sound(Audio::TETRIS_SINGLE);
         break;
     case 2:
         msg.set_text("2 lines cleared!", TETRIS_MSG_TIME, &CYAN);
+        
+        Audio::play_sound(Audio::TETRIS_DOUBLE);
         break;
     case 3:
         msg.set_text("3 lines cleared!", TETRIS_MSG_TIME, &YELLOW);
+        
+        Audio::play_sound(Audio::TETRIS_TRIPLE);
         break;
     case 4:
         msg.set_text("TETRIS!", TETRIS_MSG_TIME, &RED);
         score += SCORE_TETRIS;
+        
+        Audio::play_sound(Audio::TETRIS_TETRIS);
         break;
     }
     if (currLinesCleared)

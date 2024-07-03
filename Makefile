@@ -34,20 +34,21 @@ run: tetris.exe
 clean:
 	rm -f *.o all
 
-tetris.exe: main.o game.o util.o states.o window.o renderer.o font.o gamepad.o \
-texture.o key_layout.o particles.o shapes.o text.o textbox.o timer.o timed_media.o \
-menu.o tetris_field.o tetrimino.o tetris_layout.o exceptions.o logger.o
+tetris.exe: main.o game.o util.o states.o window.o renderer.o font.o audio.o \
+gamepad.o texture.o key_layout.o particles.o shapes.o text.o textbox.o timer.o \
+timed_media.o menu.o tetris_field.o tetrimino.o tetris_layout.o exceptions.o logger.o
 main.o: main.cpp game.hpp exceptions.hpp logger.hpp
-game.o: game.cpp game.hpp window.hpp renderer.hpp font.hpp gamepad.hpp texture.hpp \
-key_layout.hpp text.hpp shapes.hpp textbox.hpp menu.hpp states.hpp util.hpp \
-constants.hpp exceptions.hpp logger.hpp
+game.o: game.cpp game.hpp window.hpp renderer.hpp font.hpp audio.hpp gamepad.hpp \
+texture.hpp key_layout.hpp text.hpp shapes.hpp textbox.hpp menu.hpp states.hpp \
+util.hpp constants.hpp exceptions.hpp logger.hpp
 util.o: util.cpp util.hpp
-states.o: states.cpp states.hpp game.hpp texture.hpp timer.hpp menu.hpp \
+states.o: states.cpp states.hpp game.hpp audio.hpp texture.hpp timer.hpp menu.hpp \
 key_layout.hpp tetris_layout.hpp util.hpp constants.hpp exceptions.hpp logger.hpp
 window.o: window.cpp window.hpp game.hpp key_layout.hpp constants.hpp exceptions.hpp \
 logger.hpp
 renderer.o: renderer.cpp renderer.hpp window.hpp util.hpp exceptions.hpp logger.hpp
 font.o: font.cpp font.hpp util.hpp exceptions.hpp
+audio.o: audio.cpp audio.hpp
 gamepad.o: gamepad.cpp gamepad.hpp game.hpp logger.hpp
 texture.o: texture.cpp texture.hpp renderer.hpp font.hpp util.hpp exceptions.hpp \
 logger.hpp
@@ -58,11 +59,11 @@ text.o: text.cpp text.hpp texture.hpp
 textbox.o: textbox.cpp textbox.hpp texture.hpp shapes.hpp text.hpp util.hpp logger.hpp
 timer.o: timer.cpp timer.hpp
 timed_media.o: timed_media.cpp timed_media.hpp text.hpp timer.hpp
-menu.o: menu.cpp menu.hpp game.hpp textbox.hpp util.hpp
+menu.o: menu.cpp menu.hpp game.hpp audio.hpp textbox.hpp util.hpp
 tetris_field.o: tetris_field.cpp tetris_field.hpp texture.hpp
 tetrimino.o: tetrimino.cpp tetrimino.hpp tetris_field.hpp texture.hpp game.hpp \
-key_layout.hpp
+audio.hpp key_layout.hpp
 tetris_layout.o: tetris_layout.cpp tetris_layout.hpp tetris_field.hpp tetrimino.hpp \
-texture.hpp key_layout.hpp timer.hpp timed_media.hpp logger.hpp
+audio.hpp texture.hpp key_layout.hpp timer.hpp timed_media.hpp logger.hpp
 exceptions.o: exceptions.cpp exceptions.hpp
 logger.o: logger.cpp logger.hpp

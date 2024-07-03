@@ -4,6 +4,7 @@
  */
 
 #include "game.hpp"
+#include "audio.hpp"
 #include "particles.hpp"
 #include "constants.hpp"
 #include "exceptions.hpp"
@@ -15,6 +16,10 @@ KeyMap Game::keyMap{
         Game::Commands::PAUSE,
         {SDLK_ESCAPE, KeyLayout::GP_CODE_SEP + SDL_CONTROLLER_BUTTON_START}
     },
+    {
+        Game::Commands::SOUND_TOGGLE,
+        {SDLK_m, KeyLayout::GP_CODE_SEP + SDL_CONTROLLER_BUTTON_BACK}
+    },
 };
 
 
@@ -25,7 +30,7 @@ void Game::init ()
     // Initialize SDL libraries
     if (
         SDL_Init(
-            SDL_INIT_VIDEO | SDL_INIT_JOYSTICK | SDL_INIT_HAPTIC |
+            SDL_INIT_VIDEO | SDL_INIT_AUDIO | SDL_INIT_JOYSTICK | SDL_INIT_HAPTIC |
             SDL_INIT_GAMECONTROLLER
         ) < 0
     )
@@ -49,6 +54,13 @@ void Game::init ()
     {
         throw ExceptionSDL(__FILE__, __LINE__, TTF_GetError());
     }
+    if (Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 2048) == -1)
+    {
+        throw ExceptionSDL(__FILE__, __LINE__, Mix_GetError());
+    }
+
+    // Initialize audio
+    Audio::init();
 
     // Initialize class members
     window.init(*this);
@@ -94,10 +106,22 @@ void Game::handle_events ()
                 if (paused)
                 {
                     unpause();
+
+                    Audio::play_sound(Audio::GAME_UNPAUSE);
+                    Audio::unpause_music();
                 }
                 else
                 {
                     pause();
+
+                    Audio::play_sound(Audio::GAME_PAUSE);
+                    Audio::pause_music();
+                }
+                break;
+            case SOUND_TOGGLE:
+                if (Audio::toggle_sound())
+                {
+                    Audio::play_sound(Audio::UNMUTE);
                 }
                 break;
             }
@@ -161,6 +185,9 @@ void Game::free ()
     font.free();
     gamepads.free();
 
+    Audio::free();
+
+    Mix_Quit();
     IMG_Quit();
     TTF_Quit();
     SDL_Quit();

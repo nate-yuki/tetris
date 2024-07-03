@@ -35,6 +35,7 @@ class Game
 public:
     enum Commands{
         PAUSE,
+        SOUND_TOGGLE,
     };
 
     /**

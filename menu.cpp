@@ -5,6 +5,7 @@
 
 #include "menu.hpp"
 #include "game.hpp"
+#include "audio.hpp"
 #include "util.hpp"
 
 
@@ -104,6 +105,8 @@ void Menu::handle_event (Game &game, const SDL_Event &e)
             // Paint the new selected option box with the selected option color
             optionBoxes[selectedInd].set_fill_color(selectedOptionFillColor);
             optionBoxes[selectedInd].set_frame_color(selectedOptionFrameColor);
+
+            Audio::play_sound(Audio::MENU_SCROLL);
             break;
             
         case DOWN:
@@ -118,10 +121,14 @@ void Menu::handle_event (Game &game, const SDL_Event &e)
             // Paint the new selected option box with the selected option color
             optionBoxes[selectedInd].set_fill_color(selectedOptionFillColor);
             optionBoxes[selectedInd].set_frame_color(selectedOptionFrameColor);
+
+            Audio::play_sound(Audio::MENU_SCROLL);
             break;
 
         case SELECT:
             choiceMade = true;
+
+            Audio::play_sound(Audio::MENU_SELECT);
             break;
         }
     }

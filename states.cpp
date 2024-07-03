@@ -4,6 +4,7 @@
  */
 
 #include "states.hpp"
+#include "audio.hpp"
 #include "util.hpp"
 #include "constants.hpp"
 #include "exceptions.hpp"
@@ -292,6 +293,8 @@ void TitleScreenState::enter (Game *game)
     game->create_key_loadout(
         keyLayout, keyMap, KeyLayout::GamepadSelector::GAMEPAD_ANY
     );
+
+    Audio::set_music(Audio::TITLE);
 }
 
 void TitleScreenState::exit ()
@@ -312,6 +315,7 @@ void TitleScreenState::handle_event (Game &game, const SDL_Event &e)
         {
         case START:
             game.set_next_state(MenuState::get());
+            Audio::play_sound(Audio::GAME_START);
             break;
         }
     }
@@ -357,6 +361,8 @@ void MenuState::enter (Game *game)
     game->create_menu(
         menu, "Choose an option:", {"Singleplayer", "Multiplayer", "Exit"}
     );
+
+    Audio::play_music(Audio::TITLE);
 }
 
 void MenuState::exit ()
@@ -418,6 +424,8 @@ void PlayersSelectState::enter (Game *game)
     game->create_menu(
         menu, "Select the amount of players:", {"2", "3", "4", "Back"}
     );
+
+    Audio::play_music(Audio::TITLE);
 }
 
 void PlayersSelectState::exit ()
@@ -537,6 +545,8 @@ void TetrisState::enter (Game *game)
         &msgText, &comboText
     );
     tetriminoTimer.start();
+
+    Audio::set_music(Audio::TETRIS);
 }
 
 void TetrisState::exit ()
@@ -583,6 +593,8 @@ void TetrisState::exit ()
     comboText.free();
 
     tetris.free();
+
+    Audio::stop_music(Audio::TETRIS);
 }
 
 void TetrisState::handle_event (Game &game, const SDL_Event &e)
@@ -610,6 +622,8 @@ void TetrisState::do_logic ()
         {
             game->set_next_state(ResultsScreenState::get());
         }
+        
+        Audio::stop_music(Audio::TETRIS);
     }
     else
     {
@@ -725,6 +739,8 @@ void TetrisPVPState::enter (Game *game)
     {
         tetriminoTimers[i].start();
     }
+
+    Audio::set_music(Audio::TETRIS);
 }
 
 void TetrisPVPState::exit ()
@@ -764,6 +780,8 @@ void TetrisPVPState::exit ()
 
         tetris[i].free();
     }
+
+    Audio::stop_music(Audio::TETRIS);
 }
 
 void TetrisPVPState::handle_event (Game &game, const SDL_Event &e)
@@ -812,6 +830,8 @@ void TetrisPVPState::do_logic ()
         {
             game->set_next_state(ResultsScreenState::get());
         }
+
+        Audio::stop_music(Audio::TETRIS);
     }
     else
     {
@@ -950,6 +970,8 @@ void ResultsScreenState::enter (Game *game)
     game->create_text(resultsText, resultsMsg, WHITE);
 
     resultsTimer.start();
+
+    Audio::play_music(Audio::TITLE);
 }
 
 void ResultsScreenState::exit()
@@ -1037,6 +1059,8 @@ GameOverState *GameOverState::get ()
 void GameOverState::enter (Game *game)
 {
     log("Entering GameOver", __FILE__, __LINE__);
+    
+    Audio::stop_music();
 }
 
 void GameOverState::exit ()
