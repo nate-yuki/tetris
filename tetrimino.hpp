@@ -92,8 +92,11 @@ public:
     /// Store `field`, `blockTextureSheet`, and `keyLayout`.
     void init(TetrisField *field, Texture *blockTextureSheet, KeyLayout *keyLayout);
 
-    /// Free the blocks.
-    void free();
+    /**
+     * @brief Free the blocks.
+     * @param logMsg If `true`, log a message; default is `true`.
+     */
+    void free(bool logMsg=true);
 
     /**
      * @brief Check if the tetrimino fits, create blocks and initialize class members.

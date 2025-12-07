@@ -92,10 +92,13 @@ void Tetrimino::init (
     totalBlocks = 0;
 }
 
-void Tetrimino::free ()
+void Tetrimino::free (bool logMsg)
 {
-    log("Freeing Tetrimino", __FILE__, __LINE__);
-    
+    if (logMsg)
+    {
+        log("Freeing Tetrimino", __FILE__, __LINE__);
+    }
+
     for (Block *block: blocks)
     {
         delete block;
@@ -206,6 +209,7 @@ void Tetrimino::render (int x, int y, int size)
         ghost.spawn(posX, posY, -1, TetriminoConfig(type, rot), true);
         ghost.drop();
         ghost.render(x, y, size);
+        ghost.free(false);
     }
 }
 
