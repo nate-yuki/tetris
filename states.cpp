@@ -9,6 +9,8 @@
 #include "constants.hpp"
 #include "exceptions.hpp"
 #include "logger.hpp"
+#include "tetrimino.hpp"
+#include "tetris_layout.hpp"
 
 #include <fstream>
 

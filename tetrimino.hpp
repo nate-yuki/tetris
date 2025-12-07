@@ -10,6 +10,7 @@
 #include "tetris_field.hpp"
 #include "texture.hpp"
 #include "util.hpp"
+#include "key_layout.hpp"
 
 #include <SDL2/SDL.h>
 #include <vector>

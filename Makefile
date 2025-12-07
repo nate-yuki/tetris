@@ -43,7 +43,8 @@ texture.hpp key_layout.hpp text.hpp shapes.hpp textbox.hpp menu.hpp states.hpp \
 util.hpp constants.hpp exceptions.hpp logger.hpp
 util.o: util.cpp util.hpp
 states.o: states.cpp states.hpp game.hpp audio.hpp texture.hpp timer.hpp menu.hpp \
-key_layout.hpp tetris_layout.hpp util.hpp constants.hpp exceptions.hpp logger.hpp
+key_layout.hpp tetris_layout.hpp tetrimino.hpp util.hpp constants.hpp exceptions.hpp \
+logger.hpp
 window.o: window.cpp window.hpp game.hpp key_layout.hpp constants.hpp exceptions.hpp \
 logger.hpp
 renderer.o: renderer.cpp renderer.hpp window.hpp util.hpp exceptions.hpp logger.hpp

@@ -13,6 +13,7 @@
 #include "text.hpp"
 #include "timer.hpp"
 #include "timed_media.hpp"
+#include "key_layout.hpp"
 
 #include <SDL2/SDL.h>
 #include <deque>
