@@ -5,15 +5,15 @@ CC = g++
 VARS = -DDEBUG
 
 #Additional include paths
-INCLUDE_PATHS = -I C:/Users/Nate/Documents/Programming/mingw_dev_lib/include
+INCLUDE_PATHS = -I C:/Users/$(USERNAME)/Documents/Programming/mingw_dev_lib/include
 
 #Additional library paths
-LIBRARY_PATHS = -L C:/Users/Nate/Documents/Programming/mingw_dev_lib/lib
+LIBRARY_PATHS = -L C:/Users/$(USERNAME)/Documents/Programming/mingw_dev_lib/lib
 
 #Compilation options
 # -w suppresses all warnings
 # -Wl, -subsystem, windows gets rid of the console window
-COMPILER_FLAGS = -W# -Wl,-subsystem,windows
+COMPILER_FLAGS = -W -Wl,-subsystem,windows
 
 #Libraries being linked against
 LINKER_FLAGS = -lmingw32 -lSDL2main -lSDL2 -lSDL2_image -lSDL2_ttf -lSDL2_mixer
