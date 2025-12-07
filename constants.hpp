@@ -18,7 +18,7 @@ constexpr bool FLUSH_ALL = false;
 constexpr int WINDOW_WIDTH = 640, WINDOW_HEIGHT = 480;
 
 /// Maximum font point size.
-constexpr int MAX_PT_SIZE = 150;
+constexpr int MAX_PT_SIZE = 300;
 
 /// Maximum particle size.
 constexpr int MAX_PARTICLE_SIZE = 50;
