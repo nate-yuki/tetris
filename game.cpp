@@ -27,6 +27,16 @@ void Game::init ()
 {
     log("Initializing Game", __FILE__, __LINE__);
 
+    // Set pre video subsystem initialization hints
+    if (SDL_SetHint(SDL_HINT_WINDOWS_DPI_AWARENESS, "permonitorv2") == SDL_FALSE)
+    {
+        log("[WARNING] DPI awareness not enabled!", __FILE__, __LINE__, true);
+    }
+    if (SDL_SetHint(SDL_HINT_WINDOWS_DPI_SCALING, "1") == SDL_FALSE)
+    {
+        log("[WARNING] DPI scaling not enabled!", __FILE__, __LINE__, true);
+    }
+
     // Initialize SDL libraries
     if (
         SDL_Init(
