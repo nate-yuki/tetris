@@ -58,7 +58,6 @@ void TetrisLayout::init (
     this->scorePromptText = scorePromptText;
     this->highScoreText = highScoreText;
     this->highScorePromptText = highScorePromptText;
-    this->msgText = msgText;
     this->comboText = comboText;
     this->tetriminoTimer = tetriminoTimer;
     this->clearLineTimer = clearLineTimer;
@@ -431,7 +430,7 @@ void TetrisLayout::render_minimal (int x, int y, int w, int h)
     );
 }
 
-void TetrisLayout::spawn_tetrimino()
+void TetrisLayout::spawn_tetrimino ()
 {
     bool tetriminoFit = tetrimino.spawn(
         (field.get_width() - MAX_SCHEME_LEN) / 2, 0, tetriminoFallDelay,
@@ -454,7 +453,7 @@ void TetrisLayout::spawn_tetrimino()
     }
 }
 
-void TetrisLayout::swap()
+void TetrisLayout::swap ()
 {
     if (!swapped)
     {

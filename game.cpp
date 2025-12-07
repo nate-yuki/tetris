@@ -47,7 +47,7 @@ void Game::init ()
     {
         throw ExceptionSDL(__FILE__, __LINE__, SDL_GetError());
     }
-    if (!SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "1"))
+    if (SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "1") == SDL_FALSE)
     {
         log(
             "[WARNING] Linear texture filtering not enabled!",

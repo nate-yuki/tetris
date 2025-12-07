@@ -151,7 +151,7 @@ private:
     Texture *bgTexture, *blockTextureSheet;
     Text *linesClearedText, *linesClearedPromptText;
     Text *scoreText, *scorePromptText, *highScoreText, *highScorePromptText;
-    Text *msgText, *comboText;
+    Text *comboText;
     TimedText msg;
     Timer *tetriminoTimer, *clearLineTimer, *gameOverTimer;
 
