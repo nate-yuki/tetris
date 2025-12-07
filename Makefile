@@ -1,11 +1,15 @@
 #Compiler used
 CC = g++
 
+#Directories
+SRC_DIR = src
+BUILD_DIR = build
+
 #Compiler variables
 VARS = -DDEBUG
 
 #Additional include paths
-INCLUDE_PATHS = -I C:/Users/$(USERNAME)/Documents/Programming/mingw_dev_lib/include
+INCLUDE_PATHS = -I C:/Users/$(USERNAME)/Documents/Programming/mingw_dev_lib/include -I $(SRC_DIR)
 
 #Additional library paths
 LIBRARY_PATHS = -L C:/Users/$(USERNAME)/Documents/Programming/mingw_dev_lib/lib
@@ -19,52 +23,104 @@ COMPILER_FLAGS = -W -Wl,-subsystem,windows
 LINKER_FLAGS = -lmingw32 -lSDL2main -lSDL2 -lSDL2_image -lSDL2_ttf -lSDL2_mixer
 
 #The exectuable name
-OBJ_NAME = tetris.exe
+EX_NAME = tetris.exe
 
-%.o: %.cpp
-	$(CC) -c $< ${VARS} $(INCLUDE_PATHS) $(LIBRARY_PATHS) $(COMPILER_FLAGS) \
-	$(LINKER_FLAGS)
-%.exe: main.o
-	$(CC) $^ -o $@ $(INCLUDE_PATHS) $(LIBRARY_PATHS) $(COMPILER_FLAGS) $(LINKER_FLAGS)
+#Object files
+SOURCES = main.cpp game.cpp util.cpp states.cpp window.cpp renderer.cpp font.cpp \
+audio.cpp gamepad.cpp texture.cpp key_layout.cpp particles.cpp shapes.cpp text.cpp \
+textbox.cpp timer.cpp timed_media.cpp menu.cpp tetris_field.cpp tetrimino.cpp \
+tetris_layout.cpp exceptions.cpp logger.cpp
+OBJECTS = $(SOURCES:%.cpp=$(BUILD_DIR)/%.o)
+
+#Pattern rule for building object files
+$(BUILD_DIR)/%.o: $(SRC_DIR)/%.cpp
+	@mkdir -p $(BUILD_DIR)
+	$(CC) -c $< ${VARS} $(INCLUDE_PATHS) $(LIBRARY_PATHS) $(COMPILER_FLAGS) -o $@
+
+#Dependencies
+$(BUILD_DIR)/main.o: $(SRC_DIR)/main.cpp $(SRC_DIR)/game.hpp \
+$(SRC_DIR)/exceptions.hpp $(SRC_DIR)/logger.hpp
+
+$(BUILD_DIR)/game.o: $(SRC_DIR)/game.cpp $(SRC_DIR)/game.hpp $(SRC_DIR)/window.hpp \
+$(SRC_DIR)/renderer.hpp $(SRC_DIR)/font.hpp $(SRC_DIR)/audio.hpp \
+$(SRC_DIR)/gamepad.hpp $(SRC_DIR)/texture.hpp $(SRC_DIR)/key_layout.hpp \
+$(SRC_DIR)/text.hpp $(SRC_DIR)/shapes.hpp $(SRC_DIR)/textbox.hpp $(SRC_DIR)/menu.hpp \
+$(SRC_DIR)/states.hpp $(SRC_DIR)/util.hpp $(SRC_DIR)/constants.hpp \
+$(SRC_DIR)/exceptions.hpp $(SRC_DIR)/logger.hpp
+
+$(BUILD_DIR)/util.o: $(SRC_DIR)/util.cpp $(SRC_DIR)/util.hpp
+
+$(BUILD_DIR)/states.o: $(SRC_DIR)/states.cpp $(SRC_DIR)/states.hpp \
+$(SRC_DIR)/game.hpp $(SRC_DIR)/audio.hpp $(SRC_DIR)/texture.hpp $(SRC_DIR)/timer.hpp \
+$(SRC_DIR)/menu.hpp $(SRC_DIR)/key_layout.hpp $(SRC_DIR)/tetris_layout.hpp \
+$(SRC_DIR)/tetrimino.hpp $(SRC_DIR)/util.hpp $(SRC_DIR)/constants.hpp \
+$(SRC_DIR)/exceptions.hpp $(SRC_DIR)/logger.hpp
+
+$(BUILD_DIR)/window.o: $(SRC_DIR)/window.cpp $(SRC_DIR)/window.hpp \
+$(SRC_DIR)/game.hpp $(SRC_DIR)/key_layout.hpp $(SRC_DIR)/constants.hpp \
+$(SRC_DIR)/exceptions.hpp $(SRC_DIR)/logger.hpp
+
+$(BUILD_DIR)/renderer.o: $(SRC_DIR)/renderer.cpp $(SRC_DIR)/renderer.hpp \
+$(SRC_DIR)/window.hpp $(SRC_DIR)/util.hpp $(SRC_DIR)/exceptions.hpp \
+$(SRC_DIR)/logger.hpp
+
+$(BUILD_DIR)/font.o: $(SRC_DIR)/font.cpp $(SRC_DIR)/font.hpp $(SRC_DIR)/util.hpp \
+$(SRC_DIR)/exceptions.hpp
+
+$(BUILD_DIR)/audio.o: $(SRC_DIR)/audio.cpp $(SRC_DIR)/audio.hpp
+
+$(BUILD_DIR)/gamepad.o: $(SRC_DIR)/gamepad.cpp $(SRC_DIR)/gamepad.hpp \
+$(SRC_DIR)/game.hpp $(SRC_DIR)/logger.hpp
+
+$(BUILD_DIR)/texture.o: $(SRC_DIR)/texture.cpp $(SRC_DIR)/texture.hpp \
+$(SRC_DIR)/renderer.hpp $(SRC_DIR)/font.hpp $(SRC_DIR)/util.hpp \
+$(SRC_DIR)/exceptions.hpp $(SRC_DIR)/logger.hpp
+
+$(BUILD_DIR)/key_layout.o: $(SRC_DIR)/key_layout.cpp $(SRC_DIR)/key_layout.hpp \
+$(SRC_DIR)/game.hpp $(SRC_DIR)/logger.hpp
+
+$(BUILD_DIR)/particles.o: $(SRC_DIR)/particles.cpp $(SRC_DIR)/particles.hpp \
+$(SRC_DIR)/texture.hpp $(SRC_DIR)/util.hpp $(SRC_DIR)/constants.hpp
+
+$(BUILD_DIR)/shapes.o: $(SRC_DIR)/shapes.cpp $(SRC_DIR)/shapes.hpp \
+$(SRC_DIR)/renderer.hpp $(SRC_DIR)/util.hpp $(SRC_DIR)/logger.hpp
+
+$(BUILD_DIR)/text.o: $(SRC_DIR)/text.cpp $(SRC_DIR)/text.hpp $(SRC_DIR)/texture.hpp
+
+$(BUILD_DIR)/textbox.o: $(SRC_DIR)/textbox.cpp $(SRC_DIR)/textbox.hpp \
+$(SRC_DIR)/texture.hpp $(SRC_DIR)/shapes.hpp $(SRC_DIR)/text.hpp $(SRC_DIR)/util.hpp \
+$(SRC_DIR)/logger.hpp
+
+$(BUILD_DIR)/timer.o: $(SRC_DIR)/timer.cpp $(SRC_DIR)/timer.hpp
+
+$(BUILD_DIR)/timed_media.o: $(SRC_DIR)/timed_media.cpp $(SRC_DIR)/timed_media.hpp \
+$(SRC_DIR)/text.hpp $(SRC_DIR)/timer.hpp
+
+$(BUILD_DIR)/menu.o: $(SRC_DIR)/menu.cpp $(SRC_DIR)/menu.hpp $(SRC_DIR)/game.hpp \
+$(SRC_DIR)/audio.hpp $(SRC_DIR)/textbox.hpp $(SRC_DIR)/util.hpp
+
+$(BUILD_DIR)/tetris_field.o: $(SRC_DIR)/tetris_field.cpp $(SRC_DIR)/tetris_field.hpp \
+$(SRC_DIR)/texture.hpp
+
+$(BUILD_DIR)/tetrimino.o: $(SRC_DIR)/tetrimino.cpp $(SRC_DIR)/tetrimino.hpp \
+$(SRC_DIR)/tetris_field.hpp $(SRC_DIR)/texture.hpp $(SRC_DIR)/game.hpp \
+$(SRC_DIR)/audio.hpp $(SRC_DIR)/key_layout.hpp
+
+$(BUILD_DIR)/tetris_layout.o: $(SRC_DIR)/tetris_layout.cpp \
+$(SRC_DIR)/tetris_layout.hpp $(SRC_DIR)/tetris_field.hpp $(SRC_DIR)/tetrimino.hpp \
+$(SRC_DIR)/audio.hpp $(SRC_DIR)/texture.hpp $(SRC_DIR)/key_layout.hpp \
+$(SRC_DIR)/timer.hpp $(SRC_DIR)/timed_media.hpp $(SRC_DIR)/logger.hpp
+
+$(BUILD_DIR)/exceptions.o: $(SRC_DIR)/exceptions.cpp $(SRC_DIR)/exceptions.hpp
+
+$(BUILD_DIR)/logger.o: $(SRC_DIR)/logger.cpp $(SRC_DIR)/logger.hpp
 
 #Targets
-all: tetris.exe
-run: tetris.exe
-	./tetris.exe
+all: $(EX_NAME)
+run: $(EX_NAME)
+	./$(EX_NAME)
 clean:
-	rm -f *.o all
+	rm -rf $(BUILD_DIR)
 
-tetris.exe: main.o game.o util.o states.o window.o renderer.o font.o audio.o \
-gamepad.o texture.o key_layout.o particles.o shapes.o text.o textbox.o timer.o \
-timed_media.o menu.o tetris_field.o tetrimino.o tetris_layout.o exceptions.o logger.o
-main.o: main.cpp game.hpp exceptions.hpp logger.hpp
-game.o: game.cpp game.hpp window.hpp renderer.hpp font.hpp audio.hpp gamepad.hpp \
-texture.hpp key_layout.hpp text.hpp shapes.hpp textbox.hpp menu.hpp states.hpp \
-util.hpp constants.hpp exceptions.hpp logger.hpp
-util.o: util.cpp util.hpp
-states.o: states.cpp states.hpp game.hpp audio.hpp texture.hpp timer.hpp menu.hpp \
-key_layout.hpp tetris_layout.hpp tetrimino.hpp util.hpp constants.hpp exceptions.hpp \
-logger.hpp
-window.o: window.cpp window.hpp game.hpp key_layout.hpp constants.hpp exceptions.hpp \
-logger.hpp
-renderer.o: renderer.cpp renderer.hpp window.hpp util.hpp exceptions.hpp logger.hpp
-font.o: font.cpp font.hpp util.hpp exceptions.hpp
-audio.o: audio.cpp audio.hpp
-gamepad.o: gamepad.cpp gamepad.hpp game.hpp logger.hpp
-texture.o: texture.cpp texture.hpp renderer.hpp font.hpp util.hpp exceptions.hpp \
-logger.hpp
-key_layout.o: key_layout.cpp key_layout.hpp game.hpp logger.hpp
-particles.o: particles.cpp particles.hpp texture.hpp util.hpp constants.hpp
-shapes.o: shapes.cpp shapes.hpp renderer.hpp util.hpp logger.hpp
-text.o: text.cpp text.hpp texture.hpp
-textbox.o: textbox.cpp textbox.hpp texture.hpp shapes.hpp text.hpp util.hpp logger.hpp
-timer.o: timer.cpp timer.hpp
-timed_media.o: timed_media.cpp timed_media.hpp text.hpp timer.hpp
-menu.o: menu.cpp menu.hpp game.hpp audio.hpp textbox.hpp util.hpp
-tetris_field.o: tetris_field.cpp tetris_field.hpp texture.hpp
-tetrimino.o: tetrimino.cpp tetrimino.hpp tetris_field.hpp texture.hpp game.hpp \
-audio.hpp key_layout.hpp
-tetris_layout.o: tetris_layout.cpp tetris_layout.hpp tetris_field.hpp tetrimino.hpp \
-audio.hpp texture.hpp key_layout.hpp timer.hpp timed_media.hpp logger.hpp
-exceptions.o: exceptions.cpp exceptions.hpp
-logger.o: logger.cpp logger.hpp
+$(EX_NAME): $(OBJECTS)
+	$(CC) $^ $(INCLUDE_PATHS) $(LIBRARY_PATHS) $(COMPILER_FLAGS) $(LINKER_FLAGS) -o $@
