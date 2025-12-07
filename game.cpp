@@ -59,6 +59,8 @@ void Game::init ()
         throw ExceptionSDL(__FILE__, __LINE__, Mix_GetError());
     }
 
+    srand(static_cast<unsigned int>(time(nullptr)));
+
     // Initialize audio
     Audio::init();
 
