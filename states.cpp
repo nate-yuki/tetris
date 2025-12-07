@@ -13,6 +13,7 @@
 #include "tetris_layout.hpp"
 
 #include <fstream>
+#include <filesystem>
 
 
 // Singleton instances
@@ -486,6 +487,27 @@ void TetrisState::enter (Game *game)
 
     this->game = game;
 
+    // load high score, if file doesn't exist, create it with 0 score
+    namespace fs = std::filesystem;
+    if (!fs::exists("high_score.hs"))
+    {
+        log("high_score.hs does not exist, creating it", __FILE__, __LINE__);
+        std::ofstream createFile(
+            "high_score.hs", std::ofstream::out | std::ofstream::binary
+        );
+        if (createFile.fail())
+        {
+            std::string msg = "Could not create \"" "high_score.hs" "\"";
+            throw ExceptionFile(__FILE__, __LINE__, msg.c_str());
+        }
+        createFile << 0;
+        if (createFile.fail())
+        {
+            std::string msg = "Could not write to \"" "high_score.hs" "\"";
+            throw ExceptionFile(__FILE__, __LINE__, msg.c_str());
+        }
+        createFile.close();
+    }
     std::ifstream highScoreFile(
         "high_score.hs", std::ifstream::in | std::ifstream::binary
     );
