@@ -105,7 +105,7 @@ public:
      * @param fallDelay Falling period.
      * @param config The tetrimino to spawn.
      * @param ghost If `true`, use the ghost texture; default is `false`.
-     * @return 
+     * @return `true` if the tetrimino fits into the field.
      */
     bool spawn(
         int posX, int posY, int fallDelay, const TetriminoConfig &config,

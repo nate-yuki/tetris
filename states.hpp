@@ -140,7 +140,7 @@ class TetrisState: public GameState
 public:
     static TetrisState *get();
 
-    /// Title screen commands.
+    /// Tetris screen commands.
     enum Commands{
         END, // Force transition to `ResultsScreenState`
     };
@@ -194,7 +194,7 @@ class TetrisPVPState: public GameState
 public:
     static TetrisPVPState *get();
 
-    /// Title screen commands.
+    /// Tetris screen commands.
     enum Commands{
         END, // Force transition to `ResultsScreenState`
     };

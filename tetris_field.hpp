@@ -42,7 +42,7 @@ private:
     const SDL_Rect *clip;
 };
 
-/// A tetriminoblock grid
+/// A tetrimino block grid
 class TetrisField
 {
 public:
@@ -75,7 +75,7 @@ public:
      * @param x Upper left corner x coordinate.
      * @param y Upper left corner y coordinate.
      * @param w The width.
-     * @param h The Height.
+     * @param h The height.
      * @param tetrimino Tetrimino to render.
      * @param stopClearLineRender If `true` and a cleared line is being rendered,
      *     stops rendering the cleared line.

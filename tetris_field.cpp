@@ -63,7 +63,7 @@ void TetrisField::render (
 
     int size = min(w / cellsHor, h / cellsVer); // Block size
     int fieldX = x + (w - size * cellsHor) / 2; // Grid x coordinate
-    int fieldY = y + (h - size * cellsVer) / 2; // Grid x coordinate
+    int fieldY = y + (h - size * cellsVer) / 2; // Grid y coordinate
 
     int shift = 0; // Amount of rendered clear lines
 
